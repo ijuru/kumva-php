@@ -27,7 +27,7 @@ forms of verbs.</p>
 
 <h2><?php echo KU_STR_COPYRIGHT; ?></h2>	
 <p>The dictionary content and reference materials are released under a <a href="http://creativecommons.org/licenses/by-nc-sa/2.0/uk/">Creative Commons licence</a> which permits you to share, modify, reproduce it in any form, provided that it is not used for commercial purposes, 
-and that you give credit to this project. The site code is released under a <a href="http://www.gnu.org/licenses/gpl.html">GNU General Public License</a> and is available for download from <a href="http://code.google.com/p/kumva/">Google code</a>.</p>
+and that you give credit to this project. The site code is released under a <a href="http://www.gnu.org/licenses/gpl.html">GNU General Public License</a> and is available for download from <a href="<?php echo KUMVA_URL_PROJECT; ?>">Git hub</a>.</p>
 
 <h2><?php echo KU_STR_CREDITS; ?></h2>
 <p>This dictionary is updated by an online team:
