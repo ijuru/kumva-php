@@ -306,7 +306,7 @@ class ChangeService extends Service {
 	 * @return bool TRUE if successful, else FALSE
 	 */
 	public function removeWatcher($change, $user) {
-		$sql = 'DELETE FROM `'.KUMVA_DB_PREFIX.'change_watch` WHERE user_id = '.aka_prepsqlval($user);		
+		$sql = 'DELETE FROM `'.KUMVA_DB_PREFIX.'change_watch` WHERE change_id = '.aka_prepsqlval($change).' AND user_id = '.aka_prepsqlval($user);		
 		return $this->database->query($sql) !== FALSE;
 	}
 	
