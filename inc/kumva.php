@@ -59,7 +59,7 @@ require_once KUMVA_DIR_LIB.'/markdown/markdown.php';
 require_once KUMVA_DIR_LIB.'/akabanga/akabanga.php';
  
 // Try to load config file and configure the database
-if (file_exists(KUMVA_DIR_INC.'/../config.php')) {
+if (!defined('KUMVA_SKIPCONFIG') && file_exists(KUMVA_DIR_INC.'/../config.php')) {
 	require_once KUMVA_DIR_INC.'/../config.php';
 	aka_dbconfigure(KUMVA_DB_HOST, KUMVA_DB_USER, KUMVA_DB_PASS, KUMVA_DB_NAME);
 	define('KUMVA_HASCONFIG', TRUE);

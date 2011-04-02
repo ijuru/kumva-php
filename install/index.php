@@ -20,6 +20,7 @@
  * Purpose: Install script
  */
  
+define('KUMVA_SKIPCONFIG', TRUE);
 include_once '../inc/kumva.php';
  
 define('KUMVA_SQL_SCRIPT', 'tables_1.0.sql');
@@ -146,80 +147,81 @@ function kumva_install() {
 		<script type="text/javascript" src="../lib/akabanga/js/master.js.php"></script>
 	</head>
 	<body>
-		<div id="header">	
-			<h1>Kumva Admin</h1>
+		<div id="wrap">
+    		<div id="header">
+            	<div id="banner">		
+					<h1>Kumva Admin</h1>
+				</div>
+			</div>
+			<div id="content">
+				<h3>Installation</h3>	
+				<?php 
+				// Run installation process	
+				if (Request::isPost()) {
+					?>
+					<div class="warning">For security reasons you MUST delete the install directory when installation is complete</div>
+					<div style="padding: 20px">
+					Running installation script...
+					<ul>
+					<?php $success = kumva_install(); ?>
+					</ul>
+					<?php if ($success) { ?>
+						<?php Templates::buttonLink('view', '../index.php', KU_STR_VIEWSITE); ?>
+					<?php }
+				}
+				else {
+				?>
+				<form method="post">
+					<table class="form">
+						<tr>
+							<td colspan="2" class="sectionheader"><?php echo KU_STR_DATABASEDETAILS; ?></td>
+						</tr>
+						<tr>
+							<td width="300"><span class="fieldname">Host</span></td>
+							<td><input type="text" name="dbhost" value="<?php echo $dbhost; ?>" class="text" /></td>
+						</tr>
+						<tr>
+							<td width="300"><span class="fieldname">Database name</span></td>
+							<td><input type="text" name="dbname" value="<?php echo $dbname; ?>" class="text" /></td>
+						</tr>
+						<tr>
+							<td width="300"><span class="fieldname"><?php echo KU_STR_LOGIN; ?></span></td>
+							<td><input type="text" name="dbuser" value="<?php echo $dbuser; ?>" class="text" /></td>
+						</tr>
+						<tr>
+							<td width="300"><span class="fieldname"><?php echo KU_STR_PASSWORD; ?></span></td>
+							<td><input type="text" name="dbpass" value="<?php echo $dbpass; ?>" class="text" /></td>
+						</tr>
+						<tr>
+							<td width="300"><span class="fieldname">Table prefix</span></td>
+							<td><input type="text" name="dbprefix" value="<?php echo $dbprefix; ?>" class="text" /></td>
+						</tr>
+						<tr>
+							<td colspan="2" class="sectionheader"><?php echo KU_STR_ADMINISTRATORACCOUNT; ?></td>
+						</tr>
+						<tr>
+							<td width="300"><span class="fieldname"><?php echo KU_STR_NAME; ?></span></td>
+							<td><input type="text" name="adminname" value="<?php echo $adminname; ?>" class="text" /></td>
+						</tr>
+						<tr>
+							<td width="300"><span class="fieldname"><?php echo KU_STR_LOGIN; ?></span></td>
+							<td><input type="text" name="adminuser" value="<?php echo $adminuser; ?>" class="text" /></td>
+						</tr>
+						<tr>
+							<td width="300"><span class="fieldname"><?php echo KU_STR_PASSWORD; ?></span></td>
+							<td><input type="text" name="adminpass" value="<?php echo $adminpass; ?>" class="text" /></td>
+						</tr>
+						<tr>
+							<td width="300"><span class="fieldname"><?php echo KU_STR_EMAIL; ?></span></td>
+							<td><input type="text" name="adminemail" value="<?php echo $adminemail; ?>" class="text" /></td>
+						</tr>
+						<tr>
+							<td colspan="2"><hr /><?php Templates::button('install', "aka_submit(this)", KU_STR_INSTALL); ?></td>
+						</tr>
+					</table>
+				</form>	
+				<?php } ?>
+			</div>
 		</div>
-		<div id="topdivider"></div>
-		
-		<div class="panel"><h2>Installation</h2></div>
-		
-		<?php 
-		// Run installation process	
-		if (Request::isPost()) {
-			?>
-			<div class="warning">For security reasons you MUST delete the install directory when installation is complete</div>
-			<div style="padding: 20px">
-			Running installation script...
-			<ul>
-			<?php $success = kumva_install(); ?>
-			</ul>
-			<?php if ($success) { ?>
-				<?php Templates::buttonLink('view', '../index.php', KU_STR_VIEWSITE); ?>
-			<?php }
-		}
-		else {
-			if (KUMVA_HASCONFIG)
-				echo '<div class="warning">Config file already exists</div>'; 
-		?>
-		<form method="post">
-			<table class="form">
-				<tr>
-					<td colspan="2" class="sectionheader"><?php echo KU_STR_DATABASEDETAILS; ?></td>
-				</tr>
-				<tr>
-					<td width="300"><span class="fieldname">Host</span></td>
-					<td><input type="text" name="dbhost" value="<?php echo $dbhost; ?>" class="text" /></td>
-				</tr>
-				<tr>
-					<td width="300"><span class="fieldname">Database name</span></td>
-					<td><input type="text" name="dbname" value="<?php echo $dbname; ?>" class="text" /></td>
-				</tr>
-				<tr>
-					<td width="300"><span class="fieldname"><?php echo KU_STR_LOGIN; ?></span></td>
-					<td><input type="text" name="dbuser" value="<?php echo $dbuser; ?>" class="text" /></td>
-				</tr>
-				<tr>
-					<td width="300"><span class="fieldname"><?php echo KU_STR_PASSWORD; ?></span></td>
-					<td><input type="text" name="dbpass" value="<?php echo $dbpass; ?>" class="text" /></td>
-				</tr>
-				<tr>
-					<td width="300"><span class="fieldname">Table prefix</span></td>
-					<td><input type="text" name="dbprefix" value="<?php echo $dbprefix; ?>" class="text" /></td>
-				</tr>
-				<tr>
-					<td colspan="2" class="sectionheader"><?php echo KU_STR_ADMINISTRATORACCOUNT; ?></td>
-				</tr>
-				<tr>
-					<td width="300"><span class="fieldname"><?php echo KU_STR_NAME; ?></span></td>
-					<td><input type="text" name="adminname" value="<?php echo $adminname; ?>" class="text" /></td>
-				</tr>
-				<tr>
-					<td width="300"><span class="fieldname"><?php echo KU_STR_LOGIN; ?></span></td>
-					<td><input type="text" name="adminuser" value="<?php echo $adminuser; ?>" class="text" /></td>
-				</tr>
-				<tr>
-					<td width="300"><span class="fieldname"><?php echo KU_STR_PASSWORD; ?></span></td>
-					<td><input type="text" name="adminpass" value="<?php echo $adminpass; ?>" class="text" /></td>
-				</tr>
-				<tr>
-					<td width="300"><span class="fieldname"><?php echo KU_STR_EMAIL; ?></span></td>
-					<td><input type="text" name="adminemail" value="<?php echo $adminemail; ?>" class="text" /></td>
-				</tr>
-				<tr>
-					<td colspan="2"><hr /><?php Templates::button('install', "aka_submit(this)", KU_STR_INSTALL); ?></td>
-				</tr>
-			</table>
-		</form>	
-		<?php } ?>
 	</body>
 </html>
