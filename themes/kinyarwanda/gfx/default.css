@@ -1,0 +1,291 @@
+/**
+ * Default stylesheet for Kumva
+ */
+ 
+* {
+	font-family: Georgia, Bookman;
+	font-size: 14px;
+}
+
+html, body, form, img {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+h2 {
+	font-size: 18px;
+	margin: 10px 0 10px 0;
+}
+
+h3 {
+	font-size: 16px;
+}
+
+ul.listmenu {
+	list-style: none;
+	padding: 5px 0 5px 0;
+	margin: 0;
+}
+
+ul.listmenu li {
+	display: inline;
+	font-size: smaller;
+	margin: 0;
+	padding: 5px;
+}
+
+.msgerror {
+	color: #A66;
+	font-weight: bold;
+}
+
+.msginfo {
+	color: #6A6;
+	font-weight: bold;
+}
+
+#header {
+	text-align: center;
+}
+
+#header h1 {
+	text-indent: -9999px;
+	margin: auto;
+	width: 400px;
+	height: 100px;
+	background-image: url('banner.png');
+}
+
+#header a {
+	text-decoration: none;
+	color: #6E9E6E;
+	font-weight: bold;
+}
+
+#header a.active {
+	color: #353;
+}
+
+#gutter *, #topdivider *, #bottomdivider * {
+	font-size: 12px;
+}
+
+#gutter {
+	background-color: #F2F2F2;
+	border-bottom: solid 1px #E0E0E0;
+	overflow: hidden;
+	padding: 3px;
+}
+
+#topdivider {
+	padding: 5px;
+	background-color: #EAFFEA;
+	border-top: solid 1px #ADA;
+	overflow: hidden;
+	min-height: 20px;
+}
+
+#topdivider form {
+	text-align: center;
+}
+
+#results {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#pager {
+	float: left;
+}
+
+#stats {
+	float: right;
+}
+
+#licence {
+	font-size: 9px;
+}
+
+#bottomdivider {
+	padding: 5px;
+	background-color: #EAEAFF;
+	text-align: center;
+	border-top: solid 1px #AAD;
+	min-height: 20px;
+}
+
+#bottommenu {
+	float: left;
+}
+
+#bottomdivider a {
+	color: #6E6E9E;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+#bottomdivider a.active {
+	color: #333355;
+}
+
+#licencing {
+	float: right;
+	font-size: 10px;
+}
+
+.info {
+	border-top: solid 1px #CC8;
+	background-color: #FFC;
+	padding: 6px;
+	min-height: 20px;
+	overflow: hidden;
+}
+
+.content {
+	padding: 8px;
+}
+
+table.stats {
+	width: 100%;
+	font-size: smaller;
+}
+
+table.stats th {
+	border-top: solid 1px #CC8;
+	background-color: #FFC;
+}
+
+table.stats td {
+	border-top: solid 1px #EEE;
+}
+
+.definition {
+	margin: 10px 0 10px 0;
+	padding-left: 20px;
+	color: #666;
+}
+
+.prefix {
+	color: #339;
+	font-weight: bold;
+}
+
+.lemma {
+	color: #262;
+	font-weight: bold;
+}
+
+.modifier {
+	color: #339;
+	font-weight: bold;
+}
+
+.wordclass, .nounclass, .flag {
+	color: black;
+	padding: 0 3px 0 3px;
+	text-decoration: none;
+	font-size: 12px;
+}
+
+.wordclass {
+	background-color: #DDD;
+}
+
+.nounclass {
+	background-color: #CCE;
+}
+
+.flag {
+	background-color: #CEC;	
+}
+
+.meaning {
+	color: black;
+	font-style: italic;
+}
+
+.comment {
+	font-style: italic;
+}
+
+.query {
+	font-weight: bold;
+}
+
+.link {
+	border-bottom: dotted 1px #999;
+	text-decoration: none;
+}
+
+.button {
+	border: solid 1px #BBB;
+	padding: 3px;
+	margin: 2px;
+	background-color: #ddd;
+	display: inline-block;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+.clickable:hover {
+	background-color: #eee;
+	cursor: pointer;
+}
+
+.reference {
+	color: #262;
+}
+
+.examplelist {
+	margin: 0px;
+	font-size: smaller;
+}
+
+.exampleform {
+	color: #994;
+	font-weight: bold;
+}
+
+.examplemeaning {
+	font-style: italic;
+	color: #666;
+}
+
+*:lang(rw) {
+	color: #262;
+}
+
+a:lang(rw) {
+	font-weight: bold;
+}
+
+table.grammar {
+	width: 100%;
+	border-collapse:collapse;
+}
+
+table.grammar th {
+	background-color: #FFC;
+}
+
+table.grammar td, table.grammar th {
+	border: 1px solid #CC8;
+	padding: 2px;
+}
+
+table.grammar th.group {
+	background-color: #EEE;
+	font-style: italic;
+	text-align: left;
+}
+
+.widget-tagstats {
+	width: 90%;
+}
+
+.widget-tagstats td {
+	text-align: center;
+	border-top: solid 1px #EEE;
+}

@@ -1,0 +1,351 @@
+/**
+ * Default stylesheet for Kumva
+ */
+ 
+* {
+	font-family: arial, sans-serif;
+	font-size: 12px;
+}
+
+body, html {
+	height: 100%;	
+}
+
+body, html, form, img {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+h2, h2 * {
+	font-size: 18px;
+	margin: 7px 0 7px 0;
+}
+
+h3 {
+	font-size: 14px;
+	margin: 5px 0 5px 0;
+}
+
+select {
+	padding: 2px; /* Chrome selects are very thin */
+}
+
+/**** Sticky footer from http://www.cssstickyfooter.com ****/
+
+#wrap {min-height: 100%;}
+
+#content {
+	overflow: auto; 
+	padding-bottom: 40px;  /* must be same height as the footer */
+}
+#footer {
+	position: relative;
+	margin-top: -40px; /* negative value of footer height */
+	height: 40px;
+	clear:both;
+} 
+
+body:before { /*Opera Fix*/
+	content: "";
+	height: 100%;
+	float: left;
+	width: 0;
+	margin-top: -32767px;
+}
+
+/**** End of sticky footer ****/
+
+#header a, #footer a {
+	text-decoration: none;
+	color: #7676b2;
+	font-weight: bold;
+}
+
+#header a.active, #footer a.active {
+	color: #4c4c73;
+}
+
+#banner {
+	background: url(header_bk.png) #cfd0a2;
+	height: 40px;
+}
+
+#banner h1 {
+	text-indent: -9999px;
+	margin: 0;
+	padding: 0;
+	width: 150px;
+	height: 40px;
+	float: left;
+	background-image: url('../banner.png');
+}
+
+#banner h2 {
+	font-size: 22px;
+	margin: 0;
+	padding: 8px 0 0 0;
+	float: left;
+	font-style: italic;
+	color: #7f7f60;
+	text-shadow: 1px 1px 1px #AAA;
+}
+
+#usermenu, #footermenu {
+	line-height: 40px;
+	float: right;
+	height: 40px;
+	padding-right: 10px;
+}
+
+#pagemenu {
+	background-image: url(mainmenu_bk.png);
+	height: 40px;
+	text-align: center;
+	list-style: none;
+	padding: 0;	
+	margin: 0;
+}
+
+#pagemenu li {
+	display: inline-block;
+	margin: 0;
+	padding: 12px 12px 4px 12px;
+}
+
+#pagemenu a {
+	font-size: 14px;
+	text-decoration: none;
+	color: #7676b2;
+	font-weight: bold;
+	text-shadow: 1px 1px 1px #CCC; 
+}
+
+#submenu {
+	background-image: url(submenu_bk.png);
+	height: 40px;
+	list-style: none;
+	padding: 0;	
+	margin: 0;
+}
+
+#submenu li {
+	display: inline-block;
+	margin: 0;
+	padding: 12px 10px 12px 10px;
+}
+
+#submenu a {
+	font-size: 12px;
+	text-decoration: none;
+	color: #7676b2;
+	font-weight: bold;
+}
+
+#searchForm {
+	display: inline;
+}
+
+#searchForm input#query {
+	width: 200px;
+}
+
+#footer { 
+	background: url(submenu_bk.png) #EEE;
+	/*padding: 5px 10px 5px 10px;*/
+	/*min-height: 20px;*/
+}
+
+#content h3 {
+	background-color: #f9f9ca;
+	line-height: 40px;
+	margin: 0;
+	padding-left: 10px;
+	color: #7f7f60;	
+}
+
+.description {
+	padding: 10px;
+}
+
+div.info {
+	border-top: solid 1px #BBE;
+	background: #E0E0F0 url('../icons/information.png') no-repeat 10px center;
+	padding: 5px 5px 5px 30px;
+	font-size: 12px;
+}
+
+div.error {
+	border-top: solid 1px #EBB;
+	background: #F0E0E0 url('../icons/error.png') no-repeat 10px center;
+	padding: 5px 5px 5px 30px;
+	font-size: 12px;
+}
+
+div.warning {
+	border-top: solid 1px #EEB;
+	background: #FFFFB0 url('../icons/warning.png') no-repeat 10px center;
+	padding: 5px 5px 5px 30px;
+	font-size: 12px;
+}
+
+span.error {
+	color: #A00;
+}
+
+.listcontrols {
+	padding: 5px 10px 5px 10px;
+	background-color: #EEE;
+	overflow: hidden;
+}
+
+#pager { 
+	background-color: #EEB;	
+	border-bottom: solid 1px #CC8;
+	line-height: 40px;
+	padding-left: 10px;
+}
+
+.button {
+	border: solid 1px #BBB;
+	padding: 3px;
+	margin: 2px;
+	background-color: #DDD;
+	display: inline-block;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+.clickable:hover {
+	background-color: #eee;
+	cursor: pointer;
+}
+
+.prefix {
+	color: #007;
+}
+
+.lemma {
+	color: #070;
+}
+
+.query {
+	color: #070;
+	font-style: italic;
+}
+
+.examplemeaning {
+	font-style: italic;
+}
+
+.primarycol {
+	background-color: #EEE;
+}
+
+.rowlink {
+	cursor: pointer;
+}
+
+.rowlink:hover {
+	background-color: #EEE;
+}
+
+.rowlink:hover td.primarycol {
+	background-color: #DDD;
+}
+
+table.list {
+	width: 100%;
+}
+
+table.list th {
+	border-top: solid 1px #CC8;
+	background-color: #EEB;	
+}
+
+table.list td {
+	border-top: solid 1px #EEE;
+	padding: 3px;
+}
+
+table.form {
+	padding: 10px;
+	width: 100%;
+	border: 0;
+	border-spacing: 0;
+}
+
+table.form td, table.form th {
+	padding: 4px;
+	vertical-align: top;
+}
+
+table.form th {
+	font-weight: bold;
+	text-align: left;
+	width: 300px;
+}
+
+table.form input.prefix {
+	width: 50px;
+	text-align: right;
+}
+
+table.form input.lemma {
+	width: 244px;
+}
+
+table.form input.short {
+	width: 50px;
+}
+
+table.form td.sectionheader {
+	background-color: #eee;
+	font-weight: bold;
+	font-size: 14px;
+	padding: 3px;
+}
+
+table.form textarea {
+	height: 28px;
+	vertical-align: top;
+	margin: 0;
+}
+
+table.form *.text {
+	width: 300px;
+}
+
+table.diff {
+	border: 0;
+	border-spacing: 0;
+	background-color: #F5F5F5;
+}
+
+table.diff tr.diffrow td {
+	border-top: 1px dotted #999;
+}
+
+table.diff tr.diffrow * {
+	font-size: 10px;
+}
+
+table.diff tr.difference {
+	background-color: #fdd;
+}
+
+.status {
+	font-size: 9px;
+	text-transform: uppercase;
+	padding: 3px;
+}
+
+.status-0 {
+	background-color: #BBF;
+}
+.status-1 {
+	background-color: #BFB;
+}
+.status-2 {
+	background-color: #FBB;
+}

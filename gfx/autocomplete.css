@@ -1,0 +1,56 @@
+/**
+ * CSS file used to style the jQuery-UI autocomplete control
+ * without using a standard UI theme
+ */
+
+.ui-autocomplete {
+	list-style: none outside none;
+	margin: 0;
+	padding: 2px;
+	font-size: 12px;
+}
+
+.ui-autocomplete-loading {
+	background: white url('loading.gif') right center no-repeat;
+}
+
+.ui-menu {
+	cursor: default;
+	position: absolute;
+}
+
+.ui-menu-item {
+	clear: left;
+	float: left;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+
+.ui-menu-item a {
+	clear: left;
+	float: left;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	line-height: 16px;
+}
+
+.ui-widget-content {
+	background-color: white;
+	border: 1px solid #ADA;
+}
+
+.ui-state-hover {
+	background-color: #FFC;
+	font-weight: bold;
+}
+
+.item-en {
+	color: #124;
+}
+
+.item-rw {
+	color: #142;
+}
+
