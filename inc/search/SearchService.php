@@ -42,7 +42,14 @@ class SearchService extends Service {
 		$langs = $query->getLang() ? array($query->getLang()) : Dictionary::getLanguageService()->getLexicalLanguages(TRUE);
 		
 		$sql = "SELECT SQL_CALC_FOUND_ROWS d.*, CONCAT(COALESCE(d.prefix, ''), d.lemma) as `entry`
-				FROM `".KUMVA_DB_PREFIX."definition` d ";
+				FROM `".KUMVA_DB_PREFIX."definition` d 
+				INNER JOIN `".KUMVA_DB_PREFIX."entry` e ON e.entry_id = d.entry_id ";
+		
+		// Return proposed definitions as well?
+		if ($incProposals)
+			$sql .= " AND (e.accepted_revision = d.revision OR e.proposed_revision = d.revision) ";
+		else
+			$sql .= " AND e.accepted_revision = d.revision ";
 		
 		/////////// Tag based criteria /////////////
 		
@@ -85,20 +92,10 @@ class SearchService extends Service {
 			$tagDefCriteria[] = 'dt.relationship_id = '.$relationship->getId();
 	
 		$sql .= "  WHERE (".implode(' OR ', $tagCriteria).") AND (".implode(' OR ', $tagDefCriteria).") ";
-		
-		// Only active tag relationships, i.e. not proposals
-		if (!$incProposals)
-			$sql .= 'AND dt.active = 1 ';
-		
 		$sql .= "  GROUP BY dt.definition_id ";			
 		$sql .= ") m ON m.definition_id = d.definition_id ";
 		
 		/////////// Definition criteria /////////////
-		
-		// Don't return proposal or voided definitions
-		$sql .= 'WHERE d.voided = 0 ';
-		if (!$incProposals)
-			$sql .= 'AND d.proposal = 0 ';
 			
 		// Filter by wordclass
 		if ($query->getWordClass())
