@@ -21,7 +21,7 @@
  */
  
 // Kumva version number
-define('KUMVA_VERSION', '2.1.1 BETA');
+define('KUMVA_VERSION', '2.2 DEV');
 define('KUMVA_VER_RESOURCES', '20110322'); // Used to version/cachebust resources
 
 ////////////////////////// Setup directory/URL constants /////////////////////////////
@@ -120,6 +120,7 @@ require_once KUMVA_DIR_INC.'/tag/TagService.php';
 
 require_once KUMVA_DIR_INC.'/definition/WordClass.php';
 require_once KUMVA_DIR_INC.'/definition/Example.php';
+require_once KUMVA_DIR_INC.'/definition/Entry.php';
 require_once KUMVA_DIR_INC.'/definition/Definition.php';
 require_once KUMVA_DIR_INC.'/definition/DefinitionService.php';
 

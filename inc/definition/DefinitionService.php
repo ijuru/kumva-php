@@ -25,6 +25,16 @@
  */
 class DefinitionService extends Service {
 	/**
+	 * Gets the entry with the given id
+	 * @param int id the definition id
+	 * @return Definition the definition
+	 */
+	public function getEntry($id) {
+		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'entry` WHERE entry_id = '.$id);
+		return ($row != NULL) ? Entry::fromRow($row) : NULL;
+	}
+	
+	/**
 	 * Gets the definition with the given id
 	 * @param int id the definition id
 	 * @return Definition the definition
@@ -124,14 +134,45 @@ class DefinitionService extends Service {
 	}
 	
 	/**
+	 * Saves the specified entry
+	 * @param Entry entry the entry
+	 * @return bool TRUE if successful, else FALSE
+	 */
+	public function saveEntry($entry) {
+		if ($entry->isNew()) {
+			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'entry` VALUES('
+				.'NULL,'
+				.aka_prepsqlval($entry->getAcceptedRevision()).','
+				.aka_prepsqlval($entry->getProposedRevision()).')';
+			
+			$res = $this->database->insert($sql);
+			if ($res === FALSE) 
+				return FALSE;
+			$entry->setId($res);
+		}
+		else {
+			$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'entry` SET '
+				.'accepted_revision = '.aka_prepsqlval($entry->getAcceptedRevision()).','
+				.'proposed_revision = '.aka_prepsqlval($entry->getProposedRevision()).' '
+				.'WHERE entry_id = '.$entry->getId();
+			
+			if ($this->database->query($sql) === FALSE)
+				return FALSE;
+		}
+		return TRUE;
+	}
+	
+	/**
 	 * Saves the specified definition
 	 * @param Definition definition the definition
-	 * @return bool true if definition was inserted
+	 * @return bool TRUE if successful, else FALSE
 	 */
 	public function saveDefinition($definition) {
 		if ($definition->isNew()) {
 			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'definition` VALUES('
 				.'NULL,'
+				.aka_prepsqlval($definition->getEntry()).','
+				.aka_prepsqlval($definition->getRevision()).','
 				.aka_prepsqlval($definition->getWordClass()).','
 				.aka_prepsqlval($definition->getPrefix()).','
 				.aka_prepsqlval($definition->getLemma()).','
@@ -150,6 +191,8 @@ class DefinitionService extends Service {
 		}
 		else {
 			$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'definition` SET '
+				.'entry_id = '.aka_prepsqlval($definition->getEntry()).','
+				.'revision = '.aka_prepsqlval($definition->getRevision()).','
 				.'wordclass = '.aka_prepsqlval($definition->getWordClass()).','
 				.'prefix = '.aka_prepsqlval($definition->getPrefix()).','
 				.'lemma = '.aka_prepsqlval($definition->getLemma()).','
@@ -306,6 +349,8 @@ class DefinitionService extends Service {
 		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'change`') === FALSE)
 			return FALSE;
 		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'definition`') === FALSE)
+			return FALSE;
+		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'entry`') === FALSE)
 			return FALSE;
 		
 		return TRUE;

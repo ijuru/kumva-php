@@ -37,6 +37,8 @@ class Flags extends Enum {
  * Word definition class
  */
 class Definition extends Entity {
+	private $entryId;
+	private $revision;
 	private $wordClass;
 	private $prefix;
 	private $lemma;
@@ -48,6 +50,7 @@ class Definition extends Entity {
 	private $proposal;
 	
 	// Lazy loaded properties
+	private $entry;
 	private $nounClasses;
 	private $examples;
 	private $tags = array();
@@ -55,6 +58,8 @@ class Definition extends Entity {
 	/**
 	 * Constructs a definition
 	 * @param int id the definition id
+	 * @param int entryId the entry id
+	 * @param int revision the revision number
 	 * @param string wordClass the word class, e,g, 'n'
 	 * @param string prefix the prefix, e.g 'umu'
 	 * @param string lemma the lemma, e.g. 'gabo'
@@ -66,8 +71,14 @@ class Definition extends Entity {
 	 * @param bool proposal TRUE if definition is a proposal
 	 * @param bool voided TRUE if definition is voided
 	 */
-	public function __construct($id = 0, $wordClass = '', $prefix = '', $lemma = '', $modifier = '', $meaning = '', $comment = '', $flags = 0, $verified = FALSE, $proposal = FALSE, $voided = FALSE) {
+	public function __construct(
+			$id = 0, $entryId = 0, $revision = 0,
+			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $meaning = '', $comment = '', $flags = 0, 
+			$verified = FALSE, $proposal = FALSE, $voided = FALSE) 
+	{
 		$this->id = (int)$id;
+		$this->entryId = (int)$entryId;
+		$this->revision = (int)$revision;
 		$this->wordClass = $wordClass;
 		$this->prefix = $prefix;
 		$this->lemma = $lemma;
@@ -86,7 +97,43 @@ class Definition extends Entity {
 	 * @return Definition the definition
 	 */
 	public static function fromRow(&$row) {
-		return new Definition($row['definition_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['meaning'], $row['comment'], $row['flags'], $row['verified'], $row['proposal'], $row['voided']);
+		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['meaning'], $row['comment'], $row['flags'], $row['verified'], $row['proposal'], $row['voided']);
+	}
+	
+	/**
+	 * Gets the entry using lazy loading
+	 * @return Entry the entry
+	 */
+	public function getEntry() {
+		if (!$this->entry && $this->entryId)
+			$this->entry = Dictionary::getDefinitionService()->getEntry($this->entryId);
+			
+		return $this->entry;
+	}
+	
+	/**
+	 * Sets the entry
+	 * @param entry Entry the entry
+	 */
+	public function setEntry($entry) {
+		$this->entryId = $entry ? $entry->getId() : 0;
+		$this->entry = $entry;
+	}
+	
+	/**
+	 * Gets the revision number
+	 * @return int the revision number
+	 */
+	public function getRevision() {
+		return $this->revision;
+	}
+	
+	/**
+	 * Sets the revision number
+	 * @param int revision the revision number
+	 */
+	public function setRevision($revision) {
+		$this->revision = $revision;
 	}
 	
 	/**

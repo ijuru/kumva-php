@@ -18,9 +18,19 @@ DROP TABLE IF EXISTS `{DBPREFIX}language`;
 DROP TABLE IF EXISTS `{DBPREFIX}example`;
 DROP TABLE IF EXISTS `{DBPREFIX}definition_nounclass`;
 DROP TABLE IF EXISTS `{DBPREFIX}definition`;
+DROP TABLE IF EXISTS `{DBPREFIX}entry`;
+
+CREATE TABLE `{DBPREFIX}entry` (
+  `entry_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `accepted_revision` INT UNSIGNED DEFAULT NULL,
+  `proposed_revision` INT UNSIGNED DEFAULT NULL,
+  PRIMARY KEY (`entry_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `{DBPREFIX}definition` (
   `definition_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `entry_id` INT UNSIGNED DEFAULT NULL,
+  `revision` INT UNSIGNED DEFAULT 0,
   `wordclass` VARCHAR(5) DEFAULT NULL,
   `prefix` VARCHAR(10) DEFAULT NULL,
   `lemma` VARCHAR(255) NOT NULL,
@@ -32,7 +42,9 @@ CREATE TABLE `{DBPREFIX}definition` (
   `proposal` TINYINT(1) NOT NULL,
   `voided` TINYINT(1) NOT NULL,
   PRIMARY KEY (`definition_id`),
-  KEY `IN_{DBPREFIX}definition_lemma` (`lemma`)
+  KEY `IN_{DBPREFIX}definition_lemma` (`lemma`),
+  KEY `FK_{DBPREFIX}revision_entry` (`entry_id`),
+  CONSTRAINT `FK_{DBPREFIX}revision_entry` FOREIGN KEY (`entry_id`) REFERENCES `{DBPREFIX}entry` (`entry_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `{DBPREFIX}definition_nounclass` (
