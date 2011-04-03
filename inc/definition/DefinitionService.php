@@ -65,10 +65,7 @@ class DefinitionService extends Service {
 	}
 	
 	/**
-	 * Gets all the definitions
-	 * @param bool incProposals TRUE to include proposal definitions
-	 * @param bool incVoided TRUE to include voided definitions
-	 * @return array the definitions
+	 * TO BE REMOVED
 	 */
 	public function getDefinitions($incProposals = FALSE, $incVoided = FALSE) {
 		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` WHERE 1=1 ';
@@ -78,6 +75,16 @@ class DefinitionService extends Service {
 			$sql .= 'AND voided = 0 ';
 	
 		return Definition::fromQuery($this->database->query($sql));
+	}
+	
+	/**
+	 * Gets the change for the given definition if there is one
+	 * @param Definition definition the definition
+	 * @return Change the change
+	 */
+	public function getDefinitionChange($definition) {
+		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'change` WHERE proposal_id = '.$definition->getId());
+		return ($row != NULL) ? Change::fromRow($row) : NULL;
 	}
 	
 	/**

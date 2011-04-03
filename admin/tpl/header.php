@@ -21,8 +21,8 @@ $menu = array(
 		array('searches.php', KU_STR_SEARCHES, 'searches', NULL),
 		array('reports.php', KU_STR_REPORTS, 'reports', NULL)
 	)),
-	array('definitions.php', KU_STR_DICTIONARY, 'dictionary', NULL, array(
-		array('definitions.php', KU_STR_DEFINITIONS, 'definition', NULL),
+	array('entries.php', KU_STR_DICTIONARY, 'dictionary', NULL, array(
+		array('entries.php', KU_STR_ENTRIES, 'entry', NULL),
 		array('changes.php', KU_STR_CHANGES, 'changes', NULL),
 		array('tags.php', KU_STR_TAGS, 'tags', Role::ADMINISTRATOR),
 		array('export.php', KU_STR_EXPORT, 'export', NULL),

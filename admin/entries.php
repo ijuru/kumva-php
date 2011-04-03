@@ -17,7 +17,7 @@
  *
  * Copyright Rowan Seymour 2010
  *
- * Purpose: Search statistics page
+ * Purpose: Entry search page
  */
 
 include_once '../inc/kumva.php';
@@ -36,11 +36,11 @@ if ($q != '') {
 include_once 'tpl/header.php';
 
 ?>
-	<h3><?php echo KU_STR_DEFINITIONS; ?></h3>
+	<h3><?php echo KU_STR_ENTRIES; ?></h3>
 	
 	<div class="listcontrols">
 		<div style="float: left">
-			<?php Widgets::searchForm('definitions.php', 'q', 'start', TRUE); ?>
+			<?php Widgets::searchForm('entries.php', 'q', 'start', TRUE); ?>
 			&nbsp;&nbsp;
 			<a href="https://github.com/rowanseymour/kumva/wiki/Query-syntax">Syntax guide...</a>
 		</div>
@@ -67,7 +67,7 @@ include_once 'tpl/header.php';
 		<?php 
 		if ($search->hasResults()) {
 			foreach($search->getResults() as $definition) { 
-				$itemUrl = 'entry.php?id='.$definition->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
+				$itemUrl = 'entry.php?id='.$definition->getEntry()->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
 				$editUrl = 'definition.php?id='.$definition->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
 				?>
 				<tr class="rowlink" onclick="aka_goto('<?php echo $itemUrl; ?>')">
@@ -115,7 +115,7 @@ include_once 'tpl/header.php';
 <?php 
 } else {
 ?>
-	<div class="description"><?php echo KU_MSG_DEFINITIONSEARCH; ?></div>
+	<div class="description"><?php echo KU_MSG_ENTRYSEARCH; ?></div>
 <?php
 }
 

@@ -79,6 +79,14 @@ class Entry extends Entity {
 	public function setProposedRevision($proposedRevision) {
 		$this->proposedRevision = $proposedRevision;
 	}
+	
+	/**
+	 * Gets whether this entry has been deleted
+	 * @return bool TRUE if entry has been deleted
+	 */
+	public function isDeleted() {
+		return !($this->acceptedRevision || $this->proposedRevision);
+	}
 }
 
 ?>
