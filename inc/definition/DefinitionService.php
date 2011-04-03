@@ -35,6 +35,26 @@ class DefinitionService extends Service {
 	}
 	
 	/**
+	 * Gets all the entries
+	 * @return array the entries
+	 */
+	public function getEntries() {
+		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'entry`';
+		return Entry::fromQuery($this->database->query($sql));
+	}
+	
+	/**
+	 * Gets all the definitions for the given entry
+	 * @return array the definitions
+	 */
+	public function getEntryDefinitions($entry) {
+		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` 
+				WHERE entry_id = '.$entry->getId(). '
+				ORDER BY revision DESC';
+		return Definition::fromQuery($this->database->query($sql));
+	}
+	
+	/**
 	 * Gets the definition with the given id
 	 * @param int id the definition id
 	 * @return Definition the definition
