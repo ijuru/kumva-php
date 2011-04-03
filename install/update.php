@@ -22,15 +22,16 @@ foreach ($definitions as $definition) {
 	
 	$rev = 1;
 	
-	// Update past revisions of this definition
+	// Update resolved revisions of this definition
 	$pastRevisions = array();
 	$changes = array_reverse(Dictionary::getChangeService()->getChangesForDefinition($definition));
 	foreach ($changes as $change) {
-		if ($change->getProposal() && $change->getStatus() != Status::PENDING) {
+		if ($change->getProposal() && !$change->getProposal()->equals($definition) && $change->getStatus() != Status::PENDING) {
 			$revision = $change->getProposal();
 			$revision->setEntry($entry);
 			$revision->setRevision($rev);
-			Dictionary::getDefinitionService()->saveDefinition($revision);
+			if (!Dictionary::getDefinitionService()->saveDefinition($revision))
+				echo "Unable to update definition #".$revision->getId();
 			$rev++;				
 		}
 	}
@@ -38,11 +39,12 @@ foreach ($definitions as $definition) {
 	// Head definition gets last revision number
 	$definition->setEntry($entry);
 	$definition->setRevision($rev);
-	Dictionary::getDefinitionService()->saveDefinition($definition);
+	if (!Dictionary::getDefinitionService()->saveDefinition($definition))
+		echo "Unable to update definition #".$definition->getId();
 	$entry->setAcceptedRevision($rev);
 	$rev++;
 	
-	// Update future revisions
+	// Update pending revisions
 	$changes = Dictionary::getChangeService()->getChangesForDefinition($definition, Status::PENDING);
 	if (count($changes) == 1) {
 		$change = $changes[0];
@@ -50,8 +52,8 @@ foreach ($definitions as $definition) {
 			$revision = $change->getProposal();
 			$revision->setEntry($entry);
 			$revision->setRevision($rev);
-			Dictionary::getDefinitionService()->saveDefinition($revision);
-			
+			if (!Dictionary::getDefinitionService()->saveDefinition($revision))
+				echo "Unable to update definition #".$revision->getId();
 			$entry->setProposedRevision($rev);	
 			
 			$rev++;				

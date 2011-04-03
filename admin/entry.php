@@ -84,8 +84,16 @@ function deleteDefinition(id) {
 			
 			<?php echo KU_STR_REVISION; ?>
 			<select name="rev">
-				<?php foreach ($definitions as $def) { ?>
-					<option <?php echo $definition->getRevision() == $def->getRevision() ? 'selected="selected"' : ''; ?>><?php echo $def->getRevision(); ?></option>
+				<?php foreach ($definitions as $def) { 
+					$isCurrent = $definition->getRevision() == $def->getRevision();
+					if ($def->getRevision() == $entry->getAcceptedRevision())
+						$label = $def->getRevision().' ('.KU_STR_ACCEPTED.')';
+					elseif ($def->getRevision() == $entry->getProposedRevision())
+						$label = $def->getRevision().' ('.KU_STR_PROPOSED.')';
+					else
+						$label = $def->getRevision()
+					?>
+					<option value="<?php echo $def->getRevision(); ?>" <?php echo $isCurrent ? 'selected="selected"' : ''; ?>><?php echo $label; ?></option>
 				<?php } ?>
 			</select>
 			<input type="hidden" name="ref" value="<?php echo Request::getGetParam('ref'); ?>" />
