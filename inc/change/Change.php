@@ -48,6 +48,7 @@ class Status extends Enum {
  * Change being made to the dictionary
  */
 class Change extends Entity {
+	private $entryId;
 	private $definitionId;
 	private $proposalId;
 	private $action;
@@ -58,6 +59,7 @@ class Change extends Entity {
 	private $resolved;
 	
 	// Lazy loaded properties
+	private $entry;
 	private $definition;
 	private $proposal;
 	private $submitter;
@@ -67,7 +69,8 @@ class Change extends Entity {
 	
 	/**
 	 * Constructs a new change
-	 * @param int the id
+	 * @param int id the id
+	 * @param int entryId the entry id
 	 * @param int definitionId the definition id
 	 * @param int proposalId the proposal id 
 	 * @param int action the action type
@@ -77,8 +80,9 @@ class Change extends Entity {
 	 * @param int resolverId the resolver user id
 	 * @param int resolved the timestamp of acceptance/rejection
 	 */
-	public function __construct($id, $definitionId, $proposalId, $action, $submitterId, $submitted, $status, $resolverId = NULL, $resolved = NULL) {
+	public function __construct($id, $entryId, $definitionId, $proposalId, $action, $submitterId, $submitted, $status, $resolverId = NULL, $resolved = NULL) {
 		$this->id = (int)$id;
+		$this->entryId = (int)$entryId;
 		$this->definitionId = (int)$definitionId;
 		$this->proposalId = (int)$proposalId;
 		$this->action = (int)$action;
@@ -95,7 +99,7 @@ class Change extends Entity {
 	 * @return Change the change
 	 */
 	public static function fromRow(&$row) {
-		return new Change($row['change_id'], $row['original_id'], $row['proposal_id'], $row['action'], $row['submitter_id'], 
+		return new Change($row['change_id'], $row['entry_id'], $row['original_id'], $row['proposal_id'], $row['action'], $row['submitter_id'], 
 			aka_timefromsql($row['submitted']), $row['status'], $row['resolver_id'], aka_timefromsql($row['resolved']));
 	}
 	
@@ -156,6 +160,26 @@ class Change extends Entity {
 	public function setDefinition($definition) {
 		$this->definitionId = $definition ? $definition->getId() : NULL;
 		$this->definition = $definition;
+	}
+	
+	/**
+	 * Gets the entry using lazy loading
+	 * @return Entry the entry
+	 */
+	public function getEntry() {
+		if (!$this->entry && $this->entryId)
+			$this->entry = Dictionary::getDefinitionService()->getEntry($this->entryId);
+			
+		return $this->entry;
+	}
+	
+	/**
+	 * Sets the entry
+	 * @param entry Entry the entry
+	 */
+	public function setEntry($entry) {
+		$this->entryId = $entry ? $entry->getId() : 0;
+		$this->entry = $entry;
 	}
 	
 	/**

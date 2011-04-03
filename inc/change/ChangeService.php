@@ -221,6 +221,7 @@ class ChangeService extends Service {
 		if ($change->isNew()) {
 			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'change` VALUES('
 				.'NULL,'
+				.aka_prepsqlval($change->getEntry()).','
 				.aka_prepsqlval($change->getDefinition()).','
 				.aka_prepsqlval($change->getProposal()).','
 				.aka_prepsqlval($change->getAction()).','
@@ -237,6 +238,7 @@ class ChangeService extends Service {
 		}
 		else {
 			$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'change` SET '
+				.'entry_id = '.aka_prepsqlval($change->getEntry()).','
 				.'original_id = '.aka_prepsqlval($change->getDefinition()).','
 				.'proposal_id = '.aka_prepsqlval($change->getProposal()).','
 				.'action = '.aka_prepsqlval($change->getAction()).','

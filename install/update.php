@@ -2,8 +2,8 @@
  
 include_once '../inc/kumva.php';
 
-if (mysql_query('UPDATE `rw_definition` SET entry_id = NULL, revision = 0') !== FALSE &&
-	mysql_query('TRUNCATE `rw_entry`') !== FALSE)
+if (mysql_query('UPDATE `rw_definition` SET entry_id = NULL, revision = 0') !== FALSE 
+	&& mysql_query('TRUNCATE `rw_entry`') !== FALSE)
 	echo "Cleared existing entry/revision information<br/>";
 else
 	echo "Unable to clear existing entry/revision information<br/>";
@@ -12,6 +12,7 @@ $count_accepted = 0;
 $count_pending_create = 0;
 $count_rejected = 0;
 $count_deleted = 0;
+$count_changes = 0;
 
 // Get all definitions 
 $definitions = Dictionary::getDefinitionService()->getDefinitions(FALSE, FALSE);
@@ -96,9 +97,21 @@ foreach ($definitions as $definition) {
 	}
 }
 
+// Update all changes
+$changes = Dictionary::getChangeService()->getChanges();
+foreach ($changes as $change) {
+	$definition = $change->getDefinition() ? $change->getDefinition() : $change->getProposal();
+	$entry = $definition->getEntry();
+	$change->setEntry($entry);
+	if (!Dictionary::getChangeService()->saveChange($change))
+		echo "X";
+	$count_changes++;
+}
+
 echo "Updated ".$count_accepted." accepted definitions<br/>";
 echo "Updated ".$count_pending_create." pending create definitions<br/>";
 echo "Updated ".$count_rejected." rejected create/delete definitions<br/>";
 echo "Updated ".$count_deleted." deleted definitions<br/>";
+echo "Updated ".$count_changes." changes<br/>";
 
 ?>
