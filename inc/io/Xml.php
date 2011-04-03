@@ -51,12 +51,12 @@ class Xml {
 		$flags = Flags::makeCSVString(Flags::fromBits($definition->getFlags()));
 		
 		echo '<definition id="'.$definition->getId().'" ';
+		echo 'revision="'.aka_prepxmlval($definition->getRevision()).'" ';
 		echo 'wordclass="'.$definition->getWordClass().'" ';
 		echo 'nounclasses="'.implode(',', $definition->getNounClasses()).'" ';
 		echo 'flags="'.$flags.'" ';
-		echo 'verified="'.aka_prepxmlval($definition->isVerified()).'" ';
-		echo 'proposal="'.aka_prepxmlval($definition->isProposal()).'" ';
-		echo 'voided="'.aka_prepxmlval($definition->isVoided()).'">';
+		echo 'verified="'.aka_prepxmlval($definition->isVerified()).'">';
+
 		echo '<prefix>'.aka_prepxmlval($definition->getPrefix()).'</prefix>';
 		echo '<lemma>'.aka_prepxmlval($definition->getLemma()).'</lemma>';
 		echo '<modifier>'.aka_prepxmlval($definition->getModifier()).'</modifier>';
