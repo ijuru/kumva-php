@@ -47,7 +47,7 @@ class Definition extends Entity {
 	private $comment;
 	private $flags;
 	private $verified;
-	private $proposal;
+	private $proposal;		#TBR
 	
 	// Lazy loaded properties
 	private $entry;
@@ -68,13 +68,13 @@ class Definition extends Entity {
 	 * @param string comment the comment
 	 * @param int flags the flags
 	 * @param bool verified TRUE if definition has been verified
-	 * @param bool proposal TRUE if definition is a proposal
-	 * @param bool voided TRUE if definition is voided
 	 */
 	public function __construct(
 			$id = 0, $entryId = 0, $revision = 0,
 			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $meaning = '', $comment = '', $flags = 0, 
-			$verified = FALSE, $proposal = FALSE, $voided = FALSE) 
+			$verified = FALSE, 
+			$proposal = FALSE, $voided = FALSE   #TBR
+			) 
 	{
 		$this->id = (int)$id;
 		$this->entryId = (int)$entryId;
@@ -87,8 +87,8 @@ class Definition extends Entity {
 		$this->comment = $comment;
 		$this->flags = (int)$flags;
 		$this->verified = (bool)$verified;
-		$this->proposal = (bool)$proposal;
-		$this->voided = (bool)$voided;
+		$this->proposal = (bool)$proposal;  #TBR
+		$this->voided = (bool)$voided;		#TBR
 	}
 	
 	/**
@@ -310,16 +310,14 @@ class Definition extends Entity {
 	}
 	
 	/**
-	 * Gets if this is a proposal
-	 * @return bool TRUE if is proposal, else FALSE
+	 * #TBR
 	 */
 	public function isProposal() {
 		return $this->proposal;
 	}
 	
 	/**
-	 * Sets if this is a proposal
-	 * @param bool proposal TRUE if is proposal, else FALSE
+	 * #TBR
 	 */
 	public function setProposal($proposal) {
 		$this->proposal = (bool)$proposal;
