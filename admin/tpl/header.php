@@ -112,10 +112,10 @@ $curUser = Session::getCurrent()->getUser();
                             kumva_menulink($subItem[0], $subItem[1], $subItem[2], $active);
                         }
                     }
-                    if ($currentSubItem && $currentSubItem[0] != 'definitions.php') {
+                    if ($currentSubItem && $currentSubItem[0] != 'entries.php') {
                     ?>
                     <div style="float: right; margin: 6px">
-                        <?php Widgets::searchForm('definitions.php', 'q', 'start', TRUE); ?>
+                        <?php Widgets::searchForm('entries.php', 'q', 'start', TRUE); ?>
                     </div>
                     <?php
                     }

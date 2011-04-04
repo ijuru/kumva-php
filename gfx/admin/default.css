@@ -204,6 +204,7 @@ span.error {
 	border-bottom: solid 1px #CC8;
 	line-height: 40px;
 	padding-left: 10px;
+	min-height: 16px;
 }
 
 .button {

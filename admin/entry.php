@@ -192,13 +192,18 @@ elseif (!$definition->isVerified())
 		<tr class="rowlink" onclick="aka_goto('<?php echo $itemUrl; ?>')">
 			<td>&nbsp;</td>
 			<td><?php Templates::icon('change'); ?></td>
-			<td style="text-align:center"><?php echo $def->getRevision(); ?></td>
-			<td><?php echo $change ? $change->getId() : ''; ?></td>
-			<td><?php echo $change ? Templates::dateTime($change->getSubmitted()) : ''; ?></td>
-			<td><?php echo $change ? Templates::userLink($change->getSubmitter()) : ''; ?></td>
+			<td class="primarycol" style="text-align:center"><?php echo $def->getRevision(); ?></td>
+			<?php if ($change) { ?>
+				<td style="text-align:center"><a href="change.php?id=<?php echo $change->getId(); ?>"><?php echo $change->getId(); ?></a></td>
+				<td style="text-align:center"><?php echo Templates::dateTime($change->getSubmitted()); ?></td>
+				<td style="text-align:center"><?php echo Templates::userLink($change->getSubmitter()); ?></td>
+			<?php } else { ?>
+				<td style="text-align:center" colspan="3"><i>No change information</i></td>
+			<?php } ?>
 			<td>&nbsp;</td>
 		</tr>
 	<?php } ?>
 </table>
+<div id="pager"></div>
 	
 <?php include_once 'tpl/footer.php'; ?>

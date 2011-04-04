@@ -75,9 +75,9 @@ include_once 'tpl/header.php';
 					<td>
 					<?php 
 					if ($definition->isProposal())
-						Templates::icon('definition_proposal', KU_STR_PROPOSAL);
+						Templates::icon('proposal', KU_STR_PROPOSAL);
 					else
-						Templates::icon('definition', KU_STR_DEFINITION); 
+						Templates::icon('entry', KU_STR_ENTRY); 
 					?>
 					</td>
 					<td class="prefix" style="padding-right: 0; text-align: right"><?php echo $definition->getPrefix(); ?></td>
