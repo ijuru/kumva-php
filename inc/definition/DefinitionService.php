@@ -56,6 +56,30 @@ class DefinitionService extends Service {
 	}
 	
 	/**
+	 * #TBR
+	 */
+	public function clear() {
+		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'definition_nounclass`') === FALSE)
+			return FALSE;
+		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'definition_tag`') === FALSE)
+			return FALSE;
+		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'tag`') === FALSE)
+			return FALSE;
+		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'example`') === FALSE)
+			return FALSE;
+		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'comment`') === FALSE)
+			return FALSE;
+		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'change`') === FALSE)
+			return FALSE;
+		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'definition`') === FALSE)
+			return FALSE;
+		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'entry`') === FALSE)
+			return FALSE;
+		
+		return TRUE;
+	}
+	
+	/**
 	 * Gets the entry with the given id
 	 * @param int id the definition id
 	 * @return Definition the definition
@@ -134,15 +158,16 @@ class DefinitionService extends Service {
 		}
 		else
 			mt_srand();	
-			
-		$where = 'WHERE proposal = 0 AND verified = 1 AND flags = 0 AND voided = 0';
 		
-		// Geta total number of suitable definitions
-		$total = $this->database->scalar("SELECT COUNT(*) FROM `".KUMVA_DB_PREFIX."definition` $where");
+		$join = 'INNER JOIN `'.KUMVA_DB_PREFIX.'entry` e ON e.accepted_id = d.definition_id';	
+		$where = 'WHERE d.verified = 1 AND d.flags = 0';
+		
+		// Geta total number of suitable entries
+		$total = $this->database->scalar("SELECT COUNT(*) FROM `".KUMVA_DB_PREFIX."definition` d $join $where");
 		if ($total > 0) {
 			// Select a row with random offset
 			$offset = mt_rand(0, $total - 1);
-			$row = $this->database->row("SELECT * FROM `".KUMVA_DB_PREFIX."definition` $where LIMIT $offset, 1");
+			$row = $this->database->row("SELECT * FROM `".KUMVA_DB_PREFIX."definition` d $join $where LIMIT $offset, 1");
 			return ($row != NULL) ? Definition::fromRow($row) : NULL;
 		}
 		return NULL;
@@ -367,40 +392,12 @@ class DefinitionService extends Service {
 	}
 	
 	/**
-	 * Clears the dictionary, i.e. removes all definitions, examples and tags
-	 * @return bool true if successful, else false
-	 */
-	public function clear() {
-		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'definition_nounclass`') === FALSE)
-			return FALSE;
-		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'definition_tag`') === FALSE)
-			return FALSE;
-		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'tag`') === FALSE)
-			return FALSE;
-		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'example`') === FALSE)
-			return FALSE;
-		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'comment`') === FALSE)
-			return FALSE;
-		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'change`') === FALSE)
-			return FALSE;
-		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'definition`') === FALSE)
-			return FALSE;
-		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'entry`') === FALSE)
-			return FALSE;
-		
-		return TRUE;
-	}
-	
-	/**
 	 * Gets statistics about the contents of this dictionary
 	 * @return array the content statistics
 	 */
 	public function getContentStatistics() {
 		$stats = array();
-		$stats['definitions'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'definition` WHERE proposal = 0 AND voided = 0');
-		$stats['definitions_unverified'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'definition` WHERE proposal = 0 AND voided = 0 AND verified = 0');
-		$stats['examples'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'example`');
-		
+		$stats['entries'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'entry` WHERE accepted_id IS NOT NULL');
 		return $stats;
 	}
 	
@@ -409,7 +406,9 @@ class DefinitionService extends Service {
 	 * @return array the word class counts
 	 */
 	public function getWordClassCounts() {
-		$sql = 'SELECT `wordclass`, COUNT(*) AS `count` FROM `'.KUMVA_DB_PREFIX.'definition` WHERE proposal = 0 AND voided = 0 GROUP BY `wordclass` ORDER BY `wordclass` ASC';
+		$sql = 'SELECT `wordclass`, COUNT(*) AS `count` FROM `'.KUMVA_DB_PREFIX.'definition` d
+				INNER JOIN `'.KUMVA_DB_PREFIX.'entry` e ON e.accepted_id = d.definition_id 
+				GROUP BY `wordclass` ORDER BY `wordclass` ASC';
 		return $this->database->rows($sql, 'wordclass');
 	}
 }

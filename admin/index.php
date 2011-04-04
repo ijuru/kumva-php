@@ -47,9 +47,7 @@ include_once 'tpl/header.php';
 			<div class="description">
 				Dictionary contains:
 				<ul>
-					<li><strong><?php echo $contentStats['definitions']; ?></strong> definitions</li>
-					<li><strong><?php echo $contentStats['examples']; ?></strong> usage examples</li>
-					<li><strong><a href="definitions.php?q=verified:0"><?php echo $contentStats['definitions_unverified']; ?></a></strong> <em>unverified</em> definitions</li>
+					<li><strong><?php echo $contentStats['entries']; ?></strong> entries</li>
 				</ul>
 			</div>
 		</td>

@@ -28,8 +28,7 @@ $contentStats = Dictionary::getDefinitionService()->getContentStatistics();
 			<h2><?php echo KU_STR_CONTENT; ?></h2>
 			
 			<ul>
-				<li><?php echo KU_STR_TOTALDEFINITIONS.': '.$contentStats['definitions'].' ('.Language::getNameFromCode(KUMVA_LANG_DEFS).')'; ?></li>
-				<li><?php echo KU_STR_USAGEEXAMPLES.': '.$contentStats['examples']; ?></li>
+				<li><?php echo KU_STR_TOTALENTRIES.': '.$contentStats['entries'].' ('.Language::getNameFromCode(KUMVA_LANG_DEFS).')'; ?></li>
 			</ul>
 			
 			<h3>Searchable tags</h3>

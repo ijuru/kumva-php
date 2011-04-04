@@ -192,7 +192,7 @@ ku_sitetrans('KU_STR_TIMETAKEN', 'Time taken');
 ku_sitetrans('KU_STR_TIMEZONE', 'Timezone');
 ku_sitetrans('KU_STR_TITLE', 'Title');
 ku_sitetrans('KU_STR_TOTAL', 'Igiteranyo');
-ku_sitetrans('KU_STR_TOTALDEFINITIONS', 'Amagambo y\'inkoranya');
+ku_sitetrans('KU_STR_TOTALENTRIES', 'Total entries');
 ku_sitetrans('KU_STR_UNWATCH', 'Unwatch');
 ku_sitetrans('KU_STR_USAGEEXAMPLES', 'Ingero zo gukoresha');
 ku_sitetrans('KU_STR_USER', 'Umukoresha');
