@@ -17,7 +17,7 @@
  *
  * Copyright Rowan Seymour 2010
  *
- * Purpose: Definition edit page
+ * Purpose: Entry edit page
  */
 
 include_once '../inc/kumva.php';
@@ -58,10 +58,13 @@ class DefinitionForm extends Form {
 	 * @see Form::createEntity()
 	 */
 	protected function createEntity() {
-		$defId = (int)Request::getGetParam('id', 0);
-		$definition = Dictionary::getDefinitionService()->getDefinition($defId);
+		$entryId = (int)Request::getGetParam('id', 0);
+		if ($entryId) {
+			$entry = Dictionary::getDefinitionService()->getEntry($entryId);
+			return $entry->getProposed() ? $entry->getProposed() : $entry->getAccepted();
+		}
 		
-		return ($definition != NULL) ? $definition : new Definition();
+		return new Definition();
 	}
 	
 	/**
@@ -149,6 +152,8 @@ class DefinitionForm extends Form {
 			return TRUE;
 		}
 		elseif ($saveType == 'update') {
+			
+		
 			return Dictionary::getDefinitionService()->saveDefinition($definition);
 		}
 		
@@ -156,17 +161,14 @@ class DefinitionForm extends Form {
 	}
 }
  
-$returnUrl = Request::getGetParam('ref', 'definitions.php');
+$returnUrl = Request::getGetParam('ref', 'entries.php');
 $form = new DefinitionForm($returnUrl, new DefinitionValidator(), new FormRenderer());
 $definition = $form->getEntity();
-
-if ($definition->isProposal())
-	$change = Dictionary::getChangeService()->getChangeForProposal($definition);
-else {
-	$changes = Dictionary::getChangeService()->getChangesForDefinition($definition);
-	$changePending = count($changes) > 0 ? ($changes[0]->getStatus() == Status::PENDING) : FALSE;
-}
-$permissions = $definition->getPermissions();
+$change = $definition->getChange();
+$entry = $definition->getEntry();
+$curUser = Session::getCurrent()->getUser();
+$canUpdate = $curUser->hasRole(Role::EDITOR) || ($change && $curUser->equals($change->getSubmitter()));
+$canPropose = !$entry || !$entry->getProposed();
 
 include_once 'tpl/header.php';
 
@@ -201,15 +203,13 @@ var exampleId = 1000000;
 /* ]]> */
 </script>
 
-<h3><?php echo $form->getEntity()->isNew() ? KU_STR_ADDDEFINITION : KU_STR_EDITDEFINITION; ?></h3>
+<h3><?php echo $form->getEntity()->isNew() ? KU_STR_ADDENTRY : KU_STR_EDITENTRY; ?></h3>
 
 <?php
-if ($definition->isVoided())
-	echo '<div class="info">'.KU_MSG_DEFINITIONVOIDED.'</div>'; 
-else if ($definition->isProposal())
+if ($entry && $entry->isDeleted())
+	echo '<div class="info">'.KU_MSG_ENTRYDELETED.'</div>'; 
+else if ($change)
 	printf('<div class="info">'.KU_MSG_DEFINITIONPROPOSAL.'</div>', 'change.php?id='.$change->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT)); 
-elseif ($changePending)
-	printf('<div class="info">'.KU_MSG_DEFINITIONCHANGEPENDING.'</div>', 'change.php?id='.$changes[0]->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT));
 	
 if (count($form->getErrors()->get()) > 0)
 	echo '<div class="error">'.implode('<br />', $form->getErrors()->get()).'</div>';
@@ -313,9 +313,9 @@ $form->start('definitionform');
 	<tr>
 		<td colspan="2"><hr />
 			<?php 
-			if ($permissions['update'])
+			if ($canUpdate)
 				Templates::button('save', "$('#saveType').val('update'); $('#_action').val('save'); aka_submit(this)", KU_STR_SAVE);
-			if ($permissions['propose'])
+			if ($canPropose)
 				Templates::button('propose', "$('#saveType').val('propose'); $('#_action').val('save'); aka_submit(this)", KU_STR_PROPOSE);
 			
 			$form->cancelButton(); 
@@ -325,14 +325,6 @@ $form->start('definitionform');
 </table>
 <?php 
 $form->end(); 
-
-if (!$definition->isNew() && isset($changes)) {
-	?>
-	<div class="panel"><h3><?php echo KU_STR_CHANGEHISTORY; ?></h3></div>
-	<?php Templates::changesTable($changes, TRUE, FALSE, TRUE); ?>
-	<div class="panel"></div>
-	<?php 
-}
 
 include_once 'tpl/footer.php'; 
 ?>

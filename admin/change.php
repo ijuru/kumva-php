@@ -197,7 +197,7 @@ function onActionSubmit() {
 			
 			<?php Templates::userLink($comment->getUser()); ?>
 		</td>
-		<td style="border-bottom: solid 1px #EEE"><?php echo Templates::parseReferences(htmlspecialchars($comment->getText()), 'definitions.php'); ?></td>
+		<td style="border-bottom: solid 1px #EEE"><?php echo Templates::parseReferences(htmlspecialchars($comment->getText()), 'entries.php'); ?></td>
 		<td style="border-bottom: solid 1px #EEE" align="right">
 			<?php 
 			if (Session::getCurrent()->hasRole(Role::ADMINISTRATOR)) 

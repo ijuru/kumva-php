@@ -389,9 +389,7 @@ class Definition extends Entity {
 	}
 	
 	/**
-	 * Gets the permissions for a user
-	 * @param User user the user to check (NULL for the current user)
-	 * @return array the permissions
+	 * #TBR
 	 */
 	public function getPermissions($user = NULL) {
 		$user = $user ? $user : Session::getCurrent()->getUser();

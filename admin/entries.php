@@ -45,7 +45,7 @@ include_once 'tpl/header.php';
 			<a href="https://github.com/rowanseymour/kumva/wiki/Query-syntax">Syntax guide...</a>
 		</div>
 		<div style="float: right">
-			<?php Templates::buttonLink('add', 'definition.php', KU_STR_ADD); ?>
+			<?php Templates::buttonLink('add', 'entryedit.php', KU_STR_ADD); ?>
 		</div>
 	</div> 
 

@@ -97,7 +97,7 @@ function deleteEntry(id) {
 			<input type="hidden" name="targetId" value="<?php echo $entry->getId(); ?>" />
 			<?php 
 			if ($canEdit)
-				Templates::buttonLink('edit', 'definition.php?id='.$definitions[0]->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT), KU_STR_EDIT);
+				Templates::buttonLink('edit', 'entryedit.php?id='.$entry->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT), KU_STR_EDIT);
 			if ($canDelete)
 				Templates::button('delete', 'deleteEntry('.$entry->getId().')', KU_STR_DELETE);
 			?>
@@ -106,12 +106,12 @@ function deleteEntry(id) {
 </div>
 <?php 
 if ($proposedChange)
-	printf('<div class="info">'.KU_MSG_DEFINITIONCHANGEPENDING.'</div>', 
+	printf('<div class="info">'.KU_MSG_ENTRYCHANGEPENDING.'</div>', 
 		'change.php?id='.$proposedChange->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT));
 elseif ($entry->isDeleted())
-	echo '<div class="info">'.KU_MSG_DEFINITIONVOIDED.'</div>';
+	echo '<div class="info">'.KU_MSG_ENTRYDELETED.'</div>';
 elseif (!$definition->isVerified())
-	echo '<div class="info">'.KU_MSG_DEFINITIONNOTVERIFIED.'</div>'; 
+	echo '<div class="info">'.KU_MSG_ENTRYNOTVERIFIED.'</div>'; 
 
 ?>	
 <table class="form">
