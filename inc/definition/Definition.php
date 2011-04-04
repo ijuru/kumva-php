@@ -51,6 +51,7 @@ class Definition extends Entity {
 	
 	// Lazy loaded properties
 	private $entry;
+	private $change;
 	private $nounClasses;
 	private $examples;
 	private $tags = array();
@@ -374,6 +375,17 @@ class Definition extends Entity {
 	 */
 	public function setExamples($examples) {
 		$this->examples = $examples;
+	}
+	
+	/**
+	 * Gets the change using lazy loading
+	 * @return Change the change (if there is one)
+	 */
+	public function getChange() {
+		if ($this->change === NULL)
+			$this->change = Dictionary::getChangeService()->getChangeForProposal($this);
+		
+		return $this->change;
 	}
 	
 	/**

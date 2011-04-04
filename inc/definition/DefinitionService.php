@@ -25,6 +25,37 @@
  */
 class DefinitionService extends Service {
 	/**
+	 * #TBR
+	 */
+	public function getDefinitions($incProposals = FALSE, $incVoided = FALSE) {
+		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` WHERE 1=1 ';
+		if (!$incProposals)
+			$sql .= 'AND proposal = 0 ';
+		if (!$incVoided)
+			$sql .= 'AND voided = 0 ';
+	
+		return Definition::fromQuery($this->database->query($sql));
+	}
+	
+	/**
+	 * #TBR
+	 */
+	public function deleteDefinition($definition) {
+		if ($this->database->query('DELETE FROM `'.KUMVA_DB_PREFIX.'definition` WHERE `definition_id` = '.$definition->getId()) === FALSE)
+			return FALSE;
+		
+		return Dictionary::getTagService()->deleteOrphanTags();
+	}
+	
+	/**
+	 * #TBR
+	 */
+	public function voidDefinition($definition) {
+		$definition->setVoided(TRUE);
+		return $this->saveDefinition($definition);
+	}
+	
+	/**
 	 * Gets the entry with the given id
 	 * @param int id the definition id
 	 * @return Definition the definition
@@ -65,16 +96,15 @@ class DefinitionService extends Service {
 	}
 	
 	/**
-	 * TO BE REMOVED
+	 * Gets the definition with the given entry and revision
+	 * @param int entryId the entry id
+	 * @param int revision the revision number
+	 * @return Definition the definition
 	 */
-	public function getDefinitions($incProposals = FALSE, $incVoided = FALSE) {
-		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` WHERE 1=1 ';
-		if (!$incProposals)
-			$sql .= 'AND proposal = 0 ';
-		if (!$incVoided)
-			$sql .= 'AND voided = 0 ';
-	
-		return Definition::fromQuery($this->database->query($sql));
+	public function getDefinitionByRevision($entryId, $revision) {
+		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` 
+									 WHERE entry_id = '.(int)$entryId.' AND revision = '.(int)$revision);
+		return ($row != NULL) ? Definition::fromRow($row) : NULL;
 	}
 	
 	/**
@@ -334,28 +364,6 @@ class DefinitionService extends Service {
 		$definitions = $this->getDefinitions(TRUE, TRUE);
 		foreach ($definitions as $definition)
 			$this->saveDefinitionTags($definition);
-	}
-	
-	/**
-	 * Voids the specified definition
-	 * @param Definition definition the definition
-	 * @return bool TRUE if definition was voided
-	 */
-	public function voidDefinition($definition) {
-		$definition->setVoided(TRUE);
-		return $this->saveDefinition($definition);
-	}
-	
-	/**
-	 * Deletes the specified definition
-	 * @param Definition definition the definition
-	 * @return bool TRUE if definition was deleted
-	 */
-	public function deleteDefinition($definition) {
-		if ($this->database->query('DELETE FROM `'.KUMVA_DB_PREFIX.'definition` WHERE `definition_id` = '.$definition->getId()) === FALSE)
-			return FALSE;
-		
-		return Dictionary::getTagService()->deleteOrphanTags();
 	}
 	
 	/**

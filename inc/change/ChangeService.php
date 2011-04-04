@@ -60,10 +60,7 @@ class ChangeService extends Service {
 	}
 	
 	/**
-	 * Gets all changes for the given definition
-	 * @param Definition definition the definition
-	 * @param int status the status (NULL means any status)
-	 * @return array the changes
+	 * #TBR
 	 */
 	public function getChangesForDefinition($definition, $status = NULL) {
 		return $definition->isProposal() ? array() : $this->getChanges($definition, NULL, $status, NULL, FALSE, NULL);

@@ -222,7 +222,7 @@ ku_sitetrans('KU_STR_YES', 'Yego');
 // Messages
 ku_sitetrans('KU_MSG_COMMENTINSTRUCTIONS', 'Use {...} to create query links, e.g. {gukora}');
 ku_sitetrans('KU_MSG_CONFIRMDELETECOMMENT', 'Urashaka gusiba iyi comment?');
-ku_sitetrans('KU_MSG_CONFIRMDELETEDEFINITION', 'Urashaka gusiba iri jambo?');
+ku_sitetrans('KU_MSG_CONFIRMDELETEENTRY', 'Urashaka gusiba iyi entry?');
 ku_sitetrans('KU_MSG_CONFIRMREJECTCHANGE', 'Reject this change?');
 ku_sitetrans('KU_MSG_CONFIRMREMOVEEXAMPLE', 'Urashaka gusiba uru rugero?');
 ku_sitetrans('KU_MSG_CONFIRMVOIDUSER', 'Void this user? This will prevent them from logging in');

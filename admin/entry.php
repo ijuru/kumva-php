@@ -25,48 +25,40 @@ include_once '../inc/kumva.php';
 Session::requireUser();
 
 // Process delete request
-/*$action = Request::getPostParam('action');
+$action = Request::getPostParam('action');
 if ($action == 'delete') {
 	$delId = Request::getPostParam('targetId');
-	$change = Change::createDelete($delId);
-	if (Dictionary::getChangeService()->saveChange($change)) {
-		$change->watch();
-		Notifications::newChange($change);
-		Request::redirect('change.php?id='.$change->getId().'&ref='.urlencode(KUMVA_URL_CURRENT));
-	}
-}*/
+	//$change = Change::createDelete($delId);
+	//if (Dictionary::getChangeService()->saveChange($change)) {
+		//$change->watch();
+		//Notifications::newChange($change);
+		//Request::redirect('change.php?id='.$change->getId().'&ref='.urlencode(KUMVA_URL_CURRENT));
+	//}
+}
 
 $entryId = (int)Request::getGetParam('id', 0);
 $entry = ($entryId > 0) ? Dictionary::getDefinitionService()->getEntry($entryId) : new Entry();
 $definitions = Dictionary::getDefinitionService()->getEntryDefinitions($entry);
 $viewRev = (int)Request::getGetParam('rev', 0);
-if ($viewRev) {
-	// Find requested revision
-	foreach ($definitions as $def) {
-		if ($def->getRevision() == $viewRev) {
-			$definition = $def;
-			break;
-		}		
-	}
-}
+if ($viewRev)
+	$definition = Dictionary::getDefinitionService()->getDefinitionByRevision($entry->getId(), $viewRev); // Get specified rev
 else
 	$definition = $definitions[0]; // Default to latest revision
 	
-/*if ($definition->isProposal())
-	$change = Dictionary::getChangeService()->getChangeForProposal($definition);
-else {
-	$changes = Dictionary::getChangeService()->getChangesForDefinition($definition);
-	$changePending = count($changes) > 0 ? ($changes[0]->getStatus() == Status::PENDING) : FALSE;
-}
-$permissions = $definition->getPermissions();*/
+$proposedDefinition = $entry->getProposedRevision()
+	? Dictionary::getDefinitionService()->getDefinitionByRevision($entry->getId(), $entry->getProposedRevision()) : NULL;
+$proposedChange = $proposedDefinition ? $proposedDefinition->getChange() : NULL;
+	
+$canEdit = Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
+$canDelete = !$proposedChange && Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
 
 include_once 'tpl/header.php';
 
 ?>
 <script type="text/javascript">
 /* <![CDATA[ */
-function deleteDefinition(id) {
-	if (confirm('<?php echo KU_MSG_CONFIRMDELETEDEFINITION; ?>')) {
+function deleteEntry(id) {
+	if (confirm('<?php echo KU_MSG_CONFIRMDELETEENTRY; ?>')) {
 		$('#action').val('delete');
 		$('#definitionForm').submit();
 	}
@@ -105,21 +97,19 @@ function deleteDefinition(id) {
 			<input type="hidden" id="action" name="action" />
 			<input type="hidden" name="targetId" value="<?php echo $entry->getId(); ?>" />
 			<?php 
-			/*if ($permissions['propose'] || $permissions['update'])
-				Templates::buttonLink('edit', 'definition.php?id='.$definition->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT), KU_STR_EDIT);
-			if ($permissions['propose'])
-				Templates::button('delete', 'deleteDefinition('.$definition->getId().')', KU_STR_DELETE);*/
+			if ($canEdit)
+				Templates::buttonLink('edit', 'definition.php?id='.$definitions[0]->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT), KU_STR_EDIT);
+			if ($canDelete)
+				Templates::button('delete', 'deleteEntry('.$entry->getId().')', KU_STR_DELETE);
 			?>
 		</form>
 	</div>
 </div>
 <?php 
-/*if ($definition->isProposal())
-	printf('<div class="info">'.KU_MSG_DEFINITIONPROPOSAL.'</div>', 'change.php?id='.$change->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT)); 
-elseif ($changePending)
-	printf('<div class="info">'.KU_MSG_DEFINITIONCHANGEPENDING.'</div>', 'change.php?id='.$changes[0]->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT));*/
-
-if ($entry->isDeleted())
+if ($proposedChange)
+	printf('<div class="info">'.KU_MSG_DEFINITIONCHANGEPENDING.'</div>', 
+		'change.php?id='.$proposedChange->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT));
+elseif ($entry->isDeleted())
 	echo '<div class="info">'.KU_MSG_DEFINITIONVOIDED.'</div>';
 elseif (!$definition->isVerified())
 	echo '<div class="info">'.KU_MSG_DEFINITIONNOTVERIFIED.'</div>'; 
@@ -189,19 +179,21 @@ elseif (!$definition->isVerified())
 		<th style="width: 30px">&nbsp;</th>
 		<th style="width: 20px">&nbsp;</th>
 		<th><?php echo KU_STR_REVISION; ?></th>
+		<th><?php echo KU_STR_CHANGE; ?></th>
 		<th><?php echo KU_STR_SUBMITTED; ?></th>
 		<th><?php echo KU_STR_SUBMITTER; ?></th>
 		<th style="width: 30px">&nbsp;</th>
 	</tr>
 	<?php 
 	foreach ($definitions as $def) { 
+		$change = $def->getChange();
 		$itemUrl = 'entry.php?id='.$entry->getId().'&amp;rev='.$def->getRevision().'&amp;ref='.urlencode(Request::getGetParam('ref'));
-		$change = Dictionary::getDefinitionService()->getDefinitionChange($def);
 		?>
 		<tr class="rowlink" onclick="aka_goto('<?php echo $itemUrl; ?>')">
 			<td>&nbsp;</td>
 			<td><?php Templates::icon('change'); ?></td>
 			<td style="text-align:center"><?php echo $def->getRevision(); ?></td>
+			<td><?php echo $change ? $change->getId() : ''; ?></td>
 			<td><?php echo $change ? Templates::dateTime($change->getSubmitted()) : ''; ?></td>
 			<td><?php echo $change ? Templates::userLink($change->getSubmitter()) : ''; ?></td>
 			<td>&nbsp;</td>

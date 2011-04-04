@@ -222,7 +222,7 @@ ku_sitetrans('KU_STR_YES', 'Yes');
 // Messages
 ku_sitetrans('KU_MSG_COMMENTINSTRUCTIONS', 'Use {...} to create query links, e.g. {gukora}');
 ku_sitetrans('KU_MSG_CONFIRMDELETECOMMENT', 'Delete this comment?');
-ku_sitetrans('KU_MSG_CONFIRMDELETEDEFINITION', 'Delete this definition?');
+ku_sitetrans('KU_MSG_CONFIRMDELETEENTRY', 'Delete this entry?');
 ku_sitetrans('KU_MSG_CONFIRMREJECTCHANGE', 'Reject this change?');
 ku_sitetrans('KU_MSG_CONFIRMREMOVEEXAMPLE', 'Remove this example?');
 ku_sitetrans('KU_MSG_CONFIRMVOIDUSER', 'Void this user? This will prevent them from logging in');
