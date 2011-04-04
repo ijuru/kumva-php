@@ -47,9 +47,9 @@ class SearchService extends Service {
 		
 		// Return proposed definitions as well?
 		if ($incProposals)
-			$sql .= " AND (e.accepted_revision = d.revision OR e.proposed_revision = d.revision) ";
+			$sql .= " AND (e.accepted_id = d.definition_id OR e.proposed_id = d.definition_id) ";
 		else
-			$sql .= " AND e.accepted_revision = d.revision ";
+			$sql .= " AND e.accepted_id = d.definition_id ";
 		
 		/////////// Tag based criteria /////////////
 		

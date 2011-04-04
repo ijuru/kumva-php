@@ -24,19 +24,24 @@
  * Dictionary entry class
  */
 class Entry extends Entity {
-	private $acceptedRevision;
-	private $proposedRevision;
+	private $acceptedId;
+	private $proposedId;
+	
+	// Lazy loaded properties
+	private $accepted;
+	private $proposed;
+	private $revisions;
 	
 	/**
 	 * Constructs an entry
 	 * @param int id the id
-	 * @param int acceptedRevision the accepted revision number
-	 * @param int proposedRevision the proposed revision number
+	 * @param int acceptedId the accepted revision id
+	 * @param int proposedId the proposed revision id
 	 */
-	public function __construct($id = 0, $acceptedRevision = 0, $proposedRevision = 0) {
+	public function __construct($id = 0, $acceptedId = NULL, $proposedId = NULL) {
 		$this->id = (int)$id;
-		$this->acceptedRevision = (int)$acceptedRevision;
-		$this->proposedRevision = (int)$proposedRevision;
+		$this->acceptedId = $acceptedId;
+		$this->proposedId = $proposedId;
 	}
 	
 	/**
@@ -45,39 +50,58 @@ class Entry extends Entity {
 	 * @return Entry the entry
 	 */
 	public static function fromRow(&$row) {
-		return new Entry($row['entry_id'], $row['accepted_revision'], $row['proposed_revision']);
+		return new Entry($row['entry_id'], $row['accepted_id'], $row['proposed_id']);
 	}
 	
 	/**
-	 * Gets the accepted revision number
-	 * @return int the accepted revision number
+	 * Gets the accepted definition using lazy loading
+	 * @return Definition the accepted definition
 	 */
-	public function getAcceptedRevision() {
-		return $this->acceptedRevision;
+	public function getAccepted() {
+		if (!$this->accepted && $this->acceptedId)
+			$this->accepted = Dictionary::getDefinitionService()->getDefinition($this->acceptedId);
+		
+		return $this->accepted;
 	}
 	
 	/**
-	 * Sets the accepted revision number
-	 * @param int the accepted revision number
+	 * Sets the accepted revision
+	 * @param Definition accepted the accepted definition
 	 */
-	public function setAcceptedRevision($acceptedRevision) {
-		$this->acceptedRevision = $acceptedRevision;
+	public function setAccepted($accepted) {
+		$this->accepted = $accepted;
+		$this->acceptedId = $accepted ? $accepted->getId() : NULL;
 	}
 	
 	/**
-	 * Gets the proposed revision number
-	 * @return int the proposed revision number
+	 * Gets the proposed revision using lazy loading
+	 * @return Revision the approved revision
 	 */
-	public function getProposedRevision() {
-		return $this->proposedRevision;
+	public function getProposed() {
+		if (!$this->proposed && $this->proposedId)
+			$this->proposed = Dictionary::getDefinitionService()->getDefinition($this->proposedId);
+		
+		return $this->proposed;
 	}
 	
 	/**
-	 * Sets the proposed revision number
-	 * @param int the proposed revision number
+	 * Sets the proposed revision
+	 * @param Revision proposed the revision
 	 */
-	public function setProposedRevision($proposedRevision) {
-		$this->proposedRevision = $proposedRevision;
+	public function setProposed($proposed) {
+		$this->proposed = $proposed;
+		$this->proposedId = $proposed ? $proposed->getId() : NULL;
+	}
+	
+	/**
+	 * Gets all the revisions using lazy loading
+	 * @return array the revisions
+	 */
+	public function getRevisions() {
+		if ($this->revisions === NULL)
+			$this->revisions = Dictionary::getDefinitionService()->getEntryDefinitions($this);
+		
+		return $this->revisions;
 	}
 	
 	/**
@@ -85,7 +109,7 @@ class Entry extends Entity {
 	 * @return bool TRUE if entry has been deleted
 	 */
 	public function isDeleted() {
-		return !($this->acceptedRevision || $this->proposedRevision);
+		return !($this->acceptedId || $this->proposedId);
 	}
 }
 

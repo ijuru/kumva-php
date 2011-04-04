@@ -199,8 +199,8 @@ class DefinitionService extends Service {
 		if ($entry->isNew()) {
 			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'entry` VALUES('
 				.'NULL,'
-				.aka_prepsqlval($entry->getAcceptedRevision()).','
-				.aka_prepsqlval($entry->getProposedRevision()).')';
+				.aka_prepsqlval($entry->getAccepted()).','
+				.aka_prepsqlval($entry->getProposed()).')';
 			
 			$res = $this->database->insert($sql);
 			if ($res === FALSE) 
@@ -209,8 +209,8 @@ class DefinitionService extends Service {
 		}
 		else {
 			$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'entry` SET '
-				.'accepted_revision = '.aka_prepsqlval($entry->getAcceptedRevision()).','
-				.'proposed_revision = '.aka_prepsqlval($entry->getProposedRevision()).' '
+				.'accepted_id = '.aka_prepsqlval($entry->getAccepted()).','
+				.'proposed_id = '.aka_prepsqlval($entry->getProposed()).' '
 				.'WHERE entry_id = '.$entry->getId();
 			
 			if ($this->database->query($sql) === FALSE)

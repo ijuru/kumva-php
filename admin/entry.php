@@ -45,8 +45,7 @@ if ($viewRev)
 else
 	$definition = $definitions[0]; // Default to latest revision
 	
-$proposedDefinition = $entry->getProposedRevision()
-	? Dictionary::getDefinitionService()->getDefinitionByRevision($entry->getId(), $entry->getProposedRevision()) : NULL;
+$proposedDefinition = $entry->getProposed();
 $proposedChange = $proposedDefinition ? $proposedDefinition->getChange() : NULL;
 	
 $canEdit = Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
@@ -78,9 +77,9 @@ function deleteEntry(id) {
 			<select name="rev">
 				<?php foreach ($definitions as $def) { 
 					$isCurrent = $definition->getRevision() == $def->getRevision();
-					if ($def->getRevision() == $entry->getAcceptedRevision())
+					if ($def->equals($entry->getAccepted()))
 						$label = $def->getRevision().' ('.KU_STR_ACCEPTED.')';
-					elseif ($def->getRevision() == $entry->getProposedRevision())
+					elseif ($def->equals($entry->getProposed()))
 						$label = $def->getRevision().' ('.KU_STR_PROPOSED.')';
 					else
 						$label = $def->getRevision()

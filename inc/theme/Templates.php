@@ -124,7 +124,7 @@ class Templates {
 		
 		// Display edit link
 		if (Session::getCurrent()->hasRole(Role::CONTRIBUTOR)) 
-			Templates::iconLink('edit', KUMVA_URL_ROOT.'/admin/entry.php?id='.$definition->getId(), KU_STR_EDITDEFINITION);
+			Templates::iconLink('edit', KUMVA_URL_ROOT.'/admin/entry.php?id='.$definition->getEntry()->getId(), KU_STR_EDITENTRY);
 
 		// Display usage examples
 		self::exampleList($definition->getExamples());	

@@ -41,7 +41,7 @@ foreach ($definitions as $definition) {
 	$definition->setRevision($rev);
 	if (!Dictionary::getDefinitionService()->saveDefinition($definition))
 		echo "Unable to update definition #".$definition->getId();
-	$entry->setAcceptedRevision($rev);
+	$entry->setAccepted($definition);
 	$rev++;
 	
 	// Update pending revisions
@@ -54,7 +54,7 @@ foreach ($definitions as $definition) {
 			$revision->setRevision($rev);
 			if (!Dictionary::getDefinitionService()->saveDefinition($revision))
 				echo "Unable to update definition #".$revision->getId();
-			$entry->setProposedRevision($rev);	
+			$entry->setProposed($revision);	
 			
 			$rev++;				
 		}
@@ -71,7 +71,7 @@ foreach ($definitions as $definition) {
 	if (!$definition->getEntry()) {
 		// Is this a pending create?
 		if ($definition->isProposal() && !$definition->isVoided()) {
-			$entry = new Entry(0, 0, 1); 
+			$entry = new Entry(0, 0, $definition->getId()); 
 			Dictionary::getDefinitionService()->saveEntry($entry);
 			$definition->setEntry($entry);
 			$definition->setRevision(1);
@@ -80,7 +80,7 @@ foreach ($definitions as $definition) {
 		}
 		// Is this a rejected create/delete?
 		elseif ($definition->isProposal() && $definition->isVoided()) {
-			$entry = new Entry(0, 0, 0); 
+			$entry = new Entry(); 
 			Dictionary::getDefinitionService()->saveEntry($entry);
 			$definition->setEntry($entry);
 			$definition->setRevision(1);
@@ -89,7 +89,7 @@ foreach ($definitions as $definition) {
 		}
 		// Is this deleted definition?
 		elseif (!$definition->isProposal() && $definition->isVoided()) {
-			$entry = new Entry(0, 0, 0); 
+			$entry = new Entry(); 
 			Dictionary::getDefinitionService()->saveEntry($entry);
 			$definition->setEntry($entry);
 			$definition->setRevision(1);

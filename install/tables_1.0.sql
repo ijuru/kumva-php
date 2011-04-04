@@ -1,6 +1,8 @@
 
 USE `{DBNAME}`;
 
+SET FOREIGN_KEY_CHECKS=0;
+
 DROP TABLE IF EXISTS `{DBPREFIX}searchrecord`;
 DROP TABLE IF EXISTS `{DBPREFIX}comment`;
 DROP TABLE IF EXISTS `{DBPREFIX}change_watch`;
@@ -20,16 +22,18 @@ DROP TABLE IF EXISTS `{DBPREFIX}definition_nounclass`;
 DROP TABLE IF EXISTS `{DBPREFIX}definition`;
 DROP TABLE IF EXISTS `{DBPREFIX}entry`;
 
+SET FOREIGN_KEY_CHECKS=1;
+
 CREATE TABLE `{DBPREFIX}entry` (
   `entry_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `accepted_revision` INT UNSIGNED DEFAULT NULL,
-  `proposed_revision` INT UNSIGNED DEFAULT NULL,
+  `accepted_id` INT UNSIGNED DEFAULT NULL,
+  `proposed_id` INT UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`entry_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `{DBPREFIX}definition` (
   `definition_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `entry_id` INT UNSIGNED DEFAULT NULL,
+  `entry_id` INT UNSIGNED DEFAULT NULL,  # Should become NN
   `revision` INT UNSIGNED DEFAULT 0,
   `wordclass` VARCHAR(5) DEFAULT NULL,
   `prefix` VARCHAR(10) DEFAULT NULL,
@@ -43,9 +47,15 @@ CREATE TABLE `{DBPREFIX}definition` (
   `voided` TINYINT(1) NOT NULL,		#TBR
   PRIMARY KEY (`definition_id`),
   KEY `IN_{DBPREFIX}definition_lemma` (`lemma`),
-  KEY `FK_{DBPREFIX}revision_entry` (`entry_id`),
-  CONSTRAINT `FK_{DBPREFIX}revision_entry` FOREIGN KEY (`entry_id`) REFERENCES `{DBPREFIX}entry` (`entry_id`)
+  KEY `FK_{DBPREFIX}definition_entry` (`entry_id`),
+  CONSTRAINT `FK_{DBPREFIX}definition_entry` FOREIGN KEY (`entry_id`) REFERENCES `{DBPREFIX}entry` (`entry_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `{DBPREFIX}entry`
+  ADD CONSTRAINT `FK_{DBPREFIX}entry_accepted` FOREIGN KEY (`accepted_id` ) REFERENCES `{DBPREFIX}definition` (`definition_id` ),
+  ADD INDEX `FK_{DBPREFIX}entry_accepted` (`accepted_id` ASC),
+  ADD CONSTRAINT `FK_{DBPREFIX}entry_proposed` FOREIGN KEY (`proposed_id` ) REFERENCES `{DBPREFIX}definition` (`definition_id` ),
+  ADD INDEX `FK_{DBPREFIX}entry_proposed` (`proposed_id` ASC);
 
 CREATE TABLE `{DBPREFIX}definition_nounclass` (
   `definition_id` INT UNSIGNED NOT NULL,
