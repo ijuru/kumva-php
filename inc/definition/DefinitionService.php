@@ -398,6 +398,10 @@ class DefinitionService extends Service {
 	public function getContentStatistics() {
 		$stats = array();
 		$stats['entries'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'entry` WHERE accepted_id IS NOT NULL');
+		$stats['entries_unverified'] = $this->database->scalar(
+			'SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'definition` d 
+			 INNER JOIN `'.KUMVA_DB_PREFIX.'entry` e ON e.accepted_id = d.definition_id 
+			 WHERE d.verified = 0');
 		return $stats;
 	}
 	
