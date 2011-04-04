@@ -39,8 +39,8 @@ CREATE TABLE `{DBPREFIX}definition` (
   `comment` VARCHAR(255) DEFAULT NULL,
   `flags` INT(0) NOT NULL,
   `verified` TINYINT(1) NOT NULL,
-  `proposal` TINYINT(1) NOT NULL,
-  `voided` TINYINT(1) NOT NULL,
+  `proposal` TINYINT(1) NOT NULL,	#TBR
+  `voided` TINYINT(1) NOT NULL,		#TBR
   PRIMARY KEY (`definition_id`),
   KEY `IN_{DBPREFIX}definition_lemma` (`lemma`),
   KEY `FK_{DBPREFIX}revision_entry` (`entry_id`),
@@ -106,7 +106,7 @@ CREATE TABLE `{DBPREFIX}definition_tag` (
   `order` INT UNSIGNED NOT NULL,
   `tag_id` INT UNSIGNED NOT NULL,
   `weight` INT UNSIGNED NOT NULL,
-  `active` TINYINT(1) NOT NULL,
+  `active` TINYINT(1) NOT NULL,		#TBR
   KEY `FK_{DBPREFIX}tag_definition_definition` (`definition_id`),
   KEY `FK_{DBPREFIX}tag_definition_tag` (`tag_id`),
   KEY `FK_{DBPREFIX}tag_definition_relationship` (`relationship_id`),
@@ -170,7 +170,7 @@ CREATE TABLE `{DBPREFIX}user_role` (
 
 CREATE TABLE `{DBPREFIX}change` (
   `change_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `original_id` INT UNSIGNED DEFAULT NULL,
+  `original_id` INT UNSIGNED DEFAULT NULL,	#TBR
   `proposal_id` INT UNSIGNED DEFAULT NULL,
   `action` TINYINT UNSIGNED NOT NULL, 
   `submitter_id` INT UNSIGNED NOT NULL,
@@ -179,11 +179,11 @@ CREATE TABLE `{DBPREFIX}change` (
   `resolver_id` INT UNSIGNED DEFAULT NULL,
   `resolved` TIMESTAMP NULL DEFAULT NULL,
   PRIMARY KEY (`change_id`),
-  KEY `FK_{DBPREFIX}change_original` (`original_id`),
+  KEY `FK_{DBPREFIX}change_original` (`original_id`),	#TBR
   KEY `FK_{DBPREFIX}change_proposal` (`proposal_id`),
   KEY `FK_{DBPREFIX}change_submitter` (`submitter_id`),
   KEY `FK_{DBPREFIX}change_resolver` (`resolver_id`),
-  CONSTRAINT `FK_{DBPREFIX}change_original` FOREIGN KEY (`original_id`) REFERENCES `{DBPREFIX}definition` (`definition_id`),
+  CONSTRAINT `FK_{DBPREFIX}change_original` FOREIGN KEY (`original_id`) REFERENCES `{DBPREFIX}definition` (`definition_id`),#TBR
   CONSTRAINT `FK_{DBPREFIX}change_proposal` FOREIGN KEY (`proposal_id`) REFERENCES `{DBPREFIX}definition` (`definition_id`),
   CONSTRAINT `FK_{DBPREFIX}change_submitter` FOREIGN KEY (`submitter_id`) REFERENCES `{DBPREFIX}user` (`user_id`),
   CONSTRAINT `FK_{DBPREFIX}change_resolver` FOREIGN KEY (`resolver_id`) REFERENCES `{DBPREFIX}user` (`user_id`)

@@ -99,21 +99,9 @@ foreach ($definitions as $definition) {
 	}
 }
 
-// Update all changes
-$changes = Dictionary::getChangeService()->getChanges();
-foreach ($changes as $change) {
-	$definition = $change->getDefinition() ? $change->getDefinition() : $change->getProposal();
-	$entry = $definition->getEntry();
-	$change->setEntry($entry);
-	if (!Dictionary::getChangeService()->saveChange($change))
-		echo "X";
-	$count_changes++;
-}
-
 echo "Updated ".$count_accepted." accepted definitions<br/>";
 echo "Updated ".$count_pending_create." pending create definitions<br/>";
 echo "Updated ".$count_rejected." rejected create/delete definitions<br/>";
 echo "Updated ".$count_deleted." deleted definitions<br/>";
-echo "Updated ".$count_changes." changes<br/>";
 
 ?>

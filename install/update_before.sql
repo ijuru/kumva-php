@@ -15,11 +15,4 @@ ALTER TABLE `rw_definition`
 ADD CONSTRAINT `FK_definition_entry` FOREIGN KEY (`entry_id` ) REFERENCES `rw_entry` (`entry_id` ),
 ADD INDEX `FK_definition_entry` (`entry_id` ASC);
 
-ALTER TABLE `rw_change` 
-ADD COLUMN `entry_id` INT(10) UNSIGNED NULL AFTER `change_id`;
-
-ALTER TABLE `rw_change` 
-ADD CONSTRAINT `FK_change_entry` FOREIGN KEY (`entry_id` ) REFERENCES `rw_entry` (`entry_id` ),
-ADD INDEX `FK_change_entry` (`entry_id` ASC);
-
 
