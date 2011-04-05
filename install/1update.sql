@@ -13,12 +13,17 @@ ALTER TABLE `rw_entry`
   ADD CONSTRAINT `FK_rw_entry_proposed` FOREIGN KEY (`proposed_id` ) REFERENCES `rw_definition` (`definition_id` ),
   ADD INDEX `FK_rw_entry_proposed` (`proposed_id` ASC);
 
-ALTER TABLE `rw_definition` 
-ADD COLUMN `entry_id` INT UNSIGNED NULL AFTER `definition_id`, 
-ADD COLUMN `revision` INT UNSIGNED NULL AFTER `entry_id`;
+ALTER TABLE `rw_definition` ADD COLUMN `entry_id` INT UNSIGNED NULL AFTER `definition_id`;
+ALTER TABLE `rw_definition` ADD COLUMN `revision` INT UNSIGNED NULL AFTER `entry_id`;
 
 ALTER TABLE `rw_definition` 
 ADD CONSTRAINT `FK_rw_definition_entry` FOREIGN KEY (`entry_id` ) REFERENCES `rw_entry` (`entry_id` ),
 ADD INDEX `FK_rw_definition_entry` (`entry_id` ASC);
+
+ALTER TABLE `rw_change` ADD COLUMN `entry_id` INT UNSIGNED NULL AFTER `change_id`;
+
+ALTER TABLE `rw_change` 
+ADD CONSTRAINT `FK_rw_change_entry` FOREIGN KEY (`entry_id` ) REFERENCES `rw_entry` (`entry_id` ),
+ADD INDEX `FK_rw_change_entry` (`entry_id` ASC);
 
 

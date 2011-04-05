@@ -33,7 +33,7 @@ CREATE TABLE `{DBPREFIX}entry` (
 
 CREATE TABLE `{DBPREFIX}definition` (
   `definition_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `entry_id` INT UNSIGNED DEFAULT NULL,  # Should become NN
+  `entry_id` INT UNSIGNED NOT NULL,
   `revision` INT UNSIGNED DEFAULT 0,
   `wordclass` VARCHAR(5) DEFAULT NULL,
   `prefix` VARCHAR(10) DEFAULT NULL,
@@ -180,6 +180,7 @@ CREATE TABLE `{DBPREFIX}user_role` (
 
 CREATE TABLE `{DBPREFIX}change` (
   `change_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `entry_id` INT UNSIGNED DEFAULT NULL,
   `original_id` INT UNSIGNED DEFAULT NULL,	#TBR
   `proposal_id` INT UNSIGNED DEFAULT NULL,
   `action` TINYINT UNSIGNED NOT NULL, 
@@ -189,10 +190,12 @@ CREATE TABLE `{DBPREFIX}change` (
   `resolver_id` INT UNSIGNED DEFAULT NULL,
   `resolved` TIMESTAMP NULL DEFAULT NULL,
   PRIMARY KEY (`change_id`),
+  KEY `FK_{DBPREFIX}change_entry` (`entry_id`),
   KEY `FK_{DBPREFIX}change_original` (`original_id`),	#TBR
   KEY `FK_{DBPREFIX}change_proposal` (`proposal_id`),
   KEY `FK_{DBPREFIX}change_submitter` (`submitter_id`),
   KEY `FK_{DBPREFIX}change_resolver` (`resolver_id`),
+  CONSTRAINT `FK_{DBPREFIX}change_entry` FOREIGN KEY (`entry_id`) REFERENCES `{DBPREFIX}entry` (`entry_id`),
   CONSTRAINT `FK_{DBPREFIX}change_original` FOREIGN KEY (`original_id`) REFERENCES `{DBPREFIX}definition` (`definition_id`),#TBR
   CONSTRAINT `FK_{DBPREFIX}change_proposal` FOREIGN KEY (`proposal_id`) REFERENCES `{DBPREFIX}definition` (`definition_id`),
   CONSTRAINT `FK_{DBPREFIX}change_submitter` FOREIGN KEY (`submitter_id`) REFERENCES `{DBPREFIX}user` (`user_id`),
