@@ -132,16 +132,6 @@ class DefinitionService extends Service {
 	}
 	
 	/**
-	 * Gets the change for the given definition if there is one
-	 * @param Definition definition the definition
-	 * @return Change the change
-	 */
-	public function getDefinitionChange($definition) {
-		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'change` WHERE proposal_id = '.$definition->getId());
-		return ($row != NULL) ? Change::fromRow($row) : NULL;
-	}
-	
-	/**
 	 * Gets a random definition (ignores proposals, voided, unverified, flagged definitions)
 	 * @param bool wotd true for 'word of the day' mode
 	 * @return Definition the random definition

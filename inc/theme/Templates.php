@@ -42,16 +42,15 @@ class Templates {
 	 * @param Definition definition the definition
 	 */
 	public static function definitionLink($definition, $edit = FALSE) {
-		$page = $edit ? 'definition.php' : 'entry.php';
-		$url = $page.'?id='.$definition->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
+		$url = '?id='.$definition->getEntry()->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
 		
-		echo '<a href="'.$url.'">';
+		echo '<a href="entry.php'.$url.'">';
 		self::definition($definition);
-		if ($edit) {
-			echo ' ';
-			self::icon('edit', KU_STR_EDIT);
-		}	
 		echo '</a>';
+		if ($edit) {
+			echo '&nbsp;';
+			self::iconLink('edit', 'entryedit.php'.$url, KU_STR_EDIT);
+		}	
 	}
 	
 	/**

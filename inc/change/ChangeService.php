@@ -25,6 +25,21 @@
  */
 class ChangeService extends Service {	
 	/**
+	 * #TBR
+	 */
+	public function getChangeForProposal($definition) {
+		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'change` WHERE proposal_id = '.$definition->getId());
+		return ($row != NULL) ? Change::fromRow($row) : NULL;
+	}
+	
+	/**
+	 * #TBR
+	 */
+	public function getChangesForDefinition($definition, $status = NULL) {
+		return $definition->isProposal() ? array() : $this->getChanges($definition, NULL, $status, NULL, FALSE, NULL);
+	}
+
+	/**
 	 * Get the change with the given id
 	 * @param id int the id
 	 * @return Change the change
@@ -60,10 +75,23 @@ class ChangeService extends Service {
 	}
 	
 	/**
-	 * #TBR
+	 * Gets the definition which the given change is assigned to
+	 * @param Change change the change
+	 * @return Definition the definition
 	 */
-	public function getChangesForDefinition($definition, $status = NULL) {
-		return $definition->isProposal() ? array() : $this->getChanges($definition, NULL, $status, NULL, FALSE, NULL);
+	public function getChangeDefinition($change) {
+		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` WHERE change_id = '.$change->getId());
+		return ($row != NULL) ? Definition::fromRow($row) : NULL;
+	}
+	
+	/**
+	 * Gets the definition which the given change is assigned to
+	 * @param Change change the change
+	 * @return Definition the definition
+	 */
+	public function getEntryByDeleteChange($change) {
+		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'entry` WHERE delete_change_id = '.$change->getId());
+		return ($row != NULL) ? Entry::fromRow($row) : NULL;
 	}
 	
 	/**
@@ -84,16 +112,6 @@ class ChangeService extends Service {
 	 */
 	public function getChangesByResolver($resolver, $status, $paging) {
 		return $this->getChanges(NULL, NULL, $status, $resolver, TRUE, $paging);
-	}
-	
-	/**
-	 * Gets the change for the given proposal definition
-	 * @param Definition definition the definition
-	 * @return Change the change
-	 */
-	public function getChangeForProposal($definition) {
-		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'change` WHERE proposal_id = '.$definition->getId());
-		return ($row != NULL) ? Change::fromRow($row) : NULL;
 	}
 	
 	/**

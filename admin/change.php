@@ -25,7 +25,15 @@ include_once '../inc/kumva.php';
 Session::requireUser();
 
 $changeId = (int)Request::getGetParam('id', 0);
-$change = Dictionary::getChangeService()->getChange($changeId); 
+$change = Dictionary::getChangeService()->getChange($changeId);
+if ($change->getAction() == Action::DELETE) {
+	$entry = Dictionary::getChangeService()->getEntryByDeleteChange($change);
+	$definition = $entry->getAccepted();
+}
+else {
+	$definition = Dictionary::getChangeService()->getChangeDefinition($change);
+	$entry = $definition->getEntry();
+}
 $curUser = Session::getCurrent()->getUser();
 $commentText = '';
 
@@ -48,14 +56,14 @@ function processAction($change, $action, $commentText) {
 	}
 	
 	if ($action =='post' && $commentText && $canComment) {
-		Notifications::newComment($change, $comment);
+		//Notifications::newComment($change, $comment);
 		return TRUE;
 	}
 	elseif ($action == 'approve' && $canApprove && $change->isPending()) {
-		Notifications::newComment($change, $comment);
+		//Notifications::newComment($change, $comment);
 		return TRUE;	
 	}
-	elseif ($action == 'accept' && $canResolve && $change->isPending()) {
+	/*elseif ($action == 'accept' && $canResolve && $change->isPending()) {
 		if (Dictionary::getChangeService()->acceptChange($change)) {
 			Notifications::changeAccepted($change);
 			return TRUE;
@@ -66,7 +74,7 @@ function processAction($change, $action, $commentText) {
 			Notifications::changeRejected($change, $comment);
 			return TRUE;
 		}
-	}
+	}*/
 	
 	return FALSE;
 }
@@ -141,6 +149,10 @@ function onActionSubmit() {
 <input type="hidden" name="verdict" id="verdict" />
 <table class="form">
 	<tr>
+		<th><?php Templates::icon('entry'); ?> <?php echo KU_STR_ENTRY; ?></th>
+		<td><?php Templates::definitionLink($definition, TRUE); ?></td>
+	</tr>
+	<tr>
 		<th><?php Templates::icon('user'); ?> <?php echo KU_STR_SUBMITTED; ?></th>
 		<td><?php Templates::dateTime($change->getSubmitted()); ?> by <?php Templates::userLink($change->getSubmitter()); ?></td>
 	</tr>
@@ -175,9 +187,9 @@ function onActionSubmit() {
 			<div id="difftable">
 				<?php 
 				if ($change->getStatus() == Status::PENDING)
-					Diff::definitions($change->getDefinition(), KU_STR_CURRENT, FALSE, $change->getProposal(), KU_STR_PROPOSAL, TRUE);
+					Diff::definitions($entry->getAccepted(), $definition);
 				else
-					Diff::definitions($change->getProposal(), KU_STR_PROPOSAL, FALSE, $change->getDefinition(), KU_STR_CURRENT, FALSE);
+					Diff::definitions($definition, $entry->getAccepted());
 				?>
 			</div>
 		</td>

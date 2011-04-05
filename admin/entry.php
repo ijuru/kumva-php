@@ -71,7 +71,7 @@ function deleteEntry(id) {
 		<form method="get">
 			<input type="hidden" name="id" value="<?php echo $entry->getId(); ?>" />
 			
-			<?php Templates::buttonLink('back', Request::getGetParam('ref', 'definitions.php'), KU_STR_BACK); ?>
+			<?php Templates::buttonLink('back', Request::getGetParam('ref', 'entries.php'), KU_STR_BACK); ?>
 			
 			<?php echo KU_STR_REVISION; ?>
 			<select name="rev">

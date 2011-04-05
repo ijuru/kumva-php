@@ -27,13 +27,9 @@ class Diff {
 	/**
 	 * Creates a side-by-side comparison of two definitions
 	 * @param Definition definition1 the first definition
-	 * @param string label1 the label for first definition
-	 * @param bool canEdit1 TRUE if first definition can be edited
 	 * @param Definition definition2 the second definition
-	 * @param string label2 the label for second definition
-	 * @param bool canEdit2 TRUE if second definition can be edited
 	 */
-	public static function definitions($definition1, $label1, $canEdit1, $definition2, $label2, $canEdit2) {
+	public static function definitions($definition1, $definition2) {
 		$fields1 = $definition1 ? self::getDiffFields($definition1) : NULL;
 		$fields2 = $definition2 ? self::getDiffFields($definition2) : NULL;
 		
@@ -61,13 +57,11 @@ class Diff {
 				</td>
 				<?php if ($definition1) { ?>
 					<td style="vertical-align: middle">
-						<b><?php echo $label1; ?></b>
-						<?php Templates::definitionLink($definition1, $canEdit1); ?>
+						<b><?php echo KU_STR_REVISION.': '.$definition1->getRevision(); ?></b>
 					</td>
 				<?php } if ($definition2) { ?>
 					<td style="vertical-align: middle">
-						<b><?php echo $label2; ?></b>
-						<?php Templates::definitionLink($definition2, $canEdit2); ?>
+						<b><?php echo KU_STR_REVISION.': '.$definition2->getRevision(); ?></b>
 					</td>
 				<?php } ?>
 			</tr>

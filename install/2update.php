@@ -2,7 +2,7 @@
  
 include_once '../inc/kumva.php';
 
-if (mysql_query('UPDATE `rw_definition` SET entry_id = NULL, revision = 0') !== FALSE 
+if (mysql_query('UPDATE `rw_definition` SET entry_id = NULL, revision = 0, change_id = NULL') !== FALSE 
 	&& mysql_query('TRUNCATE `rw_entry`') !== FALSE)
 	echo "Cleared existing entry/revision information<br/>";
 else
@@ -112,15 +112,16 @@ foreach ($changes as $change) {
 			
 		$count_entry_changes++;
 	}
-	else {
-		// If change is the newest for that definition, attach to definition rather than proposal
-		if ($change->getDefinition() && !($change->getDefinition()->isVoided() || $change->getDefinition()->isProposal()))
-			$definition = $change->getDefinition();
-		elseif ($change->getProposal())
-			$definition = $change->getProposal();
-		else
-			$definition = $change->getDefinition();
+	elseif ($change->getStatus() == Status::PENDING) {
+		$definition = $change->getProposal();
+		$definition->setChange($change);
+		if (!Dictionary::getDefinitionService()->saveDefinition($definition))
+			echo "Unable to assign change #".$change->getId()." to definition #".$definition->getId();
 			
+		$count_definition_changes++;
+	}
+	else {
+		$definition = $change->getDefinition() ? $change->getDefinition() : $change->getProposal();
 		$definition->setChange($change);
 		if (!Dictionary::getDefinitionService()->saveDefinition($definition))
 			echo "Unable to assign change #".$change->getId()." to definition #".$definition->getId();
@@ -135,5 +136,32 @@ echo "Updated ".$count_rejected." rejected create/delete definitions<br/>";
 echo "Updated ".$count_deleted." deleted definitions<br/>";
 echo "Updated ".$count_entry_changes." entry delete changes<br/>";
 echo "Updated ".$count_definition_changes." definition changes<br/>";
+
+// Clean entries with ghost definitions etc
+$entries = Dictionary::getDefinitionService()->getEntries();
+echo "Loaded ".count($entries)." entries for cleaning<br/>";
+
+$deleted_ghosts = 0;
+
+foreach ($entries as $entry) {
+	$revisions = $entry->getRevisions();
+	if (count($revisions) == 0)
+		echo "Found empty entry #".$entry->getId()."<br/>";
+		
+	for ($r = 0; $r < count($revisions); $r++) {
+		$revision = $revisions[$r];
+		if ($revision->getChange() && $revision->getChange()->getAction() == Action::CREATE) {
+			if ($r < count($revisions) - 1) {
+				$ghost = $revisions[$r + 1];
+				if (!Dictionary::getDefinitionService()->deleteDefinition($ghost))
+					echo "Unable to delete definition #".$ghost->getId()."<br/>";
+				$deleted_ghosts++;
+				break;
+			}
+		}
+	}
+}
+
+echo "Deleted ".$deleted_ghosts." ghost definitions<br/>";
 
 ?>
