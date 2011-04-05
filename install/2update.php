@@ -12,14 +12,15 @@ $count_accepted = 0;
 $count_pending_create = 0;
 $count_rejected = 0;
 $count_deleted = 0;
-$count_changes = 0;
-$count_changes = 0;
+$count_entry_changes = 0;
+$count_definition_changes = 0;
 
 // Get all definitions 
 $definitions = Dictionary::getDefinitionService()->getDefinitions(FALSE, FALSE);
 foreach ($definitions as $definition) {
 	$entry = new Entry(); 
-	Dictionary::getDefinitionService()->saveEntry($entry);
+	if (!Dictionary::getDefinitionService()->saveEntry($entry))
+		"Unable to save entry #".$entry->getId();
 	
 	$rev = 1;
 	
@@ -100,21 +101,39 @@ foreach ($definitions as $definition) {
 	}
 }
 
-// Update all changes
+// Assign all changes to a definition
 $changes = Dictionary::getChangeService()->getChanges();
 foreach ($changes as $change) {
-	$definition = $change->getDefinition() ? $change->getDefinition() : $change->getProposal();
-	$entry = $definition->getEntry();
-	$change->setEntry($entry);
-	if (!Dictionary::getChangeService()->saveChange($change))
-		echo "Unable to save change #".$change->getId();
-	$count_changes++;
+	if ($change->getAction() == Action::DELETE) {
+		$entry = $change->getDefinition()->getEntry();
+		$entry->setDeleteChange($change);
+		if (!Dictionary::getDefinitionService()->saveEntry($entry))
+			"Unable to assign delete change to entry #".$entry->getId();
+			
+		$count_entry_changes++;
+	}
+	else {
+		// If change is the newest for that definition, attach to definition rather than proposal
+		if ($change->getDefinition() && !($change->getDefinition()->isVoided() || $change->getDefinition()->isProposal()))
+			$definition = $change->getDefinition();
+		elseif ($change->getProposal())
+			$definition = $change->getProposal();
+		else
+			$definition = $change->getDefinition();
+			
+		$definition->setChange($change);
+		if (!Dictionary::getDefinitionService()->saveDefinition($definition))
+			echo "Unable to assign change #".$change->getId()." to definition #".$definition->getId();
+			
+		$count_definition_changes++;
+	}
 }
 
 echo "Updated ".$count_accepted." accepted definitions<br/>";
 echo "Updated ".$count_pending_create." pending create definitions<br/>";
 echo "Updated ".$count_rejected." rejected create/delete definitions<br/>";
 echo "Updated ".$count_deleted." deleted definitions<br/>";
-echo "Updated ".$count_changes." changes<br/>";
+echo "Updated ".$count_entry_changes." entry delete changes<br/>";
+echo "Updated ".$count_definition_changes." definition changes<br/>";
 
 ?>

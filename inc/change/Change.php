@@ -48,9 +48,8 @@ class Status extends Enum {
  * Change being made to the dictionary
  */
 class Change extends Entity {
-	private $entryId;
 	private $definitionId;	#TBR
-	private $proposalId;
+	private $proposalId;    #TBR
 	private $action;
 	private $submitterId;
 	private $submitted;
@@ -59,9 +58,8 @@ class Change extends Entity {
 	private $resolved;
 	
 	// Lazy loaded properties
-	private $entry;
 	private $definition; #TBR
-	private $proposal;
+	private $proposal;	 #TBR
 	private $submitter;
 	private $resolver;
 	private $comments;
@@ -70,9 +68,8 @@ class Change extends Entity {
 	/**
 	 * Constructs a new change
 	 * @param int id the id
-	 * @param int entryId the entry id
-	 * @param int definitionId the definition id
-	 * @param int proposalId the proposal id 
+	 * @param int definitionId the definition id #TBR
+	 * @param int proposalId the proposal id     #TBR
 	 * @param int action the action type
 	 * @param int submitterId the submitter user id
 	 * @param int submitted the timestamp of submission
@@ -80,9 +77,10 @@ class Change extends Entity {
 	 * @param int resolverId the resolver user id
 	 * @param int resolved the timestamp of acceptance/rejection
 	 */
-	public function __construct($id, $entryId, $definitionId, $proposalId, $action, $submitterId, $submitted, $status, $resolverId = NULL, $resolved = NULL) {
+	public function __construct($id, 
+			$definitionId, $proposalId, #TBR
+			$action, $submitterId, $submitted, $status, $resolverId = NULL, $resolved = NULL) {
 		$this->id = (int)$id;
-		$this->entryId = (int)$entryId;
 		$this->definitionId = (int)$definitionId;
 		$this->proposalId = (int)$proposalId;
 		$this->action = (int)$action;
@@ -99,7 +97,7 @@ class Change extends Entity {
 	 * @return Change the change
 	 */
 	public static function fromRow(&$row) {
-		return new Change($row['change_id'], $row['entry_id'], $row['original_id'], $row['proposal_id'], $row['action'], $row['submitter_id'], 
+		return new Change($row['change_id'], $row['original_id'], $row['proposal_id'], $row['action'], $row['submitter_id'], 
 			aka_timefromsql($row['submitted']), $row['status'], $row['resolver_id'], aka_timefromsql($row['resolved']));
 	}
 	
@@ -110,34 +108,26 @@ class Change extends Entity {
 	 * @param int action the action type
 	 * @return Change the change
 	 */
-	private static function create($entryId, $proposalId, $action) {
-		return new Change(0, $entryId, NULL, $proposalId, $action, Session::getCurrent()->getUser()->getId(), time(), Status::PENDING);
+	private static function create($action) {
+		return new Change(0, NULL, NULL, $action, Session::getCurrent()->getUser()->getId(), time(), Status::PENDING);
 	}
 	
 	/**
-	 * Creates a new pending create change for the given proposal definition
-	 * @param int entryId the entry id
-	 * @param int proposalId the proposal id
-	 * @return Change the change
+	 * #TBR
 	 */
 	public static function createCreate($entryId, $proposalId) {
 		return self::create($entryId, $proposalId, Action::CREATE);
 	}
 	
 	/**
-	 * Creates a new pending modify change for the given definition and proposal
-	 * @param int definitionId the definition id
-	 * @param int proposalId the proposal id
-	 * @return Change the change
+	 * #TBR
 	 */
 	public static function createModify($definitionId, $proposalId) {
 		return self::create($definitionId, $proposalId, Action::MODIFY);
 	}
 	
 	/**
-	 * Creates a new pending delete change for the given definition
-	 * @param int definitionId the definition id
-	 * @return Change the change
+	 * #TBR
 	 */
 	public static function createDelete($definitionId) {
 		return self::create($definitionId, NULL, Action::DELETE);
@@ -162,28 +152,7 @@ class Change extends Entity {
 	}
 	
 	/**
-	 * Gets the entry using lazy loading
-	 * @return Entry the entry
-	 */
-	public function getEntry() {
-		if (!$this->entry && $this->entryId)
-			$this->entry = Dictionary::getDefinitionService()->getEntry($this->entryId);
-			
-		return $this->entry;
-	}
-	
-	/**
-	 * Sets the entry
-	 * @param entry Entry the entry
-	 */
-	public function setEntry($entry) {
-		$this->entryId = $entry ? $entry->getId() : 0;
-		$this->entry = $entry;
-	}
-	
-	/**
-	 * Gets the proposal definition using lazy loading
-	 * @return Definition the proposal definition
+	 * #TBR
 	 */
 	public function getProposal() {
 		if (!$this->proposal && $this->proposalId)
@@ -193,8 +162,7 @@ class Change extends Entity {
 	}
 	
 	/**
-	 * Sets the proposal definition
-	 * @param proposal Definition the proposal definition
+	 * #TBR
 	 */
 	public function setProposal($proposal) {
 		$this->proposalId = $proposal ? $proposal->getId() : NULL;

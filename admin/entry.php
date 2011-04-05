@@ -109,7 +109,8 @@ if ($proposedChange)
 	printf('<div class="info">'.KU_MSG_ENTRYCHANGEPENDING.'</div>', 
 		'change.php?id='.$proposedChange->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT));
 elseif ($entry->isDeleted())
-	echo '<div class="info">'.KU_MSG_ENTRYDELETED.'</div>';
+	printf('<div class="info">'.KU_MSG_ENTRYDELETED.'</div>', 
+		'change.php?id='.$entry->getDeleteChange()->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT));
 elseif (!$definition->isVerified())
 	echo '<div class="info">'.KU_MSG_ENTRYNOTVERIFIED.'</div>'; 
 

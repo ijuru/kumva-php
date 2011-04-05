@@ -225,7 +225,8 @@ class DefinitionService extends Service {
 			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'entry` VALUES('
 				.'NULL,'
 				.aka_prepsqlval($entry->getAccepted()).','
-				.aka_prepsqlval($entry->getProposed()).')';
+				.aka_prepsqlval($entry->getProposed()).','
+				.aka_prepsqlval($entry->getDeleteChange()).')';
 			
 			$res = $this->database->insert($sql);
 			if ($res === FALSE) 
@@ -235,7 +236,8 @@ class DefinitionService extends Service {
 		else {
 			$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'entry` SET '
 				.'accepted_id = '.aka_prepsqlval($entry->getAccepted()).','
-				.'proposed_id = '.aka_prepsqlval($entry->getProposed()).' '
+				.'proposed_id = '.aka_prepsqlval($entry->getProposed()).','
+				.'delete_change_id = '.aka_prepsqlval($entry->getDeleteChange()).' '
 				.'WHERE entry_id = '.$entry->getId();
 			
 			if ($this->database->query($sql) === FALSE)
@@ -255,6 +257,7 @@ class DefinitionService extends Service {
 				.'NULL,'
 				.aka_prepsqlval($definition->getEntry()).','
 				.aka_prepsqlval($definition->getRevision()).','
+				.aka_prepsqlval($definition->getChange()).','
 				.aka_prepsqlval($definition->getWordClass()).','
 				.aka_prepsqlval($definition->getPrefix()).','
 				.aka_prepsqlval($definition->getLemma()).','
@@ -275,6 +278,7 @@ class DefinitionService extends Service {
 			$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'definition` SET '
 				.'entry_id = '.aka_prepsqlval($definition->getEntry()).','
 				.'revision = '.aka_prepsqlval($definition->getRevision()).','
+				.'change_id = '.aka_prepsqlval($definition->getChange()).','
 				.'wordclass = '.aka_prepsqlval($definition->getWordClass()).','
 				.'prefix = '.aka_prepsqlval($definition->getPrefix()).','
 				.'lemma = '.aka_prepsqlval($definition->getLemma()).','
@@ -288,7 +292,8 @@ class DefinitionService extends Service {
 				.'WHERE definition_id = '.$definition->getId();
 			
 			if ($this->database->query($sql) === FALSE)
-				return FALSE;
+				die($sql);
+				//return FALSE;
 		}
 
 		// Save noun classes, tags and examples		

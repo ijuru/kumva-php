@@ -218,9 +218,8 @@ class ChangeService extends Service {
 		if ($change->isNew()) {
 			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'change` VALUES('
 				.'NULL,'
-				.aka_prepsqlval($change->getEntry()).','
 				.aka_prepsqlval($change->getDefinition()).','  #TBR
-				.aka_prepsqlval($change->getProposal()).','
+				.aka_prepsqlval($change->getProposal()).','    #TBR
 				.aka_prepsqlval($change->getAction()).','
 				.aka_prepsqlval($change->getSubmitter()).','
 				.aka_timetosql($change->getSubmitted()).','
@@ -235,9 +234,8 @@ class ChangeService extends Service {
 		}
 		else {
 			$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'change` SET '
-				.'entry_id = '.aka_prepsqlval($change->getEntry()).','
 				.'original_id = '.aka_prepsqlval($change->getDefinition()).',' #TBR
-				.'proposal_id = '.aka_prepsqlval($change->getProposal()).','
+				.'proposal_id = '.aka_prepsqlval($change->getProposal()).','   #TBR
 				.'action = '.aka_prepsqlval($change->getAction()).','
 				.'submitter_id = '.aka_prepsqlval($change->getSubmitter()).','
 				.'submitted = '.aka_timetosql($change->getSubmitted()).','

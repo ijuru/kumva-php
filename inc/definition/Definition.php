@@ -39,6 +39,7 @@ class Flags extends Enum {
 class Definition extends Entity {
 	private $entryId;
 	private $revision;
+	private $changeId;
 	private $wordClass;
 	private $prefix;
 	private $lemma;
@@ -61,6 +62,7 @@ class Definition extends Entity {
 	 * @param int id the definition id
 	 * @param int entryId the entry id
 	 * @param int revision the revision number
+	 * @param int changeId the change id
 	 * @param string wordClass the word class, e,g, 'n'
 	 * @param string prefix the prefix, e.g 'umu'
 	 * @param string lemma the lemma, e.g. 'gabo'
@@ -71,15 +73,16 @@ class Definition extends Entity {
 	 * @param bool verified TRUE if definition has been verified
 	 */
 	public function __construct(
-			$id = 0, $entryId = 0, $revision = 0,
+			$id = 0, $entryId = 0, $revision = 0, $changeId = 0,
 			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $meaning = '', $comment = '', $flags = 0, 
 			$verified = FALSE, 
 			$proposal = FALSE, $voided = FALSE   #TBR
 			) 
 	{
 		$this->id = (int)$id;
-		$this->entryId = (int)$entryId;
+		$this->entryId = $entryId;
 		$this->revision = (int)$revision;
+		$this->changeId = $changeId;
 		$this->wordClass = $wordClass;
 		$this->prefix = $prefix;
 		$this->lemma = $lemma;
@@ -98,7 +101,7 @@ class Definition extends Entity {
 	 * @return Definition the definition
 	 */
 	public static function fromRow(&$row) {
-		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['meaning'], $row['comment'], $row['flags'], $row['verified'], $row['proposal'], $row['voided']);
+		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['meaning'], $row['comment'], $row['flags'], $row['verified'], $row['proposal'], $row['voided']);
 	}
 	
 	/**
@@ -135,6 +138,26 @@ class Definition extends Entity {
 	 */
 	public function setRevision($revision) {
 		$this->revision = $revision;
+	}
+	
+	/**
+	 * Gets the change using lazy loading
+	 * @return Change the change (if there is one)
+	 */
+	public function getChange() {
+		if ($this->change === NULL && $this->changeId)
+			$this->change = Dictionary::getChangeService()->getChange($this->changeId);
+		
+		return $this->change;
+	}
+	
+	/**
+	 * Sets the change
+	 * @param Change change the change
+	 */
+	public function setChange($change) {
+		$this->change = $change;
+		$this->changeId = $change ? $change->getId() : NULL;
 	}
 	
 	/**
@@ -375,17 +398,6 @@ class Definition extends Entity {
 	 */
 	public function setExamples($examples) {
 		$this->examples = $examples;
-	}
-	
-	/**
-	 * Gets the change using lazy loading
-	 * @return Change the change (if there is one)
-	 */
-	public function getChange() {
-		if ($this->change === NULL)
-			$this->change = Dictionary::getChangeService()->getChangeForProposal($this);
-		
-		return $this->change;
 	}
 	
 	/**

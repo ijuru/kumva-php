@@ -28,13 +28,15 @@ CREATE TABLE `{DBPREFIX}entry` (
   `entry_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `accepted_id` INT UNSIGNED DEFAULT NULL,
   `proposed_id` INT UNSIGNED DEFAULT NULL,
+  `delete_change_id` INT UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`entry_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `{DBPREFIX}definition` (
   `definition_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `entry_id` INT UNSIGNED NOT NULL,
-  `revision` INT UNSIGNED DEFAULT 0,
+  `revision` INT UNSIGNED NOT NULL,
+  `change_id` INT UNSIGNED DEFAULT NULL,
   `wordclass` VARCHAR(5) DEFAULT NULL,
   `prefix` VARCHAR(10) DEFAULT NULL,
   `lemma` VARCHAR(255) NOT NULL,
@@ -46,16 +48,13 @@ CREATE TABLE `{DBPREFIX}definition` (
   `proposal` TINYINT(1) NOT NULL,	#TBR
   `voided` TINYINT(1) NOT NULL,		#TBR
   PRIMARY KEY (`definition_id`),
+  UNIQUE KEY `UQ_{DBPREFIX}definition_change` (`change_id`),
   KEY `IN_{DBPREFIX}definition_lemma` (`lemma`),
   KEY `FK_{DBPREFIX}definition_entry` (`entry_id`),
-  CONSTRAINT `FK_{DBPREFIX}definition_entry` FOREIGN KEY (`entry_id`) REFERENCES `{DBPREFIX}entry` (`entry_id`)
+  KEY `FK_{DBPREFIX}definition_change` (`change_id`),
+  CONSTRAINT `FK_{DBPREFIX}definition_entry` FOREIGN KEY (`entry_id`) REFERENCES `{DBPREFIX}entry` (`entry_id`),
+  CONSTRAINT `FK_{DBPREFIX}definition_change` FOREIGN KEY (`change_id`) REFERENCES `{DBPREFIX}change` (`change_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE `{DBPREFIX}entry`
-  ADD CONSTRAINT `FK_{DBPREFIX}entry_accepted` FOREIGN KEY (`accepted_id` ) REFERENCES `{DBPREFIX}definition` (`definition_id` ),
-  ADD INDEX `FK_{DBPREFIX}entry_accepted` (`accepted_id` ASC),
-  ADD CONSTRAINT `FK_{DBPREFIX}entry_proposed` FOREIGN KEY (`proposed_id` ) REFERENCES `{DBPREFIX}definition` (`definition_id` ),
-  ADD INDEX `FK_{DBPREFIX}entry_proposed` (`proposed_id` ASC);
 
 CREATE TABLE `{DBPREFIX}definition_nounclass` (
   `definition_id` INT UNSIGNED NOT NULL,
@@ -180,7 +179,6 @@ CREATE TABLE `{DBPREFIX}user_role` (
 
 CREATE TABLE `{DBPREFIX}change` (
   `change_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `entry_id` INT UNSIGNED DEFAULT NULL,
   `original_id` INT UNSIGNED DEFAULT NULL,	#TBR
   `proposal_id` INT UNSIGNED DEFAULT NULL,
   `action` TINYINT UNSIGNED NOT NULL, 
@@ -190,12 +188,10 @@ CREATE TABLE `{DBPREFIX}change` (
   `resolver_id` INT UNSIGNED DEFAULT NULL,
   `resolved` TIMESTAMP NULL DEFAULT NULL,
   PRIMARY KEY (`change_id`),
-  KEY `FK_{DBPREFIX}change_entry` (`entry_id`),
   KEY `FK_{DBPREFIX}change_original` (`original_id`),	#TBR
   KEY `FK_{DBPREFIX}change_proposal` (`proposal_id`),
   KEY `FK_{DBPREFIX}change_submitter` (`submitter_id`),
   KEY `FK_{DBPREFIX}change_resolver` (`resolver_id`),
-  CONSTRAINT `FK_{DBPREFIX}change_entry` FOREIGN KEY (`entry_id`) REFERENCES `{DBPREFIX}entry` (`entry_id`),
   CONSTRAINT `FK_{DBPREFIX}change_original` FOREIGN KEY (`original_id`) REFERENCES `{DBPREFIX}definition` (`definition_id`),#TBR
   CONSTRAINT `FK_{DBPREFIX}change_proposal` FOREIGN KEY (`proposal_id`) REFERENCES `{DBPREFIX}definition` (`definition_id`),
   CONSTRAINT `FK_{DBPREFIX}change_submitter` FOREIGN KEY (`submitter_id`) REFERENCES `{DBPREFIX}user` (`user_id`),
@@ -242,3 +238,11 @@ CREATE TABLE  `{DBPREFIX}searchrecord` (
   KEY `FK_{DBPREFIX}searchrecord_user` (`user_id`),
   CONSTRAINT `FK_{DBPREFIX}searchrecord_user` FOREIGN KEY (`user_id`) REFERENCES `{DBPREFIX}user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `{DBPREFIX}entry`
+  ADD CONSTRAINT `FK_{DBPREFIX}entry_accepted` FOREIGN KEY (`accepted_id` ) REFERENCES `{DBPREFIX}definition` (`definition_id` ),
+  ADD INDEX `FK_{DBPREFIX}entry_accepted` (`accepted_id` ASC),
+  ADD CONSTRAINT `FK_{DBPREFIX}entry_proposed` FOREIGN KEY (`proposed_id` ) REFERENCES `{DBPREFIX}definition` (`definition_id` ),
+  ADD INDEX `FK_{DBPREFIX}entry_proposed` (`proposed_id` ASC),
+  ADD CONSTRAINT `FK_{DBPREFIX}entry_delete_change` FOREIGN KEY (`delete_change_id` ) REFERENCES `{DBPREFIX}change` (`change_id` ),
+  ADD INDEX `FK_{DBPREFIX}entry_delete_change` (`delete_change_id` ASC);

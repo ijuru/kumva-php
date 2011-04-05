@@ -26,10 +26,12 @@
 class Entry extends Entity {
 	private $acceptedId;
 	private $proposedId;
+	private $deleteChangeId;
 	
 	// Lazy loaded properties
 	private $accepted;
 	private $proposed;
+	private $deleteChange;
 	private $revisions;
 	
 	/**
@@ -38,10 +40,11 @@ class Entry extends Entity {
 	 * @param int acceptedId the accepted revision id
 	 * @param int proposedId the proposed revision id
 	 */
-	public function __construct($id = 0, $acceptedId = NULL, $proposedId = NULL) {
+	public function __construct($id = 0, $acceptedId = NULL, $proposedId = NULL, $deleteChangeId = NULL) {
 		$this->id = (int)$id;
 		$this->acceptedId = $acceptedId;
 		$this->proposedId = $proposedId;
+		$this->deleteChangeId = $deleteChangeId;
 	}
 	
 	/**
@@ -50,7 +53,7 @@ class Entry extends Entity {
 	 * @return Entry the entry
 	 */
 	public static function fromRow(&$row) {
-		return new Entry($row['entry_id'], $row['accepted_id'], $row['proposed_id']);
+		return new Entry($row['entry_id'], $row['accepted_id'], $row['proposed_id'], $row['delete_change_id']);
 	}
 	
 	/**
@@ -91,6 +94,26 @@ class Entry extends Entity {
 	public function setProposed($proposed) {
 		$this->proposed = $proposed;
 		$this->proposedId = $proposed ? $proposed->getId() : NULL;
+	}
+	
+	/**
+	 * Gets the delete change using lazy loading
+	 * @return Change the delete change
+	 */
+	public function getDeleteChange() {
+		if (!$this->deleteChange && $this->deleteChangeId)
+			$this->deleteChange = Dictionary::getChangeService()->getChange($this->deleteChangeId);
+		
+		return $this->deleteChange;
+	}
+	
+	/**
+	 * Sets the delete change
+	 * @param Change change the delete change
+	 */
+	public function setDeleteChange($change) {
+		$this->deleteChange = $change;
+		$this->deleteChangeId = $change ? $change->getId() : NULL;
 	}
 	
 	/**
