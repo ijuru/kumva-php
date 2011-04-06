@@ -33,10 +33,10 @@ include_once 'tpl/header.php';
 		<th><?php echo KU_STR_MODE; ?></th>
 		<td>
 			<select id="exporttype">
-				<option value="csv"><?php echo KU_STR_DEFINITIONS; ?> (CSV)</option>
-				<option value="xml"><?php echo KU_STR_DEFINITIONS; ?> (XML)</option>
+				<option value="csv"><?php echo KU_STR_ACCEPTEDREVISIONS; ?> (CSV)</option>
+				<option value="xml"><?php echo KU_STR_ACCEPTEDREVISIONS; ?> (XML)</option>
 				<?php if (Session::getCurrent()->hasRole(Role::ADMINISTRATOR)) { ?>
-					<option value="xml&amp;changes=1"><?php echo KU_STR_DEFINITIONSANDCHANGES; ?> (XML)</option>
+					<option value="xml&amp;changes=1"><?php echo KU_STR_COMPLETEENTRIES; ?> (XML)</option>
 				<?php } ?>
 			</select>
 		</td>

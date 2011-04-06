@@ -96,7 +96,7 @@ include_once 'tpl/header.php';
 			<td style="text-align: center">
 			<?php 
 			echo $userStats['proposals'].' ';
-			Templates::icon('definition_proposal', KU_STR_PROPOSALS);
+			Templates::icon('proposal', KU_STR_PROPOSALS);
 			echo ' '.$userStats['comments'].' ';
 			Templates::icon('comments', KU_STR_COMMENTS);
 			?>

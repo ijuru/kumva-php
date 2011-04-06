@@ -340,7 +340,7 @@ class Templates {
 				<th>ID</th>
 				<th><?php echo $byResolved ? KU_STR_RESOLVED : KU_STR_SUBMITTED; ?></th>
 				<?php if ($showDefinition) { ?>
-					<th><?php echo KU_STR_DEFINITION; ?></th>
+					<th><?php echo KU_STR_ENTRY; ?></th>
 				<?php } ?>
 				<th><?php echo KU_STR_ACTION; ?></th>
 				<?php if ($showSubmitter) { ?>

@@ -104,7 +104,7 @@ if ($user->isVoided())
 		<td>
 			<?php 
 			echo $activity['proposals'].' ';
-			Templates::icon('definition_proposal', KU_STR_PROPOSALS);
+			Templates::icon('proposal', KU_STR_PROPOSALS);
 			echo ' '.$activity['comments'].' ';
 			Templates::icon('comments', KU_STR_COMMENTS);
 			?>
