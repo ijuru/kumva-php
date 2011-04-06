@@ -148,6 +148,7 @@ foreach ($entries as $entry) {
 	if (count($revisions) == 0)
 		echo "Found empty entry #".$entry->getId()."<br/>";
 		
+	// Look for ghosts
 	for ($r = 0; $r < count($revisions); $r++) {
 		$revision = $revisions[$r];
 		if ($revision->getChange() && $revision->getChange()->getAction() == Action::CREATE) {
@@ -162,6 +163,16 @@ foreach ($entries as $entry) {
 				break;
 			}
 		}
+	}
+	
+	// Reset revision numbers
+	$definitions = array_reverse(Dictionary::getDefinitionService()->getEntryDefinitions($entry));
+	$revNum = 1;
+	foreach ($definitions as $definition) {
+		$definition->setRevision($revNum);
+		if (!Dictionary::getDefinitionService()->saveDefinition($definition))
+			echo "Unable to update revision number of definition #".$definition->getId()."<br/>";
+		$revNum++;
 	}
 }
 
