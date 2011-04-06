@@ -168,6 +168,7 @@ ku_sitetrans('KU_STR_SEARCH', 'Shakisha');
 ku_sitetrans('KU_STR_SEARCHES', 'Searches');
 ku_sitetrans('KU_STR_SEARCHHISTORY', 'Amateka yo gushakisha');
 ku_sitetrans('KU_STR_SERVERINFORMATION', 'Server information');
+ku_sitetrans('KU_STR_SETTINGS', 'Settings');
 ku_sitetrans('KU_STR_SHOW', 'Show');
 ku_sitetrans('KU_STR_SHOWCURRENTUSER', 'Show current user');
 ku_sitetrans('KU_STR_SHOWONLYMISSES', 'Show only misses');

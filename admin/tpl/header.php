@@ -28,14 +28,15 @@ $menu = array(
 		array('export.php', KU_STR_EXPORT, 'export', NULL),
 		array('import.php', KU_STR_IMPORT, 'import', Role::ADMINISTRATOR)
 	)),
-	array('pages.php', KU_STR_SITE, 'site', NULL, array(
-		array('pages.php', KU_STR_PAGES, 'pages', NULL),
-		array('languages.php', KU_STR_LANGUAGES, 'languages', NULL)
-	)),
 	array('users.php', KU_STR_USERS, 'users', NULL, array( 
 		array('users.php', KU_STR_USERS, 'users', NULL),
 		array('roles.php', KU_STR_ROLES, 'roles', Role::ADMINISTRATOR),
 		array('ranks.php', KU_STR_RANKS, 'rank', NULL)
+	)),
+	array('pages.php', KU_STR_SITE, 'site', NULL, array(
+		array('pages.php', KU_STR_PAGES, 'pages', NULL),
+		array('languages.php', KU_STR_LANGUAGES, 'languages', NULL),
+		array('settings.php', KU_STR_SETTINGS, 'settings', Role::ADMINISTRATOR)
 	))
 );
 
