@@ -44,7 +44,8 @@ kumva_registerreport('duplicate-entries', 'Possible duplicate entries', 'kumva_r
 function kumva_report_nowordclass($paging) {
 	$sql = "SELECT SQL_CALC_FOUND_ROWS d.definition_id as `#Definition`
 			FROM `".KUMVA_DB_PREFIX."definition` d 
-			WHERE d.voided = 0 AND d.proposal = 0 AND (d.wordclass IS NULL OR d.wordclass = '')";
+			INNER JOIN `".KUMVA_DB_PREFIX."entry` e ON e.accepted_id = d.definition_id
+			WHERE d.wordclass IS NULL OR d.wordclass = ''";
 	
 	return Dictionary::getReportService()->getResultFromSQL($sql, $paging);
 }
@@ -56,7 +57,8 @@ function kumva_report_nowordclass($paging) {
 function kumva_report_noexamples($paging) {
 	$sql = "SELECT SQL_CALC_FOUND_ROWS d.definition_id as `#Definition`
 			FROM `".KUMVA_DB_PREFIX."definition` d
-			WHERE d.proposal = 0 AND d.voided = 0 AND d.definition_id NOT IN (
+			INNER JOIN `".KUMVA_DB_PREFIX."entry` e ON e.accepted_id = d.definition_id
+			WHERE d.definition_id NOT IN (
 				SELECT DISTINCT definition_id FROM `".KUMVA_DB_PREFIX."example`
 			)";
 	
@@ -73,7 +75,7 @@ function kumva_report_duplicateentries($paging) {
 				COUNT(*) as `Count`,
 				CONCAT(COALESCE(d.prefix, ''), d.lemma, '|', COALESCE(d.wordclass, '')) as `_entry` 
 			FROM `".KUMVA_DB_PREFIX."definition` d 
-			WHERE d.voided = 0 AND d.proposal = 0 
+			INNER JOIN `".KUMVA_DB_PREFIX."entry` e ON e.accepted_id = d.definition_id
 			GROUP BY `_entry` 
 			HAVING `Count` > 1";
 	

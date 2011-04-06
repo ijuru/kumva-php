@@ -75,7 +75,7 @@ include_once 'tpl/header.php';
                     if ($field[0] != '_') {
                         echo '<td>';
                         if ($field[0] == '?')
-                            echo '<a href="definitions.php?q='.urlencode($row[$field]).'">'.$row[$field].'</a>';
+                            echo '<a href="entries.php?q='.urlencode($row[$field]).'">'.$row[$field].'</a>';
 						elseif ($field[0] == '#') {
 							$definition = Dictionary::getDefinitionService()->getDefinition((int)$row[$field]);
                             Templates::definitionLink($definition);
