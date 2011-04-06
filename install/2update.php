@@ -153,6 +153,9 @@ foreach ($entries as $entry) {
 		if ($revision->getChange() && $revision->getChange()->getAction() == Action::CREATE) {
 			if ($r < count($revisions) - 1) {
 				$ghost = $revisions[$r + 1];
+				
+				mysql_query('UPDATE rw_change SET proposal_id = NULL WHERE proposal_id = '.$ghost->getId());
+				
 				if (!Dictionary::getDefinitionService()->deleteDefinition($ghost))
 					echo "Unable to delete definition #".$ghost->getId()."<br/>";
 				$deleted_ghosts++;

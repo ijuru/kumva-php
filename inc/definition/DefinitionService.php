@@ -19,6 +19,14 @@
  * 
  * Purpose: Definition service class
  */
+ 
+class Revision {
+	const FIRST = 	 1;
+	const ACCEPTED = -1001;
+	const PROPOSED = -1002;
+	const HEAD = 	 -1003; // Latest of accepted or proposal
+	const LAST =	 -1004; // Absolute last
+}
 
 /**
  * Definition and example functions
@@ -121,13 +129,28 @@ class DefinitionService extends Service {
 	
 	/**
 	 * Gets the definition with the given entry and revision
-	 * @param int entryId the entry id
+	 * @param Entry entry the entry
 	 * @param int revision the revision number
 	 * @return Definition the definition
 	 */
-	public function getDefinitionByRevision($entryId, $revision) {
+	public function getDefinitionByRevision($entry, $revision) {
+		switch ($revision) {
+		case Revision::ACCEPTED:
+			return $entry->getAccepted();
+		case Revision::PROPOSED:
+			return $entry->getProposed();
+		case Revision::HEAD:
+			$acceptedRev = $entry->getAccepted() ? $entry->getAccepted()->getRevision() : 0;
+			$proposedRev = $entry->getProposed() ? $entry->getProposed()->getRevision() : 0;
+			$revision = max($acceptedRev, $proposedRev);
+		case Revision::LAST:
+			$revision = $this->database->scalar(
+				'SELECT max(revision) FROM `'.KUMVA_DB_PREFIX.'definition` WHERE entry_id = '.$entry->getId());
+			break;
+		}
+	
 		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` 
-									 WHERE entry_id = '.(int)$entryId.' AND revision = '.(int)$revision);
+									 WHERE entry_id = '.$entry->getId().' AND revision = '.(int)$revision);
 		return ($row != NULL) ? Definition::fromRow($row) : NULL;
 	}
 	

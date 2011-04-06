@@ -95,6 +95,7 @@ ku_sitetrans('KU_STR_INTERJECTION', 'Irangamutima');
 ku_sitetrans('KU_STR_KUMVAVERSION', 'Kumva version');
 ku_sitetrans('KU_STR_LANGUAGE', 'Language');
 ku_sitetrans('KU_STR_LANGUAGES', 'Languages');
+ku_sitetrans('KU_STR_LAST', 'Last');
 ku_sitetrans('KU_STR_LASTLOGIN', 'Last login');
 ku_sitetrans('KU_STR_LASTPAGE', 'Last page');
 ku_sitetrans('KU_STR_LEXICALMODULE', 'Lexical module');

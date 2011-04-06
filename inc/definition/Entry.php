@@ -31,6 +31,7 @@ class Entry extends Entity {
 	// Lazy loaded properties
 	private $accepted;
 	private $proposed;
+	private $head;
 	private $deleteChange;
 	private $revisions;
 	
@@ -94,6 +95,17 @@ class Entry extends Entity {
 	public function setProposed($proposed) {
 		$this->proposed = $proposed;
 		$this->proposedId = $proposed ? $proposed->getId() : NULL;
+	}
+	
+	/**
+	 * Gets the head revision () using lazy loading
+	 * @return Revision the head revision
+	 */
+	public function getHead() {
+		if (!$this->head)
+			$this->head = Dictionary::getDefinitionService()->getEntryHeadDefinition($this);
+		
+		return $this->head;
 	}
 	
 	/**

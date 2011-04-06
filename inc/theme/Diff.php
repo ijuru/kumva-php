@@ -27,9 +27,11 @@ class Diff {
 	/**
 	 * Creates a side-by-side comparison of two definitions
 	 * @param Definition definition1 the first definition
+	 * @param string label1 the label for first definition
 	 * @param Definition definition2 the second definition
+	 * @param string label1 the label for second definition
 	 */
-	public static function definitions($definition1, $definition2) {
+	public static function definitions($definition1, $label1, $definition2, $label2) {
 		$fields1 = $definition1 ? self::getDiffFields($definition1) : NULL;
 		$fields2 = $definition2 ? self::getDiffFields($definition2) : NULL;
 		
@@ -57,11 +59,11 @@ class Diff {
 				</td>
 				<?php if ($definition1) { ?>
 					<td style="vertical-align: middle">
-						<b><?php echo KU_STR_REVISION.': '.$definition1->getRevision(); ?></b>
+						<b><?php echo KU_STR_REVISION.': '.$definition1->getRevision().' ('.$label1.')'; ?></b>
 					</td>
 				<?php } if ($definition2) { ?>
 					<td style="vertical-align: middle">
-						<b><?php echo KU_STR_REVISION.': '.$definition2->getRevision(); ?></b>
+						<b><?php echo KU_STR_REVISION.': '.$definition2->getRevision().' ('.$label2.')'; ?></b>
 					</td>
 				<?php } ?>
 			</tr>

@@ -41,7 +41,7 @@ $entry = ($entryId > 0) ? Dictionary::getDefinitionService()->getEntry($entryId)
 $definitions = Dictionary::getDefinitionService()->getEntryDefinitions($entry);
 $viewRev = (int)Request::getGetParam('rev', 0);
 if ($viewRev)
-	$definition = Dictionary::getDefinitionService()->getDefinitionByRevision($entry->getId(), $viewRev); // Get specified rev
+	$definition = Dictionary::getDefinitionService()->getDefinitionByRevision($entry, $viewRev); // Get specified rev
 else
 	$definition = $definitions[0]; // Default to latest revision
 	
