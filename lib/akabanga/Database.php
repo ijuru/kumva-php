@@ -68,7 +68,7 @@ class Database {
 			$sql .= ' LIMIT '.$paging->getStart().', '.$paging->getSize();
 	
 			$result = $this->query($sql);
-			if ($result === FALSE) 
+			if ($result === FALSE)
 				return FALSE;
 			
 			$total = $this->scalar('SELECT FOUND_ROWS()');
@@ -76,7 +76,11 @@ class Database {
 			return $result;
 		}
 	
-		return mysql_query($sql, $this->res);
+		$result = mysql_query($sql, $this->res);
+		if ($result === FALSE && defined('AKABANGA_DEBUG'))
+			die('MYSQL ERROR: '.$sql);
+
+		return $result;
 	}
 	
 	/**

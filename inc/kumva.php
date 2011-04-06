@@ -53,10 +53,12 @@ define('KUMVA_URL_PROJECT', 'https://github.com/rowanseymour/kumva');
 define('KUMVA_URL_HELP', KUMVA_URL_PROJECT.'/wiki');
 define('KUMVA_URL_REPORTBUG', KUMVA_URL_PROJECT.'/issues');
 
-//////////////////////////////// Load libraries /////////////////////////////////////
+//////////////////////////////// Load libraries ////////////////////////////////////
 
 require_once KUMVA_DIR_LIB.'/markdown/markdown.php';
 require_once KUMVA_DIR_LIB.'/akabanga/akabanga.php';
+
+//////////////////////////////// Load config ///////////////////////////////////////
  
 // Try to load config file and configure the database
 if (!defined('KUMVA_SKIPCONFIG') && file_exists(KUMVA_DIR_INC.'/../config.php')) {
@@ -70,6 +72,13 @@ else {
 	define('KUMVA_HASCONFIG', FALSE);
 	define('KUMVA_TITLE_SHORT', 'Kumva Installer');
 }
+
+///////////////// Runtime mode (maintenance, debug or live) ////////////////////////
+
+if (!defined('KUMVA_MODE'))
+	define('KUMVA_MODE', 'live');
+elseif (KUMVA_MODE == 'debug')
+	define('AKABANGA_DEBUG', TRUE);
 
 //////////////////////// Load user and language services ///////////////////////////
 

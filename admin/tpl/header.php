@@ -67,6 +67,9 @@ $curUser = Session::getCurrent()->getUser();
 <body>
 	<div id="wrap">
     	<div id="header">
+    		<?php if (KUMVA_MODE == 'debug') { ?>
+    			<div style="color: white; background-color: red; padding: 6px; text-align: center">DEBUG MODE ACTIVE</div>
+    		<?php } ?>
             <div id="banner">	
                 <h1>Kumva Admin</h1>
                 <h2><?php echo KUMVA_TITLE_SHORT; ?></h2>
