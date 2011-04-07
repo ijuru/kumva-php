@@ -48,7 +48,7 @@ include_once 'tpl/header.php';
 	</div>
 	<?php if (Session::getCurrent()->hasRole(Role::ADMINISTRATOR)) { ?>
 	<div style="float: right">
-		<?php Templates::buttonLink('add', 'user.php', KU_STR_ADD); ?>
+		<?php Templates::buttonLink('add', 'useredit.php', KU_STR_ADD); ?>
 	</div>
 	<?php } ?>
 </div> 
@@ -68,7 +68,7 @@ include_once 'tpl/header.php';
 	<?php 
 	$users = Dictionary::getUserService()->getUsers($showVoided);
 	foreach($users as $user) { 
-		$itemUrl = 'profile.php?id='.$user->getId();
+		$itemUrl = 'user.php?id='.$user->getId();
 		$userStats = Dictionary::getUserService()->getUserActivity($user);
 		?>
 		<tr class="rowlink" onclick="aka_goto('<?php echo $itemUrl; ?>')">

@@ -214,7 +214,7 @@ class Templates {
 	 */
 	public static function userLink($user) {
 		if ($user != NULL)
-			echo '<a href="profile.php?id='.$user->getId().'" title="'.$user->getName().'">'.$user->getLogin().'</a>';
+			echo '<a href="user.php?id='.$user->getId().'" title="'.$user->getName().'">'.$user->getLogin().'</a>';
 	}
 	
 	/**

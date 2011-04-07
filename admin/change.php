@@ -38,6 +38,7 @@ $curUser = Session::getCurrent()->getUser();
 $commentText = '';
 
 // User can resolve a pending change if they are an editor, and they are not the submitter
+$canEditDef = $change->getAction() != Action::DELETE;
 $canComment = $curUser->hasRole(Role::CONTRIBUTOR);
 $canApprove = $curUser->hasRole(Role::CONTRIBUTOR) && !$curUser->equals($change->getSubmitter());
 $canResolve = (($curUser->hasRole(Role::EDITOR) && !$curUser->equals($change->getSubmitter())) || $curUser->hasRole(Role::ADMINISTRATOR));
@@ -150,7 +151,7 @@ function onActionSubmit() {
 <table class="form">
 	<tr>
 		<th><?php Templates::icon('entry'); ?> <?php echo KU_STR_ENTRY; ?></th>
-		<td><?php Templates::definitionLink($definition, TRUE); ?></td>
+		<td><?php Templates::definitionLink($definition, $canEditDef); ?></td>
 	</tr>
 	<tr>
 		<th><?php Templates::icon('user'); ?> <?php echo KU_STR_SUBMITTED; ?></th>

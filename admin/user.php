@@ -17,213 +17,128 @@
  *
  * Copyright Rowan Seymour 2010
  *
- * Purpose: Search statistics page
+ * Purpose: User profile page
  */
 
 include_once '../inc/kumva.php';
 
 Session::requireUser();
 
-// Allow user's to edit their own profiles
 $userId = (int)Request::getGetParam('id', 0);
+$user = Dictionary::getUserService()->getUser($userId);
+$activity = Dictionary::getUserService()->getUserActivity($user);
+$rank = Dictionary::getUserService()->getRankForScore($activity['score']);
+
 $curUser = Session::getCurrent()->getUser();
-$isEditingSelf = ($curUser != NULL && $curUser->getId() == $userId);
-if (!$isEditingSelf)
-	Session::requireRole(Role::ADMINISTRATOR);
+$isViewingSelf = ($curUser != NULL && $curUser->getId() == $userId);
 
-/**
- * Validator for user objects
- */
-class UserValidator extends Validator {
-	public function validate($user, $errors) {
-		if (!$user->getName())
-			$errors->addForProperty('name', KU_MSG_ERROREMPTY);
-			
-		if (!$user->getLogin())
-			$errors->addForProperty('login', KU_MSG_ERROREMPTY);
-		elseif (!preg_match("/^[A-Za-z0-9]+$/", $user->getLogin()))
-			$errors->addForProperty('login', KU_MSG_ERRORALPHANUMERIC);
-			
-		if (!$user->getEmail())
-			$errors->addForProperty('email', KU_MSG_ERROREMPTY);
-		elseif (!preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $user->getEmail()))
-			$errors->addForProperty('email', KU_MSG_ERROREMAILFORMAT);
-	}
-}
-
-/**
- * Form controller for add/edit user
- */
-class UserForm extends Form {
-	/**
-	 * @see Form::createEntity()
-	 */
-	protected function createEntity() {
-		global $userId;	
-		$user = Dictionary::getUserService()->getUser($userId);
-		return ($user != NULL) ? $user : new User();
-	}
-	
-	/**
-	 * @see Form::saveEntity()
-	 */
-	protected function saveEntity($user) {
-		global $isEditingSelf;
-		
-		$password = Request::getPostParam('password');
-		if ($password == '')
-			$password = NULL;
-			
-		// Update user subscriptions
-		$subscriptionIds = Request::getPostParam('subscriptions', array());
-		$subscriptions = array();
-		foreach ($subscriptionIds as $subscriptionId)
-			$subscriptions[] = Dictionary::getUserService()->getSubscription($subscriptionId);
-		$user->setSubscriptions($subscriptions);
-		
-		// Update user roles
-		if (Session::getCurrent()->hasRole(Role::ADMINISTRATOR)) {
-			$roleIds = Request::getPostParam('roles', array());
-			$roles = array();
-			foreach ($roleIds as $roleId)
-				$roles[] = Dictionary::getUserService()->getRole($roleId);
-			$user->setRoles($roles);
-		}
-		
-		$res = Dictionary::getUserService()->saveUser($user, $password, TRUE);
-		
-		// Update session user if we are editing our own user account
-		if ($isEditingSelf)
-			Session::getCurrent()->reloadUser();
-		
-		return $res;
-	}
-}
- 
-$returnUrl = Request::getGetParam('ref', 'users.php');
-$form = new UserForm($returnUrl, new UserValidator(), new FormRenderer());
-$user = $form->getEntity();
+$whichChanges = Request::getGetParam('changes', 'proposed');
+$paging = new Paging('start', 10);
+if ($whichChanges == 'proposed')
+	$changes = Dictionary::getChangeService()->getChangesBySubmitter($user, NULL, $paging);
+else
+	$changes = Dictionary::getChangeService()->getChangesByResolver($user, NULL, $paging);
 
 include_once 'tpl/header.php';
 
 ?>
 <script type="text/javascript">
 /* <![CDATA[ */
-$(document).ready(function() {
-	$('#userform').submit(function() {
-		var password = $('#dummy_p1').val();
-		var confirm = $('#dummy_p2').val();
-		var newUser = <?php echo $form->getEntity()->isNew() ? 'true' : 'false' ?>;
-	
-		if (newUser || password.length > 0) {
-			if (password.length < 6) {
-				$('#error_password').text('Password must be at least 6 characters');
-				return false;
-			}
-			if (password != confirm) {
-				$('#error_password').text('Password mismatch');
-				return false;
-			}
-			$('#password').val(aka_md5(password));
-		}
-		return true;
-	});
-});
+function voidUser(id) {
+	if (confirm('<?php echo KU_MSG_CONFIRMVOIDUSER; ?>'))
+		aka_goto('users.php?voidId=' + id);
+}
 /* ]]> */
 </script>
 
-<h3><?php echo $form->getEntity()->isNew() ? KU_STR_ADDUSER : ($isEditingSelf ? KU_STR_EDITPROFILE : KU_STR_EDITUSER) ?></h3>
+<h3><?php echo KU_STR_VIEWPROFILE; ?></h3>
 
-<?php 
-	$form->start('userform'); 
-	if (count($form->getErrors()->get()) > 0)
-		echo '<div class="error">'.implode('<br />', $form->getErrors()->get()).'</div>';
-?>
-	<input type="hidden" name="password" id="password" />
-	<table class="form">
-		<tr>
-			<th><?php echo KU_STR_NAME; ?></th>
-			<td><?php $form->textField('name'); ?> <?php $form->errors('name'); ?></td>
-		</tr>
-		<tr>
-			<th><?php echo KU_STR_LOGIN; ?></th>
-			<td><?php $form->textField('login'); ?> <?php $form->errors('login'); ?></td>
-		</tr>
-		<tr>
-			<th><?php echo KU_STR_EMAIL; ?></th>
-			<td><?php $form->textField('email'); ?> <?php $form->errors('email'); ?></td>
-		</tr>
-		<tr>
-			<th><?php echo KU_STR_WEBSITE; ?></th>
-			<td><?php $form->textField('website'); ?> <?php $form->errors('website'); ?></td>
-		</tr>
-		<tr>
-			<th><?php echo KU_STR_TIMEZONE; ?></th>
-			<td><?php $form->dropdown('timezone', timezone_identifiers_list(), FALSE); ?> <?php $form->errors('timezone'); ?></td>
-		</tr>
-		<?php if (Session::getCurrent()->hasRole(Role::ADMINISTRATOR)) { ?>
-			<tr>
-				<td colspan="2" class="sectionheader"><?php echo KU_STR_ROLES; ?></td>
-			</tr>
-			<?php
-			$allRoles = Dictionary::getUserService()->getRoles();
-			$userRoles = $user->getRoles();
-			foreach ($allRoles as $role) {
-				$hasRole = $role->inArray($userRoles);
-				?>
-				<tr>
-					<th><?php echo $role->getName(); ?></th>
-					<td>		
-						<input type="checkbox" name="roles[]" value="<?php echo $role->getId(); ?>" <?php echo $hasRole ? 'checked="checked"' : ''?> /> 
-						<?php echo $role->getDescription(); ?>
-					</td>
-				</tr>	
-				<?php 	
-				}
-			} 
+<div class="listcontrols">
+	<div style="float: left">
+		<?php Templates::buttonLink('back', Request::getGetParam('ref', 'users.php'), KU_STR_BACK); ?>
+	</div>
+	<div style="float: right">
+		<?php
+		if (Session::getCurrent()->hasRole(Role::ADMINISTRATOR) || $isViewingSelf) 
+			Templates::buttonLink('edit', 'useredit.php?id='.$user->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT), KU_STR_EDIT); 
+		if (Session::getCurrent()->hasRole(Role::ADMINISTRATOR) && !$isViewingSelf) 
+			Templates::button('delete', 'javascript:voidUser('.$user->getId().')', KU_STR_VOID);
 		?>
-		<tr>
-			<td colspan="2" class="sectionheader"><?php echo KU_STR_NOTIFICATIONS; ?></td>
-		</tr>
-		<tr>
-			<?php
-			$allSubscriptions = Dictionary::getUserService()->getSubscriptions();
-			$userSubscriptions = $user->getSubscriptions();
-			foreach ($allSubscriptions as $subscription) {
-				$hasSubscription = $subscription->inArray($userSubscriptions);
-				?>
-				<tr>
-					<th><?php echo $subscription->getName(); ?></th>
-					<td>		
-						<input type="checkbox" name="subscriptions[]" value="<?php echo $subscription->getId(); ?>" <?php echo $hasSubscription ? 'checked="checked"' : ''?> /> 
-						<?php echo $subscription->getDescription(); ?>
-					</td>
-				</tr>	
-				<?php 	
-			}
-			?>
-		</tr>
-		<tr>
-			<td colspan="2" class="sectionheader"><?php echo KU_STR_ACCOUNT; ?></td>
-		</tr>
-		<tr>
-			<th><?php echo KU_STR_PASSWORD; ?></th>
-			<td>
-				<input type="password" id="dummy_p1" /> <span id="error_password" class="error"></span><br />
-				<input type="password" id="dummy_p2" /> (confirm)
-			</td>
-		</tr>
-		<?php if (Session::getCurrent()->hasRole(Role::ADMINISTRATOR)) { ?>
-			<tr>
-				<th><?php echo KU_STR_VOIDED; ?></th>
-				<td><?php $form->checkbox('voided'); ?> <?php $form->errors('voided'); ?></td>
-			</tr>	
-		<?php } ?>
-		<tr>
-			<td colspan="2"><hr /><?php $form->saveButton(); $form->cancelButton(); ?></td>
-		</tr>
-	</table>
-<?php $form->end();
-
-include_once 'tpl/footer.php';
+	</div>
+</div>
+<?php 
+if ($user->isVoided())
+	echo '<div class="info">'.KU_MSG_USERVOIDED.'</div>'; 
 ?>
+
+<table class="form">
+	<tr>
+		<th><?php Templates::icon('user'); ?> <?php echo KU_STR_NAME; ?></th>
+		<td><?php echo $user->getName().' ('.$user->getLogin().')'; ?></td>
+	</tr>
+	<tr>
+		<th><?php Templates::icon('date'); ?> <?php echo KU_STR_LASTLOGIN; ?></th>
+		<td><?php Templates::dateTime($user->getLastLogin()); ?></td>
+	</tr>
+	<tr>
+		<th><?php Templates::icon('email'); ?> <?php echo KU_STR_EMAIL; ?></th>
+		<td><a href="mailto:<?php echo $user->getEmail(); ?>"><?php echo $user->getEmail(); ?></a></td>
+	</tr>
+	<tr>
+		<th><?php Templates::icon('website'); ?> <?php echo KU_STR_WEBSITE; ?></th>
+		<td><a href="<?php echo $user->getWebsite(); ?>"><?php echo $user->getWebsite(); ?></a></td>
+	</tr>
+	<tr>
+		<th><?php Templates::icon('roles'); ?> <?php echo KU_STR_ROLES; ?></th>
+		<td>
+		<?php 
+		$roles = array();
+		foreach ($user->getRoles() as $role)
+			$roles[] = $role->getName();
+		echo aka_makecsv($roles);
+		?>
+		</td>
+	</tr>
+	<tr>
+		<th><?php Templates::icon('activity'); ?> <?php echo KU_STR_ACTIVITY; ?></th>
+		<td>
+			<?php 
+			echo $activity['proposals'].' ';
+			Templates::icon('proposal', KU_STR_PROPOSALS);
+			echo ' '.$activity['comments'].' ';
+			Templates::icon('comments', KU_STR_COMMENTS);
+			?>
+		</td>
+	</tr>
+	<tr>
+		<th><?php Templates::icon('rank'); ?> <?php echo KU_STR_RANK; ?></th>
+		<td><?php Templates::rank($rank); ?></td>
+	</tr>
+</table>
+
+<div class="listcontrols">
+	<form method="get">
+		<input name="id" type="hidden" value="<?php echo $user->getId(); ?>" />
+		<?php echo KU_STR_CHANGES; ?>
+		<select name="changes">
+			<option value="proposed" <?php echo $whichChanges == 'proposed' ? 'selected="selected"' : ''; ?>><?php echo KU_STR_PROPOSED; ?></option>
+			<option value="resolved" <?php echo $whichChanges == 'resolved' ? 'selected="selected"' : ''; ?>><?php echo KU_STR_RESOLVED; ?></option>
+		</select>
+		<?php Templates::button('refresh', "aka_submit(this)", KU_STR_REFRESH); ?>
+	</form>
+</div>
+
+<?php Templates::changesTable($changes, TRUE, TRUE, FALSE, ($whichChanges != 'proposed')); ?>
+	
+<div id="pager">
+	<?php
+	if ($paging->getTotalPages() > 1) {
+		Templates::pagerButtons($paging);
+		echo '&nbsp;&nbsp;';
+	}
+	if (count($changes))
+		printf(KU_MSG_PAGER, $paging->getStart() + 1, $paging->getStart() + count($changes), $paging->getTotal());
+	?>			
+</div>
+
+<?php include_once 'tpl/footer.php'; ?>

@@ -24,13 +24,15 @@ include_once '../inc/kumva.php';
 
 Session::requireUser();
 
+// Get entry
+$entryId = (int)Request::getGetParam('id', 0);
+$entry = ($entryId > 0) ? Dictionary::getDefinitionService()->getEntry($entryId) : new Entry();
+
 // Process delete request
 $action = Request::getPostParam('action');
-if ($action == 'delete') {
-	$delId = Request::getPostParam('entryId');
+if ($action == 'delete' && !$entry->isNew()) {
 	$change = Change::create(ACTION::DELETE);
 	if (Dictionary::getChangeService()->saveChange($change)) {
-		$entry = Dictionary::getDefinitionService()->getEntry($entryId);
 		$entry->setDeleteChange($change);
 		if (Dictionary::getDefinitionService()->saveEntry($entry)) {
 			$change->watch();
@@ -40,20 +42,24 @@ if ($action == 'delete') {
 	}
 }
 
-$entryId = (int)Request::getGetParam('id', 0);
-$entry = ($entryId > 0) ? Dictionary::getDefinitionService()->getEntry($entryId) : new Entry();
+// Get entry definitions
 $definitions = Dictionary::getDefinitionService()->getEntryDefinitions($entry);
 $viewRev = (int)Request::getGetParam('rev', 0);
 if ($viewRev)
 	$definition = Dictionary::getDefinitionService()->getDefinitionByRevision($entry, $viewRev); // Get specified rev
 else
 	$definition = $definitions[0]; // Default to latest revision
+
+// Get pending change if there is one
+if ($entry->getDeleteChange() && $entry->getDeleteChange()->isPending())
+	$pendingChange = $entry->getDeleteChange();
+elseif ($entry->getProposed())
+	$pendingChange = $entry->getProposed()->getChange();
 	
-$proposedDefinition = $entry->getProposed();
-$proposedChange = $proposedDefinition ? $proposedDefinition->getChange() : NULL;
-	
-$canEdit = Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
-$canDelete = !$proposedChange && Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
+$pendingChangeUrl = $pendingChange ? 'change.php?id='.$pendingChange->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT) : NULL;
+
+$canEdit = !$pendingChange && Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
+$canDelete = !$pendingChange && Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
 
 include_once 'tpl/header.php';
 
@@ -98,7 +104,6 @@ function deleteEntry(id) {
 	<div style="float: right">
 		<form id="definitionForm" method="post">
 			<input type="hidden" id="action" name="action" />
-			<input type="hidden" name="entryId" value="<?php echo $entry->getId(); ?>" />
 			<?php 
 			if ($canEdit)
 				Templates::buttonLink('edit', 'entryedit.php?id='.$entry->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT), KU_STR_EDIT);
@@ -108,19 +113,20 @@ function deleteEntry(id) {
 		</form>
 	</div>
 </div>
+<div class="info">
 <?php 
-if ($proposedChange)
-	printf('<div class="info">'.KU_MSG_ENTRYCHANGEPENDING.'</div>', 
-		'change.php?id='.$proposedChange->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT));
+if ($pendingChange && $pendingChange->getAction() == Action::DELETE)
+	printf(KU_MSG_ENTRYDELETECHANGEPENDING, $pendingChangeUrl);
+elseif ($pendingChange)
+	printf(KU_MSG_ENTRYCHANGEPENDING, $pendingChangeUrl);
 elseif ($entry->isDeleted() && $entry->getDeleteChange())
-	printf('<div class="info">'.KU_MSG_ENTRYDELETEDBYCHANGE.'</div>', 
-		'change.php?id='.$entry->getDeleteChange()->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT));
+	printf(KU_MSG_ENTRYDELETEDBYCHANGE, 'change.php?id='.$entry->getDeleteChange()->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT));
 elseif ($entry->isDeleted())
-	echo '<div class="info">'.KU_MSG_ENTRYDELETED.'</div>';
+	echo KU_MSG_ENTRYDELETED;
 elseif (!$definition->isVerified())
-	echo '<div class="info">'.KU_MSG_ENTRYNOTVERIFIED.'</div>'; 
-
-?>	
+	echo KU_MSG_ENTRYNOTVERIFIED; 
+?>
+</div>	
 <table class="form">
 	<tr>
 		<th><?php echo KU_STR_WORDCLASS.'/'.KU_STR_NOUNCLASSES; ?></th>

@@ -28,7 +28,7 @@ $menu = array(
 		array('export.php', KU_STR_EXPORT, 'export', NULL),
 		array('import.php', KU_STR_IMPORT, 'import', Role::ADMINISTRATOR)
 	)),
-	array('users.php', KU_STR_USERS, 'users', NULL, array( 
+	array('users.php', KU_STR_COMMUNITY, 'users', NULL, array( 
 		array('users.php', KU_STR_USERS, 'users', NULL),
 		array('roles.php', KU_STR_ROLES, 'roles', Role::ADMINISTRATOR),
 		array('ranks.php', KU_STR_RANKS, 'rank', NULL)
@@ -78,7 +78,7 @@ $curUser = Session::getCurrent()->getUser();
                 <div id="usermenu">
                     <?php 
                     if ($curUser) 
-                        echo KU_STR_WELCOME.' <a href="profile.php?id='.$curUser->getId().'">'.$curUser->getName().'</a>&nbsp;&nbsp;|&nbsp;&nbsp;';
+                        echo KU_STR_WELCOME.' <a href="user.php?id='.$curUser->getId().'">'.$curUser->getName().'</a>&nbsp;&nbsp;|&nbsp;&nbsp;';
 					?>
                     <a href="<?php echo KUMVA_URL_ROOT; ?>"><?php echo KU_STR_VIEWSITE; ?></a>
 					&nbsp;&nbsp;|&nbsp;&nbsp;
