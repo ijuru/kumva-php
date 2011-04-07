@@ -27,13 +27,17 @@ Session::requireUser();
 // Process delete request
 $action = Request::getPostParam('action');
 if ($action == 'delete') {
-	$delId = Request::getPostParam('targetId');
-	//$change = Change::createDelete($delId);
-	//if (Dictionary::getChangeService()->saveChange($change)) {
-		//$change->watch();
-		//Notifications::newChange($change);
-		//Request::redirect('change.php?id='.$change->getId().'&ref='.urlencode(KUMVA_URL_CURRENT));
-	//}
+	$delId = Request::getPostParam('entryId');
+	$change = Change::create(ACTION::DELETE);
+	if (Dictionary::getChangeService()->saveChange($change)) {
+		$entry = Dictionary::getDefinitionService()->getEntry($entryId);
+		$entry->setDeleteChange($change);
+		if (Dictionary::getDefinitionService()->saveEntry($entry)) {
+			$change->watch();
+			//Notifications::newChange($change);
+			Request::redirect('change.php?id='.$change->getId().'&ref='.urlencode(KUMVA_URL_CURRENT));
+		}
+	}
 }
 
 $entryId = (int)Request::getGetParam('id', 0);
@@ -94,12 +98,12 @@ function deleteEntry(id) {
 	<div style="float: right">
 		<form id="definitionForm" method="post">
 			<input type="hidden" id="action" name="action" />
-			<input type="hidden" name="targetId" value="<?php echo $entry->getId(); ?>" />
+			<input type="hidden" name="entryId" value="<?php echo $entry->getId(); ?>" />
 			<?php 
 			if ($canEdit)
 				Templates::buttonLink('edit', 'entryedit.php?id='.$entry->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT), KU_STR_EDIT);
 			if ($canDelete)
-				Templates::button('delete', 'deleteEntry('.$entry->getId().')', KU_STR_DELETE);
+				Templates::button('delete', 'deleteEntry()', KU_STR_DELETE);
 			?>
 		</form>
 	</div>

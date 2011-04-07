@@ -352,8 +352,13 @@ class Templates {
 			</tr>
 			<?php }
 			foreach($changes as $change) { 
-				// The definition being changed/created
-				$definition = $change->getDefinition() ? $change->getDefinition() : $change->getProposal();
+				if ($change->getAction() == Action::DELETE) {
+					$entry = Dictionary::getChangeService()->getEntryByDeleteChange($change);
+					$definition = Dictionary::getDefinitionService()->getDefinitionByRevision($entry, Revision::LAST);
+				}
+				else
+					$definition = Dictionary::getChangeService()->getChangeDefinition($change);
+
 				$icon = $actionIcons[$change->getAction()];
 				$itemUrl = 'change.php?id='.$change->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
 				$commentCounts = Dictionary::getChangeService()->getChangeCommentCounts($change);

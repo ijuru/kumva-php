@@ -28,8 +28,7 @@ $changeId = (int)Request::getGetParam('id', 0);
 $change = Dictionary::getChangeService()->getChange($changeId);
 if ($change->getAction() == Action::DELETE) {
 	$entry = Dictionary::getChangeService()->getEntryByDeleteChange($change);
-	$definition = $change->isPending() ? $entry->getAccepted()
-		: Dictionary::getDefinitionService()->getDefinitionByRevision($entry, Revision::LAST);
+	$definition = Dictionary::getDefinitionService()->getDefinitionByRevision($entry, Revision::LAST);
 }
 else {
 	$definition = Dictionary::getChangeService()->getChangeDefinition($change);

@@ -106,7 +106,8 @@ class DefinitionForm extends Form {
 				$change = Change::create(Action::CREATE);
 			}
 			else {
-				$revision = $definition->getRevision() + 1;
+				$last = Dictionary::getDefinitionService()->getDefinitionByRevision($entry, Revision::LAST);
+				$revision = $last->getRevision() + 1;
 				$change = Change::create(Action::MODIFY);
 			}
 				
