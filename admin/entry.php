@@ -55,11 +55,13 @@ if ($entry->getDeleteChange() && $entry->getDeleteChange()->isPending())
 	$pendingChange = $entry->getDeleteChange();
 elseif ($entry->getProposed())
 	$pendingChange = $entry->getProposed()->getChange();
+else
+	$pendingChange = NULL;
 	
 $pendingChangeUrl = $pendingChange ? 'change.php?id='.$pendingChange->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT) : NULL;
 
-$canEdit = !$pendingChange && Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
-$canDelete = !$pendingChange && Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
+$canEdit = !$entry->isDeleted() && !$pendingChange && Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
+$canDelete = !$entry->isDeleted() && !$pendingChange && Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
 
 include_once 'tpl/header.php';
 
@@ -113,20 +115,21 @@ function deleteEntry(id) {
 		</form>
 	</div>
 </div>
-<div class="info">
 <?php 
 if ($pendingChange && $pendingChange->getAction() == Action::DELETE)
-	printf(KU_MSG_ENTRYDELETECHANGEPENDING, $pendingChangeUrl);
+	$message = sprintf(KU_MSG_ENTRYDELETECHANGEPENDING, $pendingChangeUrl);
 elseif ($pendingChange)
-	printf(KU_MSG_ENTRYCHANGEPENDING, $pendingChangeUrl);
+	$message = sprintf(KU_MSG_ENTRYCHANGEPENDING, $pendingChangeUrl);
 elseif ($entry->isDeleted() && $entry->getDeleteChange())
-	printf(KU_MSG_ENTRYDELETEDBYCHANGE, 'change.php?id='.$entry->getDeleteChange()->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT));
+	$message = sprintf(KU_MSG_ENTRYDELETEDBYCHANGE, 'change.php?id='.$entry->getDeleteChange()->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT));
 elseif ($entry->isDeleted())
-	echo KU_MSG_ENTRYDELETED;
+	$message = KU_MSG_ENTRYDELETED;
 elseif (!$definition->isVerified())
-	echo KU_MSG_ENTRYNOTVERIFIED; 
-?>
-</div>	
+	$message = KU_MSG_ENTRYNOTVERIFIED;
+	
+if (isset($message))
+	echo '<div class="info">'.$message.'</div>'; 
+?>	
 <table class="form">
 	<tr>
 		<th><?php echo KU_STR_WORDCLASS.'/'.KU_STR_NOUNCLASSES; ?></th>
@@ -194,6 +197,7 @@ elseif (!$definition->isVerified())
 		<th><?php echo KU_STR_CHANGE; ?></th>
 		<th><?php echo KU_STR_SUBMITTED; ?></th>
 		<th><?php echo KU_STR_SUBMITTER; ?></th>
+		<th><?php echo KU_STR_STATUS; ?></th>
 		<th style="width: 30px">&nbsp;</th>
 	</tr>
 	<?php 
@@ -209,8 +213,11 @@ elseif (!$definition->isVerified())
 				<td style="text-align:center"><a href="change.php?id=<?php echo $change->getId(); ?>"><?php echo $change->getId(); ?></a></td>
 				<td style="text-align:center"><?php echo Templates::dateTime($change->getSubmitted()); ?></td>
 				<td style="text-align:center"><?php echo Templates::userLink($change->getSubmitter()); ?></td>
+				<td style="text-align: center" class="status-<?php echo $change->getStatus(); ?>">
+					<?php echo Status::toLocalizedString($change->getStatus()); ?>
+				</td>
 			<?php } else { ?>
-				<td style="text-align:center" colspan="3"><i>No change information</i></td>
+				<td style="text-align:center" colspan="4"><i>No change information</i></td>
 			<?php } ?>
 			<td>&nbsp;</td>
 		</tr>

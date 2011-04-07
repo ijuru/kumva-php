@@ -64,18 +64,18 @@ function processAction($change, $action, $commentText) {
 		//Notifications::newComment($change, $comment);
 		return TRUE;	
 	}
-	/*elseif ($action == 'accept' && $canResolve && $change->isPending()) {
+	elseif ($action == 'accept' && $canResolve && $change->isPending()) {
 		if (Dictionary::getChangeService()->acceptChange($change)) {
-			Notifications::changeAccepted($change);
+			//Notifications::changeAccepted($change);
 			return TRUE;
 		}
 	}
 	elseif ($action == 'reject' && $commentText && $canResolve && $change->isPending()) {
 		if (Dictionary::getChangeService()->rejectChange($change)) {
-			Notifications::changeRejected($change, $comment);
+			//Notifications::changeRejected($change, $comment);
 			return TRUE;
 		}
-	}*/
+	}
 	
 	return FALSE;
 }

@@ -23,22 +23,7 @@
 /**
  * Change functions
  */
-class ChangeService extends Service {	
-	/**
-	 * #TBR
-	 */
-	public function getChangeForProposal($definition) {
-		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'change` WHERE proposal_id = '.$definition->getId());
-		return ($row != NULL) ? Change::fromRow($row) : NULL;
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function getChangesForDefinition($definition, $status = NULL) {
-		return $definition->isProposal() ? array() : $this->getChanges($definition, NULL, $status, NULL, FALSE, NULL);
-	}
-
+class ChangeService extends Service {
 	/**
 	 * Get the change with the given id
 	 * @param id int the id
@@ -164,39 +149,21 @@ class ChangeService extends Service {
 		if ($change->getStatus() != Status::PENDING)
 			return FALSE;
 		
-		// For creates and modifies, clone proposal and save as definition
 		if ($change->getAction() == Action::CREATE || $change->getAction() == Action::MODIFY) {
-			$proposal = $change->getProposal();
-			
-			// TODO find a better way to load lazy properties (by Definition::copy(...) ?)
-			if (!Dictionary::getDefinitionService()->saveDefinition($proposal))
-				return FALSE;
-			
-			// Clone proposal
-			$definition = clone $proposal;
-			$definition->setProposal(FALSE);
-			
-			// If modifying existing definition, use its id so it will be overwritten
-			if ($change->getAction() == Action::MODIFY)
-				$definition->setId($change->getDefinition()->getId());
-			else 
-				$definition->setId(0);
-			
-			// Save new definition / update existing definition
-			if (!Dictionary::getDefinitionService()->saveDefinition($definition))
-				return FALSE;
-				
-			$change->setDefinition($definition);
-				
-			// Void proposal
-			if (!Dictionary::getDefinitionService()->voidDefinition($proposal))
-				return FALSE;
+			$proposal = $this->getChangeDefinition($change);
+			$entry = $proposal->getEntry();
+			$accepted = $proposal;
 		}
-		elseif ($change->getAction() == Action::DELETE) {
-			// Void definition
-			if (!Dictionary::getDefinitionService()->voidDefinition($change->getDefinition()))
-				return FALSE;
+		else {
+			$entry = $this->getEntryByDeleteChange($change);
+			$accepted = NULL;	
 		}
+		
+		// Update entry revision references
+		$entry->setAccepted($accepted);
+		$entry->setProposed(NULL);
+		if (!Dictionary::getDefinitionService()->saveEntry($entry))
+			return FALSE;	
 	
 		$change->setStatus(Status::ACCEPTED);
 		$change->setResolver(Session::getCurrent()->getUser());
@@ -213,12 +180,20 @@ class ChangeService extends Service {
 	public function rejectChange($change) {
 		if ($change->getStatus() != Status::PENDING)
 			return FALSE;
-		
-		// Void proposal definition	
-		if ($change->getProposal()) {
-			if (!Dictionary::getDefinitionService()->voidDefinition($change->getProposal()))
-				return FALSE;
+			
+		if ($change->getAction() == Action::CREATE || $change->getAction() == Action::MODIFY) {
+			$proposal = $this->getChangeDefinition($change);
+			$entry = $proposal->getEntry();
 		}
+		else {
+			$entry = $this->getEntryByDeleteChange($change);
+			// TODO...
+		}
+		
+		// Update entry revision references
+		$entry->setProposed(NULL);
+		if (!Dictionary::getDefinitionService()->saveEntry($entry))
+			return FALSE;	
 	
 		$change->setStatus(Status::REJECTED);
 		$change->setResolver(Session::getCurrent()->getUser());
@@ -336,6 +311,21 @@ class ChangeService extends Service {
 		$sql .= 'GROUP BY status';
 		
 		return $this->database->rows($sql, 'status');
+	}
+	
+	/**
+	 * #TBR
+	 */
+	public function getChangeForProposal($definition) {
+		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'change` WHERE proposal_id = '.$definition->getId());
+		return ($row != NULL) ? Change::fromRow($row) : NULL;
+	}
+	
+	/**
+	 * #TBR
+	 */
+	public function getChangesForDefinition($definition, $status = NULL) {
+		return $definition->isProposal() ? array() : $this->getChanges($definition, NULL, $status, NULL, FALSE, NULL);
 	}
 }
 
