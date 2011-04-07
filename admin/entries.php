@@ -66,18 +66,19 @@ include_once 'tpl/header.php';
 		</tr>
 		<?php 
 		if ($search->hasResults()) {
-			foreach($search->getResults() as $definition) { 
-				$itemUrl = 'entry.php?id='.$definition->getEntry()->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
+			foreach($search->getResults() as $definition) {
+				$entry = $definition->getEntry();
+				$itemUrl = 'entry.php?id='.$entry->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
 				$editUrl = 'definition.php?id='.$definition->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
 				?>
 				<tr class="rowlink" onclick="aka_goto('<?php echo $itemUrl; ?>')">
 					<td>&nbsp;</td>
 					<td>
 					<?php 
-					if ($definition->isProposal())
-						Templates::icon('proposal', KU_STR_PROPOSAL);
-					else
-						Templates::icon('entry', KU_STR_ENTRY); 
+						if ($definition->equals($entry->getProposed()))
+							Templates::icon('proposal', KU_STR_PROPOSAL);
+						else
+						 	Templates::icon('entry', KU_STR_ENTRY);
 					?>
 					</td>
 					<td class="prefix" style="padding-right: 0; text-align: right"><?php echo $definition->getPrefix(); ?></td>

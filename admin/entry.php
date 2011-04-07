@@ -112,9 +112,11 @@ function deleteEntry(id) {
 if ($proposedChange)
 	printf('<div class="info">'.KU_MSG_ENTRYCHANGEPENDING.'</div>', 
 		'change.php?id='.$proposedChange->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT));
-elseif ($entry->isDeleted())
-	printf('<div class="info">'.KU_MSG_ENTRYDELETED.'</div>', 
+elseif ($entry->isDeleted() && $entry->getDeleteChange())
+	printf('<div class="info">'.KU_MSG_ENTRYDELETEDBYCHANGE.'</div>', 
 		'change.php?id='.$entry->getDeleteChange()->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT));
+elseif ($entry->isDeleted())
+	echo '<div class="info">'.KU_MSG_ENTRYDELETED.'</div>';
 elseif (!$definition->isVerified())
 	echo '<div class="info">'.KU_MSG_ENTRYNOTVERIFIED.'</div>'; 
 

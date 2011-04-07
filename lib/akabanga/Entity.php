@@ -114,7 +114,7 @@ abstract class Entity {
 	 * @return bool TRUE if equal, else FALSE
 	 */
 	public function equals($entity) {
-		return $this->id == $entity->id;
+		return $entity && ($this->id == $entity->id);
 	}
 	
 	/**

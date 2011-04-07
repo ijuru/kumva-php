@@ -28,8 +28,5 @@ ALTER TABLE `rw_definition`
 ADD CONSTRAINT `FK_rw_definition_change` FOREIGN KEY (`change_id` ) REFERENCES `rw_change` (`change_id` ),
 ADD INDEX `FK_rw_definition_change` (`change_id` ASC);
 
-# Enforce uniqueness of definition.change_id
-ALTER TABLE `rw_definition` ADD UNIQUE INDEX `UQ_rw_definition_change` (`change_id` ASC);
-
 
 

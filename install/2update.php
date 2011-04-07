@@ -2,140 +2,126 @@
  
 include_once '../inc/kumva.php';
 
-if (mysql_query('UPDATE `rw_definition` SET entry_id = NULL, revision = 0, change_id = NULL') !== FALSE 
-	&& mysql_query('TRUNCATE `rw_entry`') !== FALSE)
-	echo "Cleared existing entry/revision information<br/>";
-else
-	echo "Unable to clear existing entry/revision information<br/>";
-
 $count_accepted = 0;
 $count_pending_create = 0;
-$count_rejected = 0;
+$count_rejected_create = 0;
 $count_deleted = 0;
-$count_entry_changes = 0;
-$count_definition_changes = 0;
 
-// Get all definitions 
+// Get all accepted definitions 
 $definitions = Dictionary::getDefinitionService()->getDefinitions(FALSE, FALSE);
 foreach ($definitions as $definition) {
 	$entry = new Entry(); 
 	if (!Dictionary::getDefinitionService()->saveEntry($entry))
-		"Unable to save entry #".$entry->getId();
-	
-	$rev = 1;
+		echo "Unable to save entry #".$entry->getId();
+		
+	$defIsProposal = FALSE;
+	$revNum = 1;
 	
 	// Update resolved revisions of this definition
 	$pastRevisions = array();
 	$changes = array_reverse(Dictionary::getChangeService()->getChangesForDefinition($definition));
 	foreach ($changes as $change) {
-		if ($change->getProposal() && !$change->getProposal()->equals($definition) && $change->getStatus() != Status::PENDING) {
+		if ($change->getProposal() && $change->getStatus() != Status::PENDING) {
 			$revision = $change->getProposal();
 			$revision->setEntry($entry);
-			$revision->setRevision($rev);
+			$revision->setRevision($revNum++);
+			$revision->setChange($change);
 			if (!Dictionary::getDefinitionService()->saveDefinition($revision))
-				echo "Unable to update definition #".$revision->getId();
-			$rev++;				
+				echo "Unable to update definition #".$revision->getId();	
+				
+			if ($revision->equals($definition))
+				$defIsProposal = TRUE;
+		} 
+		elseif ($change->getAction() == Action::DELETE) { // Accepted delete change
+			$entry->setDeleteChange($change);
 		}
 	}
 	
-	// Head definition gets last revision number
-	$definition->setEntry($entry);
-	$definition->setRevision($rev);
-	if (!Dictionary::getDefinitionService()->saveDefinition($definition))
-		echo "Unable to update definition #".$definition->getId();
-	$entry->setAccepted($definition);
-	$rev++;
+	if (!$defIsProposal) {
+		// Head definition becomes accepted definition of the entry
+		$definition->setEntry($entry);
+		$definition->setRevision($revNum++);
+		if (!Dictionary::getDefinitionService()->saveDefinition($definition))
+			echo "Unable to update definition #".$definition->getId();
+	}
 	
-	// Update pending revisions
+	// Convert any pending change's proposal to the entry's proposed revision
 	$changes = Dictionary::getChangeService()->getChangesForDefinition($definition, Status::PENDING);
 	if (count($changes) == 1) {
 		$change = $changes[0];
-		if ($change->getProposal()) {
+		if ($change->getProposal()) {  // Pending create/modify
 			$revision = $change->getProposal();
 			$revision->setEntry($entry);
-			$revision->setRevision($rev);
+			$revision->setChange($change);
+			$revision->setRevision($revNum++);
 			if (!Dictionary::getDefinitionService()->saveDefinition($revision))
-				echo "Unable to update definition #".$revision->getId();
-			$entry->setProposed($revision);	
-			
-			$rev++;				
+				echo "Unable to update definition #".$revision->getId();			
 		}
 	}
 	
-	// Save entry again since accepted/proposed fields have been updated
-	Dictionary::getDefinitionService()->saveEntry($entry);
+	// Save entry
+	if (!Dictionary::getDefinitionService()->saveEntry($entry))
+		echo "Unable to update entry #".$entry->getId();
+		
 	$count_accepted++;
 }
 
 // Get all remaining definitions with no entry
 $definitions = Dictionary::getDefinitionService()->getDefinitions(TRUE, TRUE);
 foreach ($definitions as $definition) {
-	if (!$definition->getEntry()) {
-		// Is this a pending create?
-		if ($definition->isProposal() && !$definition->isVoided()) {
-			$entry = new Entry(0, 0, $definition->getId()); 
-			Dictionary::getDefinitionService()->saveEntry($entry);
-			$definition->setEntry($entry);
-			$definition->setRevision(1);
-			Dictionary::getDefinitionService()->saveDefinition($definition);
-			$count_pending_create++;
-		}
-		// Is this a rejected create/delete?
-		elseif ($definition->isProposal() && $definition->isVoided()) {
-			$entry = new Entry(); 
-			Dictionary::getDefinitionService()->saveEntry($entry);
-			$definition->setEntry($entry);
-			$definition->setRevision(1);
-			Dictionary::getDefinitionService()->saveDefinition($definition);
-			$count_rejected++;
-		}
-		// Is this deleted definition?
-		elseif (!$definition->isProposal() && $definition->isVoided()) {
-			$entry = new Entry(); 
-			Dictionary::getDefinitionService()->saveEntry($entry);
-			$definition->setEntry($entry);
-			$definition->setRevision(1);
-			Dictionary::getDefinitionService()->saveDefinition($definition);
-			$count_deleted++;
-		}	
-	}
-}
-
-// Assign all changes to a definition
-$changes = Dictionary::getChangeService()->getChanges();
-foreach ($changes as $change) {
-	if ($change->getAction() == Action::DELETE) {
-		$entry = $change->getDefinition()->getEntry();
-		$entry->setDeleteChange($change);
-		if (!Dictionary::getDefinitionService()->saveEntry($entry))
-			"Unable to assign delete change to entry #".$entry->getId();
-			
-		$count_entry_changes++;
-	}
-	elseif ($change->getStatus() == Status::PENDING) {
-		$definition = $change->getProposal();
+	if ($definition->getEntry())
+		continue;
+		
+	//echo "Found entryless definition #".$definition->getId()." (proposal:".$definition->isProposal().", voided:".$definition->isVoided().")<br/>";
+	
+	// Is this a pending create?
+	if ($definition->isProposal() && !$definition->isVoided()) {
+		$change = Dictionary::getChangeService()->getChangeForProposal($definition);
+		$entry = new Entry(0, NULL, $definition->getId()); 
+		if (!Dictionary::getDefinitionService()->saveEntry($entry))	
+			echo "Unable to save entry #".$entry->getId()." for pending create";
+		$definition->setEntry($entry);
 		$definition->setChange($change);
+		$definition->setRevision(1);
 		if (!Dictionary::getDefinitionService()->saveDefinition($definition))
-			echo "Unable to assign change #".$change->getId()." to definition #".$definition->getId();
-			
-		$count_definition_changes++;
+			echo "Unable to update pending create definition #".$definition->getId();
+		$count_pending_create++;
 	}
-	else {
-		$definition = $change->getDefinition() ? $change->getDefinition() : $change->getProposal();
+	// Is this a rejected create?
+	elseif ($definition->isProposal() && $definition->isVoided()) {
+		$change = Dictionary::getChangeService()->getChangeForProposal($definition);
+		$entry = new Entry(0, NULL, NULL); 
+		if (!Dictionary::getDefinitionService()->saveEntry($entry))	
+			echo "Unable to save entry #".$entry->getId()." for rejected create";
+		$definition->setEntry($entry);
 		$definition->setChange($change);
+		$definition->setRevision(1);
 		if (!Dictionary::getDefinitionService()->saveDefinition($definition))
-			echo "Unable to assign change #".$change->getId()." to definition #".$definition->getId();
-			
-		$count_definition_changes++;
+			echo "Unable to update reject create definition #".$definition->getId();
+		$count_rejected_create++;
+	}
+	// Is this deleted definition?
+	elseif (!$definition->isProposal() && $definition->isVoided()) {
+		$changes = Dictionary::getChangeService()->getChangesForDefinition($definition);
+		$change = $changes[0];
+		$entry = new Entry(0, NULL, NULL, $change->getId()); 
+		if (!Dictionary::getDefinitionService()->saveEntry($entry))	
+			echo "Unable to save entry #".$entry->getId()." for rejected delete";
+		$definition->setEntry($entry);
+		$definition->setRevision(1);
+		if (!Dictionary::getDefinitionService()->saveDefinition($definition))
+			echo "Unable to update deleted definition #".$definition->getId();
+		$count_deleted++;
 	}
 }
 
 echo "Updated ".$count_accepted." accepted definitions<br/>";
 echo "Updated ".$count_pending_create." pending create definitions<br/>";
-echo "Updated ".$count_rejected." rejected create/delete definitions<br/>";
+echo "Updated ".$count_rejected_create." rejected create/delete definitions<br/>";
 echo "Updated ".$count_deleted." deleted definitions<br/>";
-echo "Updated ".$count_entry_changes." entry delete changes<br/>";
-echo "Updated ".$count_definition_changes." definition changes<br/>";
+
+mysql_query('UPDATE rw_change SET proposal_id = NULL, original_id = NULL');
+echo "Cleared old change-definition references<br/>";
 
 // Clean entries with ghost definitions etc
 $entries = Dictionary::getDefinitionService()->getEntries();
@@ -147,22 +133,23 @@ foreach ($entries as $entry) {
 	$revisions = $entry->getRevisions();
 	if (count($revisions) == 0)
 		echo "Found empty entry #".$entry->getId()."<br/>";
+	
+	// Find redundant defs that have a nonrejected change come before a new def with no change
+	if (count($revisions) > 1 && !$revisions[0]->getChange() && $revisions[1]->getChange() && $revisions[1]->getChange()->getStatus() != Status::REJECTED) {
+		$head = $revisions[0];	
+		$redundant = $revisions[1];
+		$change = $redundant->getChange();
 		
-	// Look for ghosts
-	for ($r = 0; $r < count($revisions); $r++) {
-		$revision = $revisions[$r];
-		if ($revision->getChange() && $revision->getChange()->getAction() == Action::CREATE) {
-			if ($r < count($revisions) - 1) {
-				$ghost = $revisions[$r + 1];
-				
-				mysql_query('UPDATE rw_change SET proposal_id = NULL WHERE proposal_id = '.$ghost->getId());
-				
-				if (!Dictionary::getDefinitionService()->deleteDefinition($ghost))
-					echo "Unable to delete definition #".$ghost->getId()."<br/>";
-				$deleted_ghosts++;
-				break;
-			}
-		}
+		// Move change to head
+		$head->setChange($change);
+		if (!Dictionary::getDefinitionService()->saveDefinition($head))
+			echo "Unable to update change of definition #".$head->getId()."<br/>";
+		
+		// Delete redundant def	
+		if (!Dictionary::getDefinitionService()->deleteDefinition($redundant))
+			echo "Unable to update revision number of definition #".$redundant->getId()."<br/>";
+			
+		$deleted_ghosts++;
 	}
 	
 	// Reset revision numbers
@@ -174,8 +161,33 @@ foreach ($entries as $entry) {
 			echo "Unable to update revision number of definition #".$definition->getId()."<br/>";
 		$revNum++;
 	}
+	
+	// Reset accepted/proposed
+	$definitions = array_reverse($definitions);
+	$accepted = NULL;
+	$proposed = NULL;
+	foreach ($definitions as $definition) {
+		if (!$definition->getChange() || $definition->getChange()->getStatus() == Status::ACCEPTED) {
+			$accepted = $definition;
+			break;
+		}
+	}
+	foreach ($definitions as $definition) {
+		if ($definition->getChange() && $definition->getChange()->getStatus() == Status::PENDING) {
+			$proposed = $definition;
+			break;
+		}
+	}
+	$entry->setAccepted($accepted);
+	$entry->setProposed($proposed);
+	if (!Dictionary::getDefinitionService()->saveEntry($entry))
+		echo "Unable to update entry #".$entry->getId();
+		
+	// Check for proposed rev < accepted rev
+	if ($accepted && $proposed && $accepted->getRevision() >= $proposed->getRevision())
+		echo "Found proposed rev &lt; accepted rev on entry #".$entry->getId();
 }
 
-echo "Deleted ".$deleted_ghosts." ghost definitions<br/>";
+echo "Deleted ".$deleted_ghosts." redundant definitions<br/>";
 
 ?>
