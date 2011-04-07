@@ -334,20 +334,6 @@ class Definition extends Entity {
 	}
 	
 	/**
-	 * #TBR
-	 */
-	public function isProposal() {
-		return $this->proposal;
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function setProposal($proposal) {
-		$this->proposal = (bool)$proposal;
-	}
-	
-	/**
 	 * Gets tags with the given relationship
 	 * @param int relationshipId the relationship id
 	 * @return array the tags
@@ -401,6 +387,14 @@ class Definition extends Entity {
 	}
 	
 	/**
+	 * Gets a string representation (i.e. prefix+lemma[function])
+	 * @return string the string representation
+	 */
+	public function toString() {
+		return $this->prefix.$this->lemma.'['.$this->wordClass.']';
+	}
+	
+	/**
 	 * #TBR
 	 */
 	public function getPermissions($user = NULL) {
@@ -433,11 +427,17 @@ class Definition extends Entity {
 	}
 	
 	/**
-	 * Gets a string representation (i.e. prefix+lemma[function])
-	 * @return string the string representation
+	 * #TBR
 	 */
-	public function toString() {
-		return $this->prefix.$this->lemma.'['.$this->wordClass.']';
+	public function isProposal() {
+		return $this->proposal;
+	}
+	
+	/**
+	 * #TBR
+	 */
+	public function setProposal($proposal) {
+		$this->proposal = (bool)$proposal;
 	}
 }
 

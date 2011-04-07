@@ -118,6 +118,14 @@ abstract class Form {
 	}
 	
 	/**
+	 * Gets the whether the entity is new
+	 * @return bool TRUE if form entity is new
+	 */
+	public function isNewEntity() {
+		return $this->entity->isNew();	
+	}
+	
+	/**
 	 * Gets the validation errors object
 	 * @return Errors the validation errors
 	 */

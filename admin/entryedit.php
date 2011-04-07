@@ -21,154 +21,14 @@
  */
 
 include_once '../inc/kumva.php';
+include_once 'form/DefinitionForm.php';
+include_once 'validator/DefinitionValidator.php';
 
 Session::requireRole(Role::CONTRIBUTOR);
-
-/**
- * Validator for definition objects
- */
-class DefinitionValidator extends Validator {
-	public function validate($definition, $errors) {
-		if (strlen($definition->getLemma()) == 0)
-			$errors->addForProperty('lemma', KU_MSG_ERROREMPTY);
-		if (strlen($definition->getMeaning()) == 0)
-			$errors->addForProperty('meaning', KU_MSG_ERROREMPTY);
-		
-		foreach ($definition->getNounClasses() as $nounClass) {
-			if ($nounClass < 1) {
-				$errors->addForProperty('nounClasses', KU_MSG_ERRORNOUNCLASS);
-				break;
-			}
-		}
-		
-		foreach ($definition->getExamples() as $example) {
-			if (strlen($example->getForm()) == 0 || strlen($example->getMeaning()) == 0) {
-				$errors->addForProperty('examples', KU_MSG_ERROREMPTY);
-				break;
-			}
-		}
-	}
-}
-
-/**
- * Form controller for add/edit definition
- */
-class DefinitionForm extends Form {
-	/**
-	 * @see Form::createEntity()
-	 */
-	protected function createEntity() {
-		$entryId = (int)Request::getGetParam('id', 0);
-		if ($entryId) {
-			$entry = Dictionary::getDefinitionService()->getEntry($entryId);
-			return $entry->getProposed() ? $entry->getProposed() : $entry->getAccepted();
-		}
-		
-		return new Definition();
-	}
-	
-	/**
-	 * @see Form::onBind()
-	 */
-	protected function onBind($definition) {
-		// Bind noun classes
-		$nounClasses = aka_parsecsv(Request::getPostParam('nounclasses'), TRUE);
-		$definition->setNounClasses($nounClasses);
-		
-		// Bind flags
-		$definition->setFlags(0);
-		$flags = Request::getPostParams('flags_');
-		foreach ($flags as $flag => $state)
-			$definition->setFlag($flag, TRUE);
-		
-		// Bind tags
-		$tagParams = Request::getPostParams('tags_');
-		foreach ($tagParams as $relationshipId => $tagSet) {
-			$relationship = Dictionary::getTagService()->getRelationship($relationshipId);
-			$tagStrings = aka_parsecsv($tagSet);
-			$definition->setTagsFromStrings($relationship, $tagStrings);
-		}
-		
-		// Handle any autotag requests
-		$autotagRelId = Request::getPostParam('autotag', 0);
-		if ($autotagRelId > 0) {
-			$relationship = Dictionary::getTagService()->getRelationship($autotagRelId);
-			$tagStrings = Lexical::autoTag($definition, $relationship);
-			$definition->setTagsFromStrings($relationship, $tagStrings);
-		}
-		
-		// Bind examples
-		$exFormParams = Request::getPostParams('exampleform');
-		$examples = array();
-		foreach ($exFormParams as $param => $form) {
-			$meaning = Request::getPostParam('examplemeaning'.$param);
-			$examples[] = new Example(0, $form, $meaning);
-		}	
-		$definition->setExamples($examples);
-	}
-	
-	/**
-	 * @see Form::saveEntity()
-	 */
-	protected function saveEntity($definition) {	
-		$saveType = Request::getPostParam('saveType');
-	
-		if ($saveType == 'propose') {
-			if ($definition->isProposal() || $definition->isVoided())
-				return FALSE;
-		
-			$definition->setProposal(TRUE);
-		
-			if ($definition->isNew()) {
-				// Save as new proposal definition
-				if (!Dictionary::getDefinitionService()->saveDefinition($definition))
-					return FALSE;
-		
-				$change = Change::createCreate($definition->getId());
-			}
-			else {
-				// Save as new proposal definition
-				$originalId = $definition->getId();
-				$definition->setId(0);
-				if (!Dictionary::getDefinitionService()->saveDefinition($definition))
-					return FALSE;
-				
-				$change = Change::createModify($originalId, $definition->getId());
-			}
-		
-			// Save the change
-			if (!Dictionary::getChangeService()->saveChange($change))
-				return FALSE;
-				
-			// Notify subscribed users
-			Notifications::newChange($change);
-				
-			// Add current user as a watcher of the change
-			if (!$change->watch())
-				return FALSE;
-			
-			// Update successurl to take us straight to the new change
-			$this->setSuccessUrl('change.php?id='.$change->getId());
-			return TRUE;
-		}
-		elseif ($saveType == 'update') {
-			
-		
-			return Dictionary::getDefinitionService()->saveDefinition($definition);
-		}
-		
-		return FALSE;	
-	}
-}
  
 $returnUrl = Request::getGetParam('ref', 'entries.php');
 $form = new DefinitionForm($returnUrl, new DefinitionValidator(), new FormRenderer());
 $definition = $form->getEntity();
-$change = $definition->getChange();
-$entry = $definition->getEntry();
-$curUser = Session::getCurrent()->getUser();
-$canUpdate = $curUser->hasRole(Role::EDITOR) || ($change && $curUser->equals($change->getSubmitter()));
-$canPropose = !$entry || !$entry->getProposed();
 
 include_once 'tpl/header.php';
 
@@ -203,13 +63,13 @@ var exampleId = 1000000;
 /* ]]> */
 </script>
 
-<h3><?php echo $form->getEntity()->isNew() ? KU_STR_ADDENTRY : KU_STR_EDITENTRY; ?></h3>
+<h3><?php echo $form->isNewEntity() ? KU_STR_ADDENTRY : KU_STR_EDITENTRY; ?></h3>
 
 <?php
-if ($entry && $entry->isDeleted())
+if ($form->entry && $form->entry->isDeleted())
 	echo '<div class="info">'.KU_MSG_ENTRYDELETED.'</div>'; 
-else if ($change)
-	printf('<div class="info">'.KU_MSG_DEFINITIONPROPOSAL.'</div>', 'change.php?id='.$change->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT)); 
+elseif ($form->isProposal())
+	printf('<div class="info">'.KU_MSG_DEFINITIONPROPOSAL.'</div>', 'change.php?id='.$form->change->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT)); 
 	
 if (count($form->getErrors()->get()) > 0)
 	echo '<div class="error">'.implode('<br />', $form->getErrors()->get()).'</div>';
@@ -313,9 +173,9 @@ $form->start('definitionform');
 	<tr>
 		<td colspan="2"><hr />
 			<?php 
-			if ($canUpdate)
+			if ($form->canUpdate())
 				Templates::button('save', "$('#saveType').val('update'); $('#_action').val('save'); aka_submit(this)", KU_STR_SAVE);
-			if ($canPropose)
+			if ($form->canPropose())
 				Templates::button('propose', "$('#saveType').val('propose'); $('#_action').val('save'); aka_submit(this)", KU_STR_PROPOSE);
 			
 			$form->cancelButton(); 

@@ -81,8 +81,8 @@ class Change extends Entity {
 			$definitionId, $proposalId, #TBR
 			$action, $submitterId, $submitted, $status, $resolverId = NULL, $resolved = NULL) {
 		$this->id = (int)$id;
-		$this->definitionId = (int)$definitionId;
-		$this->proposalId = (int)$proposalId;
+		$this->definitionId = (int)$definitionId; #TBR
+		$this->proposalId = (int)$proposalId; #TBR
 		$this->action = (int)$action;
 		$this->submitterId = (int)$submitterId;
 		$this->submitted = (int)$submitted;
@@ -108,65 +108,8 @@ class Change extends Entity {
 	 * @param int action the action type
 	 * @return Change the change
 	 */
-	private static function create($action) {
+	public static function create($action) {
 		return new Change(0, NULL, NULL, $action, Session::getCurrent()->getUser()->getId(), time(), Status::PENDING);
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public static function createCreate($entryId, $proposalId) {
-		return self::create($entryId, $proposalId, Action::CREATE);
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public static function createModify($definitionId, $proposalId) {
-		return self::create($definitionId, $proposalId, Action::MODIFY);
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public static function createDelete($definitionId) {
-		return self::create($definitionId, NULL, Action::DELETE);
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function getDefinition() {
-		if (!$this->definition && $this->definitionId)
-			$this->definition = Dictionary::getDefinitionService()->getDefinition($this->definitionId);
-			
-		return $this->definition;
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function setDefinition($definition) {
-		$this->definitionId = $definition ? $definition->getId() : NULL;
-		$this->definition = $definition;
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function getProposal() {
-		if (!$this->proposal && $this->proposalId)
-			$this->proposal = Dictionary::getDefinitionService()->getDefinition($this->proposalId);
-			
-		return $this->proposal;
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function setProposal($proposal) {
-		$this->proposalId = $proposal ? $proposal->getId() : NULL;
-		$this->proposal = $proposal;
 	}
 	
 	/**
@@ -327,6 +270,63 @@ class Change extends Entity {
 	public function toString() {	
 		$definition = $this->getDefinition() ? $this->getDefinition() : $this->getProposal();
 		return '#'.$this->id.' '.strtolower(Action::toString($this->action)).'('.$definition->getPrefix().$definition->getLemma().')';
+	}
+	
+	/**
+	 * #TBR
+	 */
+	public static function createCreate($entryId, $proposalId) {
+		return self::create($entryId, $proposalId, Action::CREATE);
+	}
+	
+	/**
+	 * #TBR
+	 */
+	public static function createModify($definitionId, $proposalId) {
+		return self::create($definitionId, $proposalId, Action::MODIFY);
+	}
+	
+	/**
+	 * #TBR
+	 */
+	public static function createDelete($definitionId) {
+		return self::create($definitionId, NULL, Action::DELETE);
+	}
+	
+	/**
+	 * #TBR
+	 */
+	public function getDefinition() {
+		if (!$this->definition && $this->definitionId)
+			$this->definition = Dictionary::getDefinitionService()->getDefinition($this->definitionId);
+			
+		return $this->definition;
+	}
+	
+	/**
+	 * #TBR
+	 */
+	public function setDefinition($definition) {
+		$this->definitionId = $definition ? $definition->getId() : NULL;
+		$this->definition = $definition;
+	}
+	
+	/**
+	 * #TBR
+	 */
+	public function getProposal() {
+		if (!$this->proposal && $this->proposalId)
+			$this->proposal = Dictionary::getDefinitionService()->getDefinition($this->proposalId);
+			
+		return $this->proposal;
+	}
+	
+	/**
+	 * #TBR
+	 */
+	public function setProposal($proposal) {
+		$this->proposalId = $proposal ? $proposal->getId() : NULL;
+		$this->proposal = $proposal;
 	}
 }
 
