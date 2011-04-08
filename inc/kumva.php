@@ -49,7 +49,7 @@ define('KUMVA_URL_CURRENT', 'http://'.$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_
 define('KUMVA_URL_LOGIN', KUMVA_URL_ROOT.'/admin/login.php');
 
 // Project URLs
-define('KUMVA_URL_PROJECT', 'https://github.com/rowanseymour/kumva');
+define('KUMVA_URL_PROJECT', 'https://github.com/ijuru/kumva');
 define('KUMVA_URL_HELP', KUMVA_URL_PROJECT.'/wiki');
 define('KUMVA_URL_REPORTBUG', KUMVA_URL_PROJECT.'/issues');
 
