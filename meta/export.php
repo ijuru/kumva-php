@@ -38,19 +38,33 @@ function tagvalues($rel, &$tags) {
 	return $vals;
 }
 
-if ($format == 'xml') {
+if ($format == 'xml' && !$incChanges) {
 	header('Content-type: text/xml');
 	header('Content-Disposition: attachment; filename=definitions-'.date('Y-m-d').'.xml');
 	
-	$incVoidedDefs = $incProposalDefs = $incChanges;
-	$definitions = Dictionary::getDefinitionService()->getDefinitions($incProposalDefs, $incVoidedDefs);
+	$definitions = Dictionary::getDefinitionService()->getAcceptedDefinitions();
 	
 	Xml::header();
 	
 	echo '<definitions>';
 	foreach ($definitions as $definition)
-		Xml::definition($definition, $incChanges);
+		Xml::definition($definition, FALSE);
 	echo '</definitions>';
+	
+	Xml::footer();
+}
+elseif ($format == 'xml' && $incChanges) {
+	header('Content-type: text/xml');
+	header('Content-Disposition: attachment; filename=entries-'.date('Y-m-d').'.xml');
+	
+	$entries = Dictionary::getDefinitionService()->getEntries();
+	
+	Xml::header();
+	
+	echo '<entries>';
+	foreach ($entries as $entry)
+		Xml::entry($entry);
+	echo '</entries>';
 	
 	Xml::footer();
 }
@@ -58,7 +72,7 @@ elseif ($format == 'csv') {
 	header('Content-type: text/csv');
 	header('Content-Disposition: attachment; filename=definitions-'.date('Y-m-d').'.csv');
 
-	$definitions = Dictionary::getDefinitionService()->getDefinitions(FALSE, FALSE);
+	$definitions = Dictionary::getDefinitionService()->getAcceptedDefinitions();
 	$relationships = Dictionary::getTagService()->getRelationships();
 	
 	// Output header

@@ -36,7 +36,7 @@ if ($action == 'delete' && !$entry->isNew()) {
 		$entry->setDeleteChange($change);
 		if (Dictionary::getDefinitionService()->saveEntry($entry)) {
 			$change->watch();
-			//Notifications::newChange($change);
+			Notifications::newChange($change);
 			Request::redirect('change.php?id='.$change->getId().'&ref='.urlencode(KUMVA_URL_CURRENT));
 		}
 	}

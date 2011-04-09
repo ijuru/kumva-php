@@ -57,22 +57,22 @@ function processAction($change, $action, $commentText) {
 	}
 	
 	if ($action =='post' && $commentText && $canComment) {
-		//Notifications::newComment($change, $comment);
+		Notifications::newComment($change, $comment);
 		return TRUE;
 	}
 	elseif ($action == 'approve' && $canApprove && $change->isPending()) {
-		//Notifications::newComment($change, $comment);
+		Notifications::newComment($change, $comment);
 		return TRUE;	
 	}
 	elseif ($action == 'accept' && $canResolve && $change->isPending()) {
 		if (Dictionary::getChangeService()->acceptChange($change)) {
-			//Notifications::changeAccepted($change);
+			Notifications::changeAccepted($change);
 			return TRUE;
 		}
 	}
 	elseif ($action == 'reject' && $commentText && $canResolve && $change->isPending()) {
 		if (Dictionary::getChangeService()->rejectChange($change)) {
-			//Notifications::changeRejected($change, $comment);
+			Notifications::changeRejected($change, $comment);
 			return TRUE;
 		}
 	}

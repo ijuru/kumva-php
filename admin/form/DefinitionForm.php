@@ -128,7 +128,7 @@ class DefinitionForm extends Form {
 				return FALSE;
 				
 			// Notify subscribed users
-			//Notifications::newChange($change);
+			Notifications::newChange($change);
 				
 			// Add current user as a watcher of the change
 			if (!$change->watch())

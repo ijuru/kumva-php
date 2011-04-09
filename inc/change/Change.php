@@ -268,7 +268,13 @@ class Change extends Entity {
 	 * @return string the string representation
 	 */
 	public function toString() {	
-		$definition = $this->getDefinition() ? $this->getDefinition() : $this->getProposal();
+		if ($this->getAction() == Action::DELETE) {
+			$entry = Dictionary::getChangeService()->getEntryByDeleteChange($this);
+			$definition = Dictionary::getDefinitionService()->getDefinitionByRevision($entry, Revision::LAST);
+		}
+		else {
+			$definition = Dictionary::getChangeService()->getChangeDefinition($this);
+		}
 		return '#'.$this->id.' '.strtolower(Action::toString($this->action)).'('.$definition->getPrefix().$definition->getLemma().')';
 	}
 	

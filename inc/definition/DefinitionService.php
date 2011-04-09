@@ -73,6 +73,17 @@ class DefinitionService extends Service {
 	}
 	
 	/**
+	 * Gets all the accepted definitions
+	 * @return array the definitions
+	 */
+	public function getAcceptedDefinitions() {
+		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` d 
+				INNER JOIN `'.KUMVA_DB_PREFIX.'entry` e ON e.accepted_id = d.definition_id
+				ORDER BY e.entry_id ASC';
+		return Definition::fromQuery($this->database->query($sql));
+	}
+	
+	/**
 	 * Gets the definition with the given entry and revision
 	 * @param Entry entry the entry
 	 * @param int revision the revision number

@@ -24,15 +24,16 @@
  * Class for XML templates
  */
 class Xml { 
-	const NAME_SPACE = 'http://kumva.ijuru.com';
-	const SCHEMA_URL = 'http://kumva.ijuru.com/kumva.xsd';
+	//const NAME_SPACE = 'http://kumva.ijuru.com';
+	//const SCHEMA_URL = 'http://kumva.ijuru.com/kumva.xsd';
 	
 	/**
 	 * Outputs the header of a kumva XML document
 	 */
 	public static function header() {
 		echo '<?xml version="1.0" encoding="utf-8"?>';
-		echo '<kumva xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="'.self::NAME_SPACE.'" xsi:schemaLocation="'.self::SCHEMA_URL.'">';
+		echo '<kumva>';
+		//echo '<kumva xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="'.self::NAME_SPACE.'" xsi:schemaLocation="'.self::SCHEMA_URL.'">';
 	}
 	
 	/**
@@ -41,16 +42,39 @@ class Xml {
 	public static function footer() {
 		echo '</kumva>';
 	}
+	
+	/**
+	 * Outputs the given entry
+	 * @param Entry entry the entry
+	 */
+	public static function entry($entry) {
+		$accepted = $entry->getAccepted();
+		$proposed = $entry->getProposed();
+	
+		echo '<entry ';
+		if ($accepted)
+			echo 'accepted="'.$accepted->getRevision().'" ';
+		if ($proposed)
+			echo 'proposed="'.$proposed->getRevision().'" ';	
+		echo '>';
+		
+		$definitions = Dictionary::getDefinitionService()->getEntryDefinitions($entry);
+	
+		foreach ($definitions as $definition)
+			Xml::definition($definition, TRUE);
+		
+		echo '</entry>';
+	}
 
 	/**
  	 * Outputs the given definition
  	 * @param Definition definition the definition
- 	 * @param bool incChanges TRUE to include changes, else FALSE
+ 	 * @param bool incChange TRUE to include this definition's change information
 	 */
-	public static function definition($definition, $incChanges = FALSE) {
+	public static function definition($definition, $incChange = FALSE) {
 		$flags = Flags::makeCSVString(Flags::fromBits($definition->getFlags()));
 		
-		echo '<definition id="'.$definition->getId().'" ';
+		echo '<definition ';
 		echo 'revision="'.aka_prepxmlval($definition->getRevision()).'" ';
 		echo 'wordclass="'.$definition->getWordClass().'" ';
 		echo 'nounclasses="'.implode(',', $definition->getNounClasses()).'" ';
@@ -79,14 +103,9 @@ class Xml {
 			echo '<example><usage>'.aka_prepxmlval($ex->getForm()).'</usage><meaning>'.aka_prepxmlval($ex->getMeaning()).'</meaning></example>';
 		echo '</examples>';
 		
-		// Changes
-		if ($incChanges) {
-			echo '<changes>';
-			foreach (Dictionary::getChangeService()->getChangesForDefinition($definition) as $change)
-				self::change($change);
-			echo '</changes>';
-		}
-	
+		if ($incChange && $definition->getChange()) 
+			self::change($definition->getChange());
+		
 		echo '</definition>';
 	}
 	
@@ -95,11 +114,7 @@ class Xml {
  	 * @param Change change the change
 	 */
 	public static function change($change) {	
-		echo '<change id="'.$change->getId().'" ';
-		
-		if ($change->getAction() != Action::CREATE)
-			echo 'proposal="'.$change->getProposal()->getId().'" ';
-			
+		echo '<change ';
 		echo 'action="'.strtolower(Action::toString($change->getAction())).'" ';
 		echo 'submitter="'.$change->getSubmitter()->getId().'" ';
 		echo 'submitted="'.date('c', $change->getSubmitted()).'" ';
@@ -122,7 +137,7 @@ class Xml {
  	 * @param Comment comment the comment
 	 */
 	public static function comment($comment) {
-		echo '<comment id="'.$comment->getId().'" ';
+		echo '<comment ';
 		echo 'user="'.$comment->getUser()->getId().'" ';
 		echo 'created="'.date('c', $comment->getCreated()).'" ';
 		echo 'approval="'.aka_prepxmlval($comment->isApproval()).'" ';
