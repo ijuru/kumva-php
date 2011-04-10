@@ -170,7 +170,7 @@ class DefinitionForm extends Form {
 				return TRUE;
 		}
 		else
-			return Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
+			return Session::getCurrent()->hasRole(Role::ADMINISTRATOR);
 	}
 	
 	/**
