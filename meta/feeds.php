@@ -36,7 +36,7 @@ if ($feedName == 'changes') {
 	$feedDescription = 'Most recent changes to the dictionary';
 	$feedUrl = KUMVA_URL_ROOT.'/admin/changes.php'.($status !== NULL ? '?status='.$status : '');
 	
-	$changes = Dictionary::getChangeService()->getChanges(NULL, NULL, $status, NULL, FALSE, $paging);
+	$changes = Dictionary::getChangeService()->getChanges(NULL, $status, NULL, FALSE, $paging);
 	
 	foreach ($changes as $change) {
 		$itemTitle = $change->toString().' ['.Status::toString($change->getStatus()).']';

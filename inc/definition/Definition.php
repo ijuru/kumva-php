@@ -21,6 +21,17 @@
  */
  
 /**
+ * Revision number presets
+ */
+class Revision {
+	const FIRST = 	 1;
+	const ACCEPTED = -1001;
+	const PROPOSED = -1002;
+	const HEAD = 	 -1003; // Latest of accepted or proposal
+	const LAST =	 -1004; // Absolute last
+}
+ 
+/**
  * Information flags which can be set on definitions
  */
 class Flags extends Enum {
@@ -48,7 +59,6 @@ class Definition extends Entity {
 	private $comment;
 	private $flags;
 	private $verified;
-	private $proposal;		#TBR
 	
 	// Lazy loaded properties
 	private $entry;
@@ -74,10 +84,7 @@ class Definition extends Entity {
 	 */
 	public function __construct(
 			$id = 0, $entryId = 0, $revision = 0, $changeId = 0,
-			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $meaning = '', $comment = '', $flags = 0, 
-			$verified = FALSE, 
-			$proposal = FALSE, $voided = FALSE   #TBR
-			) 
+			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $meaning = '', $comment = '', $flags = 0, $verified = FALSE) 
 	{
 		$this->id = (int)$id;
 		$this->entryId = $entryId;
@@ -91,8 +98,6 @@ class Definition extends Entity {
 		$this->comment = $comment;
 		$this->flags = (int)$flags;
 		$this->verified = (bool)$verified;
-		$this->proposal = (bool)$proposal;  #TBR
-		$this->voided = (bool)$voided;		#TBR
 	}
 	
 	/**
@@ -101,7 +106,7 @@ class Definition extends Entity {
 	 * @return Definition the definition
 	 */
 	public static function fromRow(&$row) {
-		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['meaning'], $row['comment'], $row['flags'], $row['verified'], $row['proposal'], $row['voided']);
+		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['meaning'], $row['comment'], $row['flags'], $row['verified']);
 	}
 	
 	/**
@@ -392,52 +397,6 @@ class Definition extends Entity {
 	 */
 	public function toString() {
 		return $this->prefix.$this->lemma.'['.$this->wordClass.']';
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function getPermissions($user = NULL) {
-		$user = $user ? $user : Session::getCurrent()->getUser();
-		$permissions = array();	
-
-		if ($this->isVoided()) {
-			// Voided definitions are locked to everyone
-			$permissions['propose'] = FALSE;
-			$permissions['update'] = FALSE;
-		}
-		elseif ($this->isProposal()) {
-			// No-one can propose changes to proposals
-			$permissions['propose'] = FALSE;
-			
-			// Editors and submitters can update proposals
-			$change = Dictionary::getChangeService()->getChangeForProposal($this);
-			$permissions['update'] = $user->hasRole(Role::EDITOR) || $change->getSubmitter()->equals($user);
-		}
-		else {
-			// Non proposals with pending changes are locked to everyone
-			$changes = Dictionary::getChangeService()->getChangesForDefinition($this);
-			$changePending = count($changes) > 0 ? ($changes[0]->getStatus() == Status::PENDING) : FALSE;
-			
-			$permissions['propose'] = !$changePending && $user->hasRole(Role::CONTRIBUTOR);
-			$permissions['update'] = !$changePending && $user->hasRole(Role::ADMINISTRATOR);
-		}
-		
-		return $permissions;
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function isProposal() {
-		return $this->proposal;
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function setProposal($proposal) {
-		$this->proposal = (bool)$proposal;
 	}
 }
 

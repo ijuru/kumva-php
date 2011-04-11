@@ -154,7 +154,7 @@ class TagService extends Service {
 			$tagId = $tag->getId();
 		}
 		
-		$active = !($definition->isProposal() || $definition->isVoided()); #TBR
+		$active = TRUE;//!($definition->isProposal() || $definition->isVoided()); #TBR
 			
 		$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'definition_tag` VALUES('
 			.aka_prepsqlval($definition->getId()).','

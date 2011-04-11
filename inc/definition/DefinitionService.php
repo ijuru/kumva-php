@@ -19,14 +19,6 @@
  * 
  * Purpose: Definition service class
  */
- 
-class Revision {
-	const FIRST = 	 1;
-	const ACCEPTED = -1001;
-	const PROPOSED = -1002;
-	const HEAD = 	 -1003; // Latest of accepted or proposal
-	const LAST =	 -1004; // Absolute last
-}
 
 /**
  * Definition and example functions
@@ -234,9 +226,7 @@ class DefinitionService extends Service {
 				.aka_prepsqlval($definition->getMeaning()).','
 				.aka_prepsqlval($definition->getComment()).','
 				.aka_prepsqlval($definition->getFlags()).','
-				.aka_prepsqlval($definition->isVerified()).','
-				.aka_prepsqlval($definition->isProposal()).','
-				.aka_prepsqlval($definition->isVoided()).')';
+				.aka_prepsqlval($definition->isVerified()).')';
 			
 			$res = $this->database->insert($sql);
 			if ($res === FALSE) 
@@ -255,9 +245,7 @@ class DefinitionService extends Service {
 				.'meaning = '.aka_prepsqlval($definition->getMeaning()).','
 				.'comment = '.aka_prepsqlval($definition->getComment()).','
 				.'flags = '.aka_prepsqlval($definition->getFlags()).','
-				.'verified = '.aka_prepsqlval($definition->isVerified()).','
-				.'proposal = '.aka_prepsqlval($definition->isProposal()).','
-				.'voided = '.aka_prepsqlval($definition->isVoided()).' '
+				.'verified = '.aka_prepsqlval($definition->isVerified()).' '
 				.'WHERE definition_id = '.$definition->getId();
 			
 			if ($this->database->query($sql) === FALSE)
@@ -388,61 +376,6 @@ class DefinitionService extends Service {
 				INNER JOIN `'.KUMVA_DB_PREFIX.'entry` e ON e.accepted_id = d.definition_id 
 				GROUP BY `wordclass` ORDER BY `wordclass` ASC';
 		return $this->database->rows($sql, 'wordclass');
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function getDefinitions($incProposals = FALSE, $incVoided = FALSE) {
-		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` WHERE 1=1 ';
-		if (!$incProposals)
-			$sql .= 'AND proposal = 0 ';
-		if (!$incVoided)
-			$sql .= 'AND voided = 0 ';
-	
-		return Definition::fromQuery($this->database->query($sql));
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function deleteDefinition($definition) {
-		if ($this->database->query('DELETE FROM `'.KUMVA_DB_PREFIX.'definition` WHERE `definition_id` = '.$definition->getId()) === FALSE)
-			return FALSE;
-		
-		return Dictionary::getTagService()->deleteOrphanTags();
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function voidDefinition($definition) {
-		$definition->setVoided(TRUE);
-		return $this->saveDefinition($definition);
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function clear() {
-		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'definition_nounclass`') === FALSE)
-			return FALSE;
-		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'definition_tag`') === FALSE)
-			return FALSE;
-		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'tag`') === FALSE)
-			return FALSE;
-		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'example`') === FALSE)
-			return FALSE;
-		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'comment`') === FALSE)
-			return FALSE;
-		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'change`') === FALSE)
-			return FALSE;
-		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'definition`') === FALSE)
-			return FALSE;
-		if ($this->database->query('TRUNCATE `'.KUMVA_DB_PREFIX.'entry`') === FALSE)
-			return FALSE;
-		
-		return TRUE;
 	}
 }
 

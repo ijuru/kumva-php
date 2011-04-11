@@ -26,7 +26,7 @@ Session::requireUser();
 
 $status = (Request::getGetParam('status') != 'any') ? (int)Request::getGetParam('status', Status::PENDING) : NULL;
 $paging = new Paging('start', 20);		
-$changes = Dictionary::getChangeService()->getChanges(NULL, NULL, $status, NULL, FALSE, $paging);
+$changes = Dictionary::getChangeService()->getChanges(NULL, $status, NULL, FALSE, $paging);
 
 include_once 'tpl/header.php';
 ?>

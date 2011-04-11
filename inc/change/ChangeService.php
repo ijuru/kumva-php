@@ -36,17 +36,15 @@ class ChangeService extends Service {
 	
 	/**
 	 * Gets all changes
-	 * @param Definition definition the definition
 	 * @param User submitter the submitter
 	 * @param int status the status (NULL means any status)
 	 * @param bool orderByResolved TRUE to order changes by resolved date
 	 * @param Paging paging the paging object
 	 * @return array the changes
 	 */
-	public function getChanges($definition = NULL, $submitter = NULL, $status = NULL, $resolver = NULL, $orderByResolved = FALSE, $paging = NULL) {
+	public function getChanges($submitter = NULL, $status = NULL, $resolver = NULL, $orderByResolved = FALSE, $paging = NULL) {
 		$sql = 'SELECT SQL_CALC_FOUND_ROWS c.* FROM `'.KUMVA_DB_PREFIX.'change` c WHERE 1=1 ';	
-		if ($definition)
-			$sql .= 'AND (c.`original_id` = '.$definition->getId().' OR c.`proposal_id` = '.$definition->getId().')';
+		
 		if ($submitter)
 			$sql .= 'AND c.`submitter_id` = '.$submitter->getId().' ';
 		if ($status !== NULL)
@@ -86,7 +84,7 @@ class ChangeService extends Service {
 	 * @return array the changes
 	 */
 	public function getChangesBySubmitter($submitter, $status, $paging) {
-		return $this->getChanges(NULL, $submitter, $status, NULL, FALSE, $paging);
+		return $this->getChanges($submitter, $status, NULL, FALSE, $paging);
 	}
 	
 	/**
@@ -96,7 +94,7 @@ class ChangeService extends Service {
 	 * @return array the changes
 	 */
 	public function getChangesByResolver($resolver, $status, $paging) {
-		return $this->getChanges(NULL, NULL, $status, $resolver, TRUE, $paging);
+		return $this->getChanges(NULL, $status, $resolver, TRUE, $paging);
 	}
 	
 	/**
@@ -211,8 +209,6 @@ class ChangeService extends Service {
 		if ($change->isNew()) {
 			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'change` VALUES('
 				.'NULL,'
-				.aka_prepsqlval($change->getDefinition()).','  #TBR
-				.aka_prepsqlval($change->getProposal()).','    #TBR
 				.aka_prepsqlval($change->getAction()).','
 				.aka_prepsqlval($change->getSubmitter()).','
 				.aka_timetosql($change->getSubmitted()).','
@@ -227,8 +223,6 @@ class ChangeService extends Service {
 		}
 		else {
 			$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'change` SET '
-				.'original_id = '.aka_prepsqlval($change->getDefinition()).',' #TBR
-				.'proposal_id = '.aka_prepsqlval($change->getProposal()).','   #TBR
 				.'action = '.aka_prepsqlval($change->getAction()).','
 				.'submitter_id = '.aka_prepsqlval($change->getSubmitter()).','
 				.'submitted = '.aka_timetosql($change->getSubmitted()).','
@@ -311,21 +305,6 @@ class ChangeService extends Service {
 		$sql .= 'GROUP BY status';
 		
 		return $this->database->rows($sql, 'status');
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function getChangeForProposal($definition) {
-		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'change` WHERE proposal_id = '.$definition->getId());
-		return ($row != NULL) ? Change::fromRow($row) : NULL;
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function getChangesForDefinition($definition, $status = NULL) {
-		return $definition->isProposal() ? array() : $this->getChanges($definition, NULL, $status, NULL, FALSE, NULL);
 	}
 }
 

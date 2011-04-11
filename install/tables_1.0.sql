@@ -25,28 +25,29 @@ DROP TABLE IF EXISTS `{DBPREFIX}entry`;
 SET FOREIGN_KEY_CHECKS=1;
 
 CREATE TABLE `{DBPREFIX}entry` (
-  `entry_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `accepted_id` INT UNSIGNED DEFAULT NULL,
-  `proposed_id` INT UNSIGNED DEFAULT NULL,
-  `delete_change_id` INT UNSIGNED DEFAULT NULL,
-  PRIMARY KEY (`entry_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `entry_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `accepted_id` int(10) unsigned DEFAULT NULL,
+  `proposed_id` int(10) unsigned DEFAULT NULL,
+  `delete_change_id` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`entry_id`),
+  KEY `FK_{DBPREFIX}entry_accepted` (`accepted_id`),
+  KEY `FK_{DBPREFIX}entry_proposed` (`proposed_id`),
+  KEY `FK_{DBPREFIX}entry_delete_change` (`delete_change_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `{DBPREFIX}definition` (
-  `definition_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `entry_id` INT UNSIGNED NOT NULL,
-  `revision` INT UNSIGNED NOT NULL,
-  `change_id` INT UNSIGNED DEFAULT NULL,
-  `wordclass` VARCHAR(5) DEFAULT NULL,
-  `prefix` VARCHAR(10) DEFAULT NULL,
-  `lemma` VARCHAR(255) NOT NULL,
-  `modifier` VARCHAR(50) DEFAULT NULL,
-  `meaning` VARCHAR(255) DEFAULT NULL,
-  `comment` VARCHAR(255) DEFAULT NULL,
-  `flags` INT(0) NOT NULL,
-  `verified` TINYINT(1) NOT NULL,
-  `proposal` TINYINT(1) NOT NULL,	#TBR
-  `voided` TINYINT(1) NOT NULL,		#TBR
+  `definition_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `entry_id` int(10) unsigned NOT NULL,
+  `revision` int(10) unsigned NOT NULL,
+  `change_id` int(10) unsigned DEFAULT NULL,
+  `wordclass` varchar(5) DEFAULT NULL,
+  `prefix` varchar(10) DEFAULT NULL,
+  `lemma` varchar(255) NOT NULL,
+  `modifier` varchar(50) DEFAULT NULL,
+  `meaning` varchar(255) DEFAULT NULL,
+  `comment` varchar(255) DEFAULT NULL,
+  `flags` int(10) NOT NULL,
+  `verified` tinyint(1) NOT NULL,
   PRIMARY KEY (`definition_id`),
   UNIQUE KEY `UQ_{DBPREFIX}definition_change` (`change_id`),
   KEY `IN_{DBPREFIX}definition_lemma` (`lemma`),
@@ -54,7 +55,7 @@ CREATE TABLE `{DBPREFIX}definition` (
   KEY `FK_{DBPREFIX}definition_change` (`change_id`),
   CONSTRAINT `FK_{DBPREFIX}definition_entry` FOREIGN KEY (`entry_id`) REFERENCES `{DBPREFIX}entry` (`entry_id`),
   CONSTRAINT `FK_{DBPREFIX}definition_change` FOREIGN KEY (`change_id`) REFERENCES `{DBPREFIX}change` (`change_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `{DBPREFIX}definition_nounclass` (
   `definition_id` INT UNSIGNED NOT NULL,
@@ -240,9 +241,6 @@ CREATE TABLE  `{DBPREFIX}searchrecord` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `{DBPREFIX}entry`
-  ADD CONSTRAINT `FK_{DBPREFIX}entry_accepted` FOREIGN KEY (`accepted_id` ) REFERENCES `{DBPREFIX}definition` (`definition_id` ),
-  ADD INDEX `FK_{DBPREFIX}entry_accepted` (`accepted_id` ASC),
-  ADD CONSTRAINT `FK_{DBPREFIX}entry_proposed` FOREIGN KEY (`proposed_id` ) REFERENCES `{DBPREFIX}definition` (`definition_id` ),
-  ADD INDEX `FK_{DBPREFIX}entry_proposed` (`proposed_id` ASC),
-  ADD CONSTRAINT `FK_{DBPREFIX}entry_delete_change` FOREIGN KEY (`delete_change_id` ) REFERENCES `{DBPREFIX}change` (`change_id` ),
-  ADD INDEX `FK_{DBPREFIX}entry_delete_change` (`delete_change_id` ASC);
+  ADD CONSTRAINT `FK_{DBPREFIX}entry_accepted` FOREIGN KEY (`accepted_id`) REFERENCES `{DBPREFIX}definition` (`definition_id`),
+  ADD CONSTRAINT `FK_{DBPREFIX}entry_proposed` FOREIGN KEY (`proposed_id`) REFERENCES `{DBPREFIX}definition` (`definition_id`),
+  ADD CONSTRAINT `FK_{DBPREFIX}entry_delete_change` FOREIGN KEY (`delete_change_id`) REFERENCES `{DBPREFIX}change` (`change_id`);

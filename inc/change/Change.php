@@ -48,8 +48,6 @@ class Status extends Enum {
  * Change being made to the dictionary
  */
 class Change extends Entity {
-	private $definitionId;	#TBR
-	private $proposalId;    #TBR
 	private $action;
 	private $submitterId;
 	private $submitted;
@@ -58,8 +56,6 @@ class Change extends Entity {
 	private $resolved;
 	
 	// Lazy loaded properties
-	private $definition; #TBR
-	private $proposal;	 #TBR
 	private $submitter;
 	private $resolver;
 	private $comments;
@@ -68,8 +64,6 @@ class Change extends Entity {
 	/**
 	 * Constructs a new change
 	 * @param int id the id
-	 * @param int definitionId the definition id #TBR
-	 * @param int proposalId the proposal id     #TBR
 	 * @param int action the action type
 	 * @param int submitterId the submitter user id
 	 * @param int submitted the timestamp of submission
@@ -77,12 +71,8 @@ class Change extends Entity {
 	 * @param int resolverId the resolver user id
 	 * @param int resolved the timestamp of acceptance/rejection
 	 */
-	public function __construct($id, 
-			$definitionId, $proposalId, #TBR
-			$action, $submitterId, $submitted, $status, $resolverId = NULL, $resolved = NULL) {
+	public function __construct($id, $action, $submitterId, $submitted, $status, $resolverId = NULL, $resolved = NULL) {
 		$this->id = (int)$id;
-		$this->definitionId = (int)$definitionId; #TBR
-		$this->proposalId = (int)$proposalId; #TBR
 		$this->action = (int)$action;
 		$this->submitterId = (int)$submitterId;
 		$this->submitted = (int)$submitted;
@@ -97,7 +87,7 @@ class Change extends Entity {
 	 * @return Change the change
 	 */
 	public static function fromRow(&$row) {
-		return new Change($row['change_id'], $row['original_id'], $row['proposal_id'], $row['action'], $row['submitter_id'], 
+		return new Change($row['change_id'], $row['action'], $row['submitter_id'], 
 			aka_timefromsql($row['submitted']), $row['status'], $row['resolver_id'], aka_timefromsql($row['resolved']));
 	}
 	
@@ -109,7 +99,7 @@ class Change extends Entity {
 	 * @return Change the change
 	 */
 	public static function create($action) {
-		return new Change(0, NULL, NULL, $action, Session::getCurrent()->getUser()->getId(), time(), Status::PENDING);
+		return new Change(0, $action, Session::getCurrent()->getUser()->getId(), time(), Status::PENDING);
 	}
 	
 	/**
@@ -276,64 +266,7 @@ class Change extends Entity {
 			$definition = Dictionary::getChangeService()->getChangeDefinition($this);
 		}
 		return '#'.$this->id.' '.strtolower(Action::toString($this->action)).'('.$definition->getPrefix().$definition->getLemma().')';
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public static function createCreate($entryId, $proposalId) {
-		return self::create($entryId, $proposalId, Action::CREATE);
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public static function createModify($definitionId, $proposalId) {
-		return self::create($definitionId, $proposalId, Action::MODIFY);
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public static function createDelete($definitionId) {
-		return self::create($definitionId, NULL, Action::DELETE);
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function getDefinition() {
-		if (!$this->definition && $this->definitionId)
-			$this->definition = Dictionary::getDefinitionService()->getDefinition($this->definitionId);
-			
-		return $this->definition;
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function setDefinition($definition) {
-		$this->definitionId = $definition ? $definition->getId() : NULL;
-		$this->definition = $definition;
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function getProposal() {
-		if (!$this->proposal && $this->proposalId)
-			$this->proposal = Dictionary::getDefinitionService()->getDefinition($this->proposalId);
-			
-		return $this->proposal;
-	}
-	
-	/**
-	 * #TBR
-	 */
-	public function setProposal($proposal) {
-		$this->proposalId = $proposal ? $proposal->getId() : NULL;
-		$this->proposal = $proposal;
-	}
+	}	
 }
 
 ?>
