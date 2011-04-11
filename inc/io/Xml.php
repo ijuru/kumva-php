@@ -24,16 +24,14 @@
  * Class for XML templates
  */
 class Xml { 
-	//const NAME_SPACE = 'http://kumva.ijuru.com';
-	//const SCHEMA_URL = 'http://kumva.ijuru.com/kumva.xsd';
+	const NAME_SPACE = 'http://kumva.ijuru.com';
 	
 	/**
 	 * Outputs the header of a kumva XML document
 	 */
 	public static function header() {
-		echo '<?xml version="1.0" encoding="utf-8"?>';
-		echo '<kumva>';
-		//echo '<kumva xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="'.self::NAME_SPACE.'" xsi:schemaLocation="'.self::SCHEMA_URL.'">';
+		echo '<?xml version="1.0" encoding="utf-8" ?>';
+		echo '<kumva xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="'.self::NAME_SPACE.'">';
 	}
 	
 	/**
