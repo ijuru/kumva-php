@@ -22,6 +22,9 @@
  
 require_once "../akabanga.php";
 
+/**
+ * Dummy entity class for testing
+ */
 class DummyEntity extends Entity {
 	public function __construct($id) {
 		$this->id = (int)$id;
@@ -30,7 +33,21 @@ class DummyEntity extends Entity {
 	public static function fromRow(&$row) {}
 }
 
+/**
+ * Test case for Entity class
+ */
 class EntityTest extends PHPUnit_Framework_TestCase {
+	
+	public function testGetId() {
+		$entity1 = new DummyEntity(12);
+		$this->assertEquals(12, $entity1->getId());
+	}
+	
+	public function testSetId() {
+		$entity1 = new DummyEntity(12);
+		$entity1->setId(56);
+		$this->assertEquals(56, $entity1->getId());
+	}
 	
 	public function testEquals() {
 		$entity1 = new DummyEntity(12);
