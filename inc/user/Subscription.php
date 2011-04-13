@@ -29,6 +29,7 @@ class Subscription extends Entity {
 	
 	// Built-in subscriptions
 	const NEW_CHANGE = 1;
+	const NEW_COMMENT = 2;
 	
 	/**
 	 * Constructs a subscription based on an id

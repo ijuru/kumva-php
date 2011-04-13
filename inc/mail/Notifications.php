@@ -50,9 +50,8 @@ class Notifications {
 		$message .= "----------------\n";
 		$message .= 'To view this change, go to '.KUMVA_URL_ROOT.'/admin/change.php?id='.$change->getId();
 		
-		$subscription = Dictionary::getUserService()->getSubscription(Subscription::NEW_CHANGE);
-		$users = self::removeCurrentUser(Dictionary::getUserService()->getUsersWithSubscription($subscription));
-		
+		$users = self::getUsersWithSubscription(Subscription::NEW_CHANGE);
+			
 		return Mailer::sendToUsers($users, $subject, $message);
 	}
 	
@@ -117,6 +116,15 @@ class Notifications {
 	}
 	
 	/**
+	 * Gets the list of users with the given subscription, minus the current user
+	 * @param int the subscription id
+	 */
+	private static function getUsersWithSubscription($subscriptionId) {
+		$subscription = Dictionary::getUserService()->getSubscription($subscriptionId);
+		return self::removeCurrentUser(Dictionary::getUserService()->getUsersWithSubscription($subscription));
+	}
+	
+	/**
 	 * Removes the current user from an array of users
 	 * @param array users the array of users
 	 * @return array the new array
@@ -129,6 +137,19 @@ class Notifications {
 				$new[] = $user;
 		}
 		return $new;
+	}
+	
+	private static function arrayToSet(&$entities) {
+		$set[] = array();
+		foreach ($entities as $entity)
+			$set[$entity->getId()] = $entity;
+		return $set;
+	}
+	
+	private static function union(&$users1, &$users2) {
+		$set1 = self::arrayToSet($users1);
+		$set2 = self::arrayToSet($users2);
+		return $set1 + $set2;
 	}
 }
  

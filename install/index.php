@@ -98,7 +98,8 @@ function kumva_install() {
 		return kumva_error("Unable to create standard user ranks");
 		
 	// Create standard subscriptions
-	if ($db->query("INSERT INTO `".$dbprefix."subscription` VALUES(NULL, 'New change', 'Another user has submitted a change proposal')"))
+	if ($db->query("INSERT INTO `".$dbprefix."subscription` VALUES(NULL, 'New change', 'Another user has submitted a change proposal')")
+	 && $db->query("INSERT INTO `".$dbprefix."subscription` VALUES(NULL, 'New comment', 'Another user has commented on a change proposal')"))
 		kumva_info("Created subscriptions");
 	else
 		return kumva_error("Unable to create subscriptions");
