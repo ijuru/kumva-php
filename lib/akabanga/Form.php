@@ -30,6 +30,7 @@ abstract class Form {
 	private $errors;
 	private $properties;
 	private $renderer;
+	private $autoTrim = TRUE;
 	
 	private static $controlPrefix = '_ctrl_';
 
@@ -62,6 +63,8 @@ abstract class Form {
 		foreach ($properties as $property) {
 			// Get post param (defaults to FALSE because unchecked checkboxes don't post anything)
 			$value = Request::getPostParam($this->getControlName($property), FALSE);
+			if ($value && $this->autoTrim)
+				$value = trim($value);
 			BeanUtils::setProperty($this->entity, $property, $value);
 		} 
 		
@@ -171,6 +174,14 @@ abstract class Form {
 	 */
 	protected function setSuccessUrl($successUrl) {
 		$this->successUrl = $successUrl;
+	}
+	
+	/**
+	 * Sets whether form values should be automatically trimmed during binding
+	 * @param bool autoTrim TRUE if values should be trimmed
+	 */
+	public function setAutoTrim($autoTrim) {
+		$this->autoTrim = $autoTrim;
 	}
 	
 	/**
