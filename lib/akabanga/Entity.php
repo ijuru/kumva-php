@@ -129,6 +129,30 @@ abstract class Entity {
 		}
 		return FALSE;
 	}
+	
+	/**
+	 * Creates a set union of two arrays of entities
+	 * @param array entities1 the first array
+	 * @param array entities2 the second array
+	 * @return array the set union
+	 */
+	public static function union(&$entities1, &$entities2) {
+		$set1 = self::arrayToSet($entities1);
+		$set2 = self::arrayToSet($entities2);
+		return $set1 + $set2;
+	}
+	
+	/**
+	 * Converts a numerically indexed array of entities to a set (really a map using ids as keys)
+	 * @param entities the array
+	 * @return array the set
+	 */
+	public static function arrayToSet(&$entities) {
+		$set = array();
+		foreach ($entities as $entity)
+			$set[$entity->id] = $entity;
+		return $set;
+	}
 }
 
 ?>

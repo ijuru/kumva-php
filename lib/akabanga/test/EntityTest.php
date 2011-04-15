@@ -20,7 +20,7 @@
  * Purpose: Unit tests for Entity class
  */
  
-require_once "../akabanga.php";
+require_once "lib/akabanga/akabanga.php";
 
 /**
  * Dummy entity class for testing
@@ -38,18 +38,25 @@ class DummyEntity extends Entity {
  */
 class EntityTest extends PHPUnit_Framework_TestCase {
 	
-	public function testGetId() {
+	public function test_getId() {
 		$entity1 = new DummyEntity(12);
 		$this->assertEquals(12, $entity1->getId());
 	}
 	
-	public function testSetId() {
+	public function test_setId() {
 		$entity1 = new DummyEntity(12);
 		$entity1->setId(56);
 		$this->assertEquals(56, $entity1->getId());
 	}
 	
-	public function testEquals() {
+	public function test_isNew() {
+		$entity1 = new DummyEntity(0);
+		$entity2 = new DummyEntity(12);
+		$this->assertTrue($entity1->isNew());
+		$this->assertFalse($entity2->isNew());
+	}
+	
+	public function test_equals() {
 		$entity1 = new DummyEntity(12);
 		$entity2 = new DummyEntity(34);
 		$entity3 = new DummyEntity(12);
@@ -59,6 +66,33 @@ class EntityTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($entity1->equals($entity3));
 		$this->assertFalse($entity2->equals($entity3));
 		$this->assertFalse($entity1->equals($entity4));
+	}
+	
+	public function test_inArray() {
+		$entity1 = new DummyEntity(12);
+		$entity2 = new DummyEntity(34);
+		$entity3 = new DummyEntity(56);
+		$entities = array($entity1, $entity2);
+		$this->assertTrue($entity1->inArray($entities));
+		$this->assertFalse($entity3->inArray($entities));	
+	}
+	
+	public function test_arrayToSet() {
+		$entity1 = new DummyEntity(12);
+		$entity2 = new DummyEntity(34);
+		$array = array($entity1, $entity2, $entity1);
+		$set = Entity::arrayToSet($array);
+		$this->assertEquals(2, count($set));
+	}
+	
+	public function test_union() {
+		$entity1 = new DummyEntity(12);
+		$entity2 = new DummyEntity(34);
+		$entity3 = new DummyEntity(56);
+		$entities1 = array($entity1, $entity2);
+		$entities2 = array($entity2, $entity3);
+		$union = Entity::union($entities1, $entities2);
+		$this->assertEquals(3, count($union));
 	}
 }
 

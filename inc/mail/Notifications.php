@@ -76,7 +76,11 @@ class Notifications {
 		$message .= "----------------\n";
 		
 		$message .= 'To view this change or respond to the comment, go to '.KUMVA_URL_ROOT.'/admin/change.php?id='.$change->getId();
-		$users = self::removeCurrentUser($change->getWatchers());
+		
+		$users1 = $change->getWatchers();
+		$users2 = self::getUsersWithSubscription(Subscription::NEW_COMMENT);
+		$users = Entity::union($users1, $users2);
+		$users = self::removeCurrentUser($users);
 		
 		return Mailer::sendToUsers($users, $subject, $message);
 	}
@@ -137,19 +141,6 @@ class Notifications {
 				$new[] = $user;
 		}
 		return $new;
-	}
-	
-	private static function arrayToSet(&$entities) {
-		$set[] = array();
-		foreach ($entities as $entity)
-			$set[$entity->getId()] = $entity;
-		return $set;
-	}
-	
-	private static function union(&$users1, &$users2) {
-		$set1 = self::arrayToSet($users1);
-		$set2 = self::arrayToSet($users2);
-		return $set1 + $set2;
 	}
 }
  
