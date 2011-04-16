@@ -27,6 +27,14 @@
  */
 class Enum {
 	/**
+	 * Gets the array of all ordinal values
+	 * @return array the values
+	 */
+	public static function values() {
+		return array_keys(static::$strings);
+	}
+	
+	/**
 	 * Gets a string from the ordinal value
 	 * @param int value the value
 	 * @return string the string value or FALSE if ordinal wasn't valid
@@ -79,14 +87,6 @@ class Enum {
 		foreach ($ordinals as $ordinal) 
 			$strings[] = self::toString($ordinal);
 		return aka_makecsv($strings);
-	}
-	
-	/**
-	 * Gets the array of all ordinal values
-	 * @return array the values
-	 */
-	public static function values() {
-		return array_keys(static::$strings);
 	}
 	
 	/**

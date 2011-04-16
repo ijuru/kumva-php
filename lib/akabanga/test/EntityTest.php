@@ -20,12 +20,12 @@
  * Purpose: Unit tests for Entity class
  */
  
-require_once "lib/akabanga/akabanga.php";
+require_once "../akabanga.php";
 
 /**
- * Dummy entity class for testing
+ * Test entity class
  */
-class DummyEntity extends Entity {
+class TestEntity extends Entity {
 	public function __construct($id) {
 		$this->id = (int)$id;
 	}
@@ -39,27 +39,35 @@ class DummyEntity extends Entity {
 class EntityTest extends PHPUnit_Framework_TestCase {
 	
 	public function test_getId() {
-		$entity1 = new DummyEntity(12);
+		$entity1 = new TestEntity(12);
 		$this->assertEquals(12, $entity1->getId());
 	}
 	
 	public function test_setId() {
-		$entity1 = new DummyEntity(12);
+		$entity1 = new TestEntity(12);
 		$entity1->setId(56);
 		$this->assertEquals(56, $entity1->getId());
 	}
 	
+	public function test_isVoided() {
+		$entity1 = new TestEntity(12);
+		$entity1->setVoided(TRUE);
+		$this->assertTrue($entity1->isVoided());
+		$entity1->setVoided(FALSE);
+		$this->assertFalse($entity1->isVoided());
+	}
+	
 	public function test_isNew() {
-		$entity1 = new DummyEntity(0);
-		$entity2 = new DummyEntity(12);
+		$entity1 = new TestEntity(0);
+		$entity2 = new TestEntity(12);
 		$this->assertTrue($entity1->isNew());
 		$this->assertFalse($entity2->isNew());
 	}
 	
 	public function test_equals() {
-		$entity1 = new DummyEntity(12);
-		$entity2 = new DummyEntity(34);
-		$entity3 = new DummyEntity(12);
+		$entity1 = new TestEntity(12);
+		$entity2 = new TestEntity(34);
+		$entity3 = new TestEntity(12);
 		$entity4 = NULL;
 		
 		$this->assertFalse($entity1->equals($entity2));
@@ -69,26 +77,26 @@ class EntityTest extends PHPUnit_Framework_TestCase {
 	}
 	
 	public function test_inArray() {
-		$entity1 = new DummyEntity(12);
-		$entity2 = new DummyEntity(34);
-		$entity3 = new DummyEntity(56);
+		$entity1 = new TestEntity(12);
+		$entity2 = new TestEntity(34);
+		$entity3 = new TestEntity(56);
 		$entities = array($entity1, $entity2);
 		$this->assertTrue($entity1->inArray($entities));
 		$this->assertFalse($entity3->inArray($entities));	
 	}
 	
 	public function test_arrayToSet() {
-		$entity1 = new DummyEntity(12);
-		$entity2 = new DummyEntity(34);
+		$entity1 = new TestEntity(12);
+		$entity2 = new TestEntity(34);
 		$array = array($entity1, $entity2, $entity1);
 		$set = Entity::arrayToSet($array);
 		$this->assertEquals(2, count($set));
 	}
 	
 	public function test_union() {
-		$entity1 = new DummyEntity(12);
-		$entity2 = new DummyEntity(34);
-		$entity3 = new DummyEntity(56);
+		$entity1 = new TestEntity(12);
+		$entity2 = new TestEntity(34);
+		$entity3 = new TestEntity(56);
 		$entities1 = array($entity1, $entity2);
 		$entities2 = array($entity2, $entity3);
 		$union = Entity::union($entities1, $entities2);

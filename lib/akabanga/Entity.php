@@ -85,6 +85,14 @@ abstract class Entity {
 	}
 	
 	/**
+	 * Gets if this is a new entity, i.e. doesn't exist as a row in the database
+	 * @return bool TRUE if entity is new, else FALSE
+	 */
+	public function isNew() {
+		return ($this->id == 0);
+	}
+	
+	/**
 	 * Gets whether entity is voided
 	 * @return bool TRUE if voided
 	 */
@@ -98,14 +106,6 @@ abstract class Entity {
 	 */
 	public function setVoided($voided) {
 		$this->voided = (bool)$voided;
-	}
-	
-	/**
-	 * Gets if this is a new entity, i.e. doesn't exist as a row in the database
-	 * @return bool TRUE if entity is new, else FALSE
-	 */
-	public function isNew() {
-		return ($this->id == 0);
 	}
 	
 	/**
