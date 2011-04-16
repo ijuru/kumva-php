@@ -132,14 +132,6 @@ class Session {
 	}
 	
 	/**
-	 * Loads the site translation for the current session language
-	 */
-	public function loadSiteTranslation() {
-		$language = Dictionary::getLanguageService()->getLanguageByCode($this->lang);
-		return $language ? $language->includeSiteFile() : FALSE;
-	}
-	
-	/**
 	 * Gets the user associated with this session or NULL if there is no user
 	 * @return User the user if session is valid, else NULL
 	 */
@@ -152,8 +144,6 @@ class Session {
 	 */
 	public function reloadUser() {
 		$this->user = Dictionary::getUserService()->getUser($this->user->getId());
-		
-		//date_default_timezone_set($this->user->getTimezone());
 	}
 	
 	/**

@@ -61,17 +61,15 @@ require_once KUMVA_DIR_LIB.'/akabanga/akabanga.php';
 //////////////////////////////// Load config ///////////////////////////////////////
  
 // Try to load config file and configure the database
-if (!defined('KUMVA_SKIPCONFIG') && file_exists(KUMVA_DIR_INC.'/../config.php')) {
+if (file_exists(KUMVA_DIR_INC.'/../config.php')) {
 	require_once KUMVA_DIR_INC.'/../config.php';
 	aka_dbconfigure(KUMVA_DB_HOST, KUMVA_DB_USER, KUMVA_DB_PASS, KUMVA_DB_NAME);
-	define('KUMVA_HASCONFIG', TRUE);
 	define('KUMVA_DIR_THEME', KUMVA_DIR_ROOT.'/themes/'.KUMVA_THEME_NAME);
 	define('KUMVA_URL_THEME', KUMVA_URL_ROOT.'/themes/'.KUMVA_THEME_NAME);
+	define('KUMVA_THEME_FNFILE', KUMVA_DIR_THEME.'/functions.php');
 }
-else {
-	define('KUMVA_HASCONFIG', FALSE);
-	define('KUMVA_TITLE_SHORT', 'Kumva Installer');
-}
+else
+	die('No config file found');
 
 ///////////////// Runtime mode (maintenance, debug or live) ////////////////////////
 
@@ -100,26 +98,21 @@ require_once KUMVA_DIR_INC.'/user/UserService.php';
 // Default to UTC
 date_default_timezone_set('UTC');
 
-if (KUMVA_HASCONFIG) {
-	if ($lang = Request::getGetParam('lang', '')) {
-		$language = Dictionary::getLanguageService()->getLanguageByCode($lang);
-		if ($language != NULL)
-			Session::getCurrent()->setLang($language->getCode());
-	}	
-	if (Session::getCurrent()->loadSiteTranslation() === FALSE)
-		die('Unable to load language file');
-	
-	// Configure timezone
-	if (Session::getCurrent()->isAuthenticated() && Session::getCurrent()->getUser()->getTimezone())
-		date_default_timezone_set(Session::getCurrent()->getUser()->getTimezone());
-	
-	// Initialize lexical processing engine
-	Lexical::initializeLanguages();
-}
-else {
-	// Default to English
-	require_once KUMVA_DIR_ROOT.'/lang/en/site.php';
-}
+if ($lang = Request::getGetParam('lang', '')) {
+	$language = Dictionary::getLanguageService()->getLanguageByCode($lang);
+	if ($language != NULL)
+		Session::getCurrent()->setLang($language->getCode());
+}	
+
+// Load site translation
+include_once(KUMVA_DIR_ROOT.'/lang/'.Session::getCurrent()->getLang().'/site.php');
+
+// Configure timezone
+if (Session::getCurrent()->isAuthenticated() && Session::getCurrent()->getUser()->getTimezone())
+	date_default_timezone_set(Session::getCurrent()->getUser()->getTimezone());
+
+// Initialize lexical processing engine
+Lexical::initializeLanguages();
 
 //////////////////////////// Load remaining services ////////////////////////////////
 
@@ -164,11 +157,7 @@ require_once KUMVA_DIR_INC.'/io/XMLImporter.php';
 
 //////////////////////////// Load site theme ////////////////////////////////
 	
-if (KUMVA_HASCONFIG) {
-	// Configure theme
-	define('KUMVA_THEME_FNFILE', KUMVA_DIR_THEME.'/functions.php');
-	if (file_exists(KUMVA_THEME_FNFILE))
-		include_once KUMVA_THEME_FNFILE;
-}
+if (file_exists(KUMVA_THEME_FNFILE))
+	include_once KUMVA_THEME_FNFILE;
 
 ?>

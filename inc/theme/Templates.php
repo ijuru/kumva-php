@@ -159,8 +159,18 @@ class Templates {
 		
 		if ($lang == KUMVA_LANG_DEFS)
 			return '<a class="query link reference" href="'.$queryUrl.'?q='.$reference.'">'.$reference.'</a>';
-		else
-			return '<span class="link" title="'.Language::getNameFromCode($lang).'">'.ucfirst($lang).'.</span> <span class="reference">'.$reference.'</span>';
+		
+		$language = Dictionary::getLanguageService()->getLanguageByCode($lang);
+		if ($language) {
+			if ($language->getQueryUrl()) {
+				$url = str_replace('{QUERY}', urlencode($reference), $language->getQueryUrl());
+				return '<span class=link" title="'.$language->getName().'">'.ucfirst($lang).'.</span> <a class="query link reference" href="'.$url.'">'.$reference.'</a>';
+			}
+			
+			return '<span class="link" title="'.$language->getName().'">'.ucfirst($lang).'.</span> <span class="reference">'.$reference.'</span>';
+		}
+		
+		return '<span class="link">'.ucfirst($lang).'.</span> <span class="reference">'.$reference.'</span>';
 	}
 	
 	/**
@@ -304,7 +314,7 @@ class Templates {
 		echo '<select '.($id ? 'id="'.$id.'" name="'.$id.'"' : '').' onchange="aka_goto(\''.$url.'\')">';
 		foreach (Dictionary::getLanguageService()->getSiteLanguages() as $language) {
 			$code = $language->getCode();
-			echo '<option value="'.$code.'" '.(($code == $curLang) ? 'selected="selected"' : '').'>'.$language->getName().'</option>';
+			echo '<option value="'.$code.'" '.(($code == $curLang) ? 'selected="selected"' : '').'>'.$language->getLocalName().'</option>';
 		}
 		echo '</select>';
 	}

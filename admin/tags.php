@@ -63,7 +63,7 @@ include_once 'tpl/header.php';
         <td><?php echo $relationship->getTitle(); ?></td>
         <td><?php echo $relationship->getDescription(); ?></td>
         <td style="text-align: center"><?php echo $relationship->getDefaultLang(TRUE); ?></td>
-        <td style="text-align: center"><?php echo $relationship->isMatchDefault() ? KU_STR_YES : KU_STR_NO; ?></td>
+        <td style="text-align: center"><?php if ($relationship->isMatchDefault()) Templates::icon('tick'); ?></td>
         <td><?php
         if ($relationship->isSystem())
             Templates::icon('lock', KU_STR_SYSTEM);

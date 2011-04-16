@@ -32,7 +32,7 @@ class Lexical {
 	public static function initializeLanguages() {
 		$languages = Dictionary::getLanguageService()->getLexicalLanguages();
 		foreach ($languages as $language)
-			$language->includeLexicalFile();
+			include_once KUMVA_DIR_ROOT.'/lang/'.$language->getCode().'/lexical.php';
 	}
 	
 	/**

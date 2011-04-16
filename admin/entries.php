@@ -87,7 +87,7 @@ include_once 'tpl/header.php';
 					<td style="text-align: center"><?php echo $definition->getWordClass(); ?></td>
 					<td style="text-align: center"><?php echo aka_makecsv($definition->getNounClasses()); ?></td>
 					<td><?php echo $definition->getMeaning(); ?></td>
-					<td style="text-align: center"><?php echo $definition->isVerified() ? KU_STR_YES : KU_STR_NO; ?></td>
+					<td style="text-align: center"><?php if ($definition->isVerified()) Templates::icon('tick'); ?></td>
 					<td>
 					<?php 
 					if (Session::getCurrent()->hasRole(Role::CONTRIBUTOR))

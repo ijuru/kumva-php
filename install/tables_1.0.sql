@@ -53,8 +53,7 @@ CREATE TABLE `{DBPREFIX}definition` (
   KEY `IN_{DBPREFIX}definition_lemma` (`lemma`),
   KEY `FK_{DBPREFIX}definition_entry` (`entry_id`),
   KEY `FK_{DBPREFIX}definition_change` (`change_id`),
-  CONSTRAINT `FK_{DBPREFIX}definition_entry` FOREIGN KEY (`entry_id`) REFERENCES `{DBPREFIX}entry` (`entry_id`),
-  CONSTRAINT `FK_{DBPREFIX}definition_change` FOREIGN KEY (`change_id`) REFERENCES `{DBPREFIX}change` (`change_id`)
+  CONSTRAINT `FK_{DBPREFIX}definition_entry` FOREIGN KEY (`entry_id`) REFERENCES `{DBPREFIX}entry` (`entry_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `{DBPREFIX}definition_nounclass` (
@@ -80,10 +79,13 @@ CREATE TABLE `{DBPREFIX}language` (
   `language_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `code` CHAR(2) NOT NULL,
   `name` VARCHAR(50) NOT NULL,
-  `sitefile` VARCHAR(100),
-  `lexicalfile` VARCHAR(100),
+  `localname` VARCHAR(50) NOT NULL,
+  `queryurl` VARCHAR(255),
+  `hastranslation` TINYINT(1) NOT NULL,
+  `haslexical` TINYINT(1) NOT NULL,
   PRIMARY KEY (`language_id`),
-  KEY `IN_{DBPREFIX}tag_text` (`code`)
+  KEY `IN_{DBPREFIX}tag_text` (`code`),
+  UNIQUE KEY `UQ_{DBPREFIX}change_code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `{DBPREFIX}tag` (
@@ -180,8 +182,6 @@ CREATE TABLE `{DBPREFIX}user_role` (
 
 CREATE TABLE `{DBPREFIX}change` (
   `change_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `original_id` INT UNSIGNED DEFAULT NULL,	#TBR
-  `proposal_id` INT UNSIGNED DEFAULT NULL,
   `action` TINYINT UNSIGNED NOT NULL, 
   `submitter_id` INT UNSIGNED NOT NULL,
   `submitted` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -189,12 +189,8 @@ CREATE TABLE `{DBPREFIX}change` (
   `resolver_id` INT UNSIGNED DEFAULT NULL,
   `resolved` TIMESTAMP NULL DEFAULT NULL,
   PRIMARY KEY (`change_id`),
-  KEY `FK_{DBPREFIX}change_original` (`original_id`),	#TBR
-  KEY `FK_{DBPREFIX}change_proposal` (`proposal_id`),
   KEY `FK_{DBPREFIX}change_submitter` (`submitter_id`),
   KEY `FK_{DBPREFIX}change_resolver` (`resolver_id`),
-  CONSTRAINT `FK_{DBPREFIX}change_original` FOREIGN KEY (`original_id`) REFERENCES `{DBPREFIX}definition` (`definition_id`),#TBR
-  CONSTRAINT `FK_{DBPREFIX}change_proposal` FOREIGN KEY (`proposal_id`) REFERENCES `{DBPREFIX}definition` (`definition_id`),
   CONSTRAINT `FK_{DBPREFIX}change_submitter` FOREIGN KEY (`submitter_id`) REFERENCES `{DBPREFIX}user` (`user_id`),
   CONSTRAINT `FK_{DBPREFIX}change_resolver` FOREIGN KEY (`resolver_id`) REFERENCES `{DBPREFIX}user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -244,3 +240,6 @@ ALTER TABLE `{DBPREFIX}entry`
   ADD CONSTRAINT `FK_{DBPREFIX}entry_accepted` FOREIGN KEY (`accepted_id`) REFERENCES `{DBPREFIX}definition` (`definition_id`),
   ADD CONSTRAINT `FK_{DBPREFIX}entry_proposed` FOREIGN KEY (`proposed_id`) REFERENCES `{DBPREFIX}definition` (`definition_id`),
   ADD CONSTRAINT `FK_{DBPREFIX}entry_delete_change` FOREIGN KEY (`delete_change_id`) REFERENCES `{DBPREFIX}change` (`change_id`);
+  
+ALTER TABLE `{DBPREFIX}definition`
+  ADD CONSTRAINT `FK_{DBPREFIX}definition_change` FOREIGN KEY (`change_id`) REFERENCES `{DBPREFIX}change` (`change_id`);

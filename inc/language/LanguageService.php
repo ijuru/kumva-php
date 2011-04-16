@@ -50,14 +50,16 @@ class LanguageService extends Service {
 	
 	/**
 	 * Gets all languages
+	 * @param bool withTranslation include only languages with a site translation
+	 * @param bool withLexical include only languages with a lexical module
 	 * @return array the languages
 	 */
-	public function getLanguages($withSiteFile = NULL, $withLexicalFile = NULL) {
+	public function getLanguages($withTranslation = NULL, $withLexical = NULL) {
 		$sql = 'SELECT l.* FROM `'.KUMVA_DB_PREFIX.'language` l WHERE 1=1 ';
-		if ($withSiteFile === TRUE)
-			$sql .= 'AND l.sitefile IS NOT NULL ';
-		if ($withLexicalFile === TRUE)
-			$sql .= 'AND l.lexicalfile IS NOT NULL ';
+		if ($withTranslation === TRUE)
+			$sql .= 'AND l.hastranslation = 1 ';
+		if ($withLexical === TRUE)
+			$sql .= 'AND l.haslexical = 1 ';
 				
 		$sql .= 'ORDER BY `name`';
 		return Language::fromQuery($this->database->query($sql));
@@ -98,8 +100,10 @@ class LanguageService extends Service {
 				.'NULL,'
 				.aka_prepsqlval($language->getCode()).','
 				.aka_prepsqlval($language->getName()).','
-				.aka_prepsqlval($language->getSiteFile()).','
-				.aka_prepsqlval($language->getLexicalFile()).')';
+				.aka_prepsqlval($language->getLocalName()).','
+				.aka_prepsqlval($language->getQueryUrl()).','
+				.aka_prepsqlval($language->hasTranslation()).','
+				.aka_prepsqlval($language->hasLexical()).')';
 			
 			$res = $this->database->insert($sql);
 			if ($res === FALSE)
@@ -110,8 +114,10 @@ class LanguageService extends Service {
 			$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'language` SET '
 				.'code = '.aka_prepsqlval($language->getCode()).','
 				.'name = '.aka_prepsqlval($language->getName()).','
-				.'sitefile = '.aka_prepsqlval($language->getSiteFile()).','
-				.'lexicalfile = '.aka_prepsqlval($language->getLexicalFile()).' '
+				.'localname = '.aka_prepsqlval($language->getLocalName()).','
+				.'queryurl = '.aka_prepsqlval($language->getQueryUrl()).','
+				.'hastranslation = '.aka_prepsqlval($language->hasTranslation()).','
+				.'haslexical = '.aka_prepsqlval($language->hasLexical()).' '
 				.'WHERE language_id = '.$language->getId();
 			
 			$res = $this->database->query($sql);
@@ -129,26 +135,32 @@ class LanguageService extends Service {
 		clearstatcache();
 	
 		$dir = opendir(KUMVA_DIR_ROOT.'/lang');
-		if ($dir !== FALSE) {
-			// Delete any existing languages
-			$this->database->query('DELETE FROM `'.KUMVA_DB_PREFIX.'language`');
+		if ($dir === FALSE)
+			return FALSE;
 		
-			while (FALSE !== ($item = readdir($dir))) {
-				if (is_dir(KUMVA_DIR_ROOT.'/lang/'.$item) && $item[0] != '.') {
-					$code = $item;
-					$name = Language::getNameFromCode($code);
-					$siteFile = '/lang/'.$item.'/site.php';
-					$lexicalFile = '/lang/'.$item.'/lexical.php';
-					$siteFile = file_exists(KUMVA_DIR_ROOT.$siteFile) ? $siteFile : NULL;
-					$lexicalFile = file_exists(KUMVA_DIR_ROOT.$lexicalFile) ? $lexicalFile : NULL;
-					$language = new Language(0, $code, $name, $siteFile, $lexicalFile);
+		// Delete any existing languages
+		$this->database->query('DELETE FROM `'.KUMVA_DB_PREFIX.'language`');
+	
+		while (FALSE !== ($item = readdir($dir))) {
+			if (is_dir(KUMVA_DIR_ROOT.'/lang/'.$item) && $item[0] != '.') {
+				$code = $item;
+				$infFile = KUMVA_DIR_ROOT.'/lang/'.$item.'/lang.inf';
+				$fields = parse_ini_file($infFile, FALSE);
 				
-					if(!$this->saveLanguage($language))
-						return FALSE;
-				}
+				$name = $fields['name'];
+				$localName = isset($fields['localname']) ? $fields['localname'] : $fields['name'];
+				$queryUrl = isset($fields['queryurl']) ? $fields['queryurl'] : NULL;
+				$hasTranslation = file_exists(KUMVA_DIR_ROOT.'/lang/'.$code.'/site.php');
+				$hasLexical = file_exists(KUMVA_DIR_ROOT.'/lang/'.$code.'/lexical.php');
+				$language = new Language(0, $code, $name, $localName, $queryUrl, $hasTranslation, $hasLexical);
+			
+				if(!$this->saveLanguage($language))
+					return FALSE;
 			}
-			closedir($dir);
 		}
+		closedir($dir);
+		
+		return TRUE;
 	}
 }
 

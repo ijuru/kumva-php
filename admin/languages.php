@@ -50,7 +50,9 @@ include_once 'tpl/header.php';
 			<th style="width: 30px">&nbsp;</th>
 			<th style="width: 20px">&nbsp;</th>
 			<th><?php echo KU_STR_NAME; ?></th>
+			<th><?php echo KU_STR_LOCALNAME; ?></th>
 			<th><?php echo KU_STR_CODE; ?></th>
+			<th><?php echo KU_STR_QUERYURL; ?></th>
 			<th><?php echo KU_STR_SITETRANSLATION; ?></th>
 			<th><?php echo KU_STR_LEXICALMODULE; ?></th>
 			<th style="width: 30px">&nbsp;</th>
@@ -62,10 +64,12 @@ include_once 'tpl/header.php';
 		<tr class="rowlink" onclick="aka_goto('<?php echo $itemUrl; ?>')">
 			<td>&nbsp;</td>
 			<td><?php Templates::icon('language'); ?></td>
-			<td class="primarycol"><?php echo $language->getName(); ?></td>
+			<td class="primarycol"><?php echo htmlspecialchars($language->getName()); ?></td>
+			<td><?php echo htmlspecialchars($language->getLocalName()); ?></td>
 			<td style="text-align: center"><?php echo $language->getCode(); ?></td>
-			<td><?php echo $language->getSiteFile(); ?></td>
-			<td><?php echo $language->getLexicalFile(); ?></td>
+			<td><?php echo htmlspecialchars($language->getQueryUrl()); ?></td>
+			<td style="text-align: center"><?php if ($language->hasTranslation()) Templates::icon('tick'); ?></td>
+			<td style="text-align: center"><?php if ($language->hasLexical()) Templates::icon('tick'); ?></td>
 			<td>&nbsp;</td>
 		</tr>
 		<?php } ?>

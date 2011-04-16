@@ -1,0 +1,3 @@
+name="Swahili"
+localname="Kiswahili"
+queryurl="http://www.kamusi.org/en/lookup/sw?Word={QUERY}"

@@ -1,0 +1,3 @@
+name="Arabic"
+localname="العربية"
+queryurl="http://ar.wiktionary.org/wiki/{QUERY}"

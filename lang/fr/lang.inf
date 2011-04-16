@@ -1,0 +1,3 @@
+name="French"
+localname="Français"
+queryurl="http://fr.wiktionary.org/wiki/{QUERY}"

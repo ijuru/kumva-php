@@ -125,8 +125,10 @@ class Widgets {
 		echo '</tr>';
 			
 		foreach ($tagStats as $lang => $tagCounts) {
+			$language = Dictionary::getLanguageService()->getLanguageByCode($lang);
+			$langName = $language ? $language->getName() : $lang;
 			echo '<tr>';
-			echo '<td style="text-align: left">'.Language::getNameFromCode($lang).'</td>';
+			echo '<td style="text-align: left">'.$langName.'</td>';
 			foreach ($relationships as $relationship) {
 					$count = $tagCounts[$relationship->getName()];
 					
