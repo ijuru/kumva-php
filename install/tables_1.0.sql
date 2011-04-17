@@ -25,20 +25,14 @@ DROP TABLE IF EXISTS `{DBPREFIX}entry`;
 SET FOREIGN_KEY_CHECKS=1;
 
 CREATE TABLE `{DBPREFIX}entry` (
-  `entry_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `accepted_id` int(10) unsigned DEFAULT NULL,
-  `proposed_id` int(10) unsigned DEFAULT NULL,
-  `delete_change_id` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`entry_id`),
-  KEY `FK_{DBPREFIX}entry_accepted` (`accepted_id`),
-  KEY `FK_{DBPREFIX}entry_proposed` (`proposed_id`),
-  KEY `FK_{DBPREFIX}entry_delete_change` (`delete_change_id`)
+  `entry_id` int(10) unsigned NOT NULL AUTO_INCREMENT
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `{DBPREFIX}definition` (
   `definition_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `entry_id` int(10) unsigned NOT NULL,
   `revision` int(10) unsigned NOT NULL,
+  `revisionstatus` int(2) unsigned NOT NULL,
   `change_id` int(10) unsigned DEFAULT NULL,
   `wordclass` varchar(5) DEFAULT NULL,
   `prefix` varchar(10) DEFAULT NULL,
@@ -118,7 +112,7 @@ CREATE TABLE `{DBPREFIX}definition_tag` (
   `order` INT UNSIGNED NOT NULL,
   `tag_id` INT UNSIGNED NOT NULL,
   `weight` INT UNSIGNED NOT NULL,
-  `active` TINYINT(1) NOT NULL,		#TBR
+  `active` TINYINT(1) NOT NULL,
   KEY `FK_{DBPREFIX}tag_definition_definition` (`definition_id`),
   KEY `FK_{DBPREFIX}tag_definition_tag` (`tag_id`),
   KEY `FK_{DBPREFIX}tag_definition_relationship` (`relationship_id`),
@@ -181,7 +175,8 @@ CREATE TABLE `{DBPREFIX}user_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `{DBPREFIX}change` (
-  `change_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `change_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `entry_id` int(10) unsigned NOT NULL,
   `action` TINYINT UNSIGNED NOT NULL, 
   `submitter_id` INT UNSIGNED NOT NULL,
   `submitted` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -189,8 +184,10 @@ CREATE TABLE `{DBPREFIX}change` (
   `resolver_id` INT UNSIGNED DEFAULT NULL,
   `resolved` TIMESTAMP NULL DEFAULT NULL,
   PRIMARY KEY (`change_id`),
+  KEY `FK_{DBPREFIX}definition_entry` (`entry_id`),
   KEY `FK_{DBPREFIX}change_submitter` (`submitter_id`),
   KEY `FK_{DBPREFIX}change_resolver` (`resolver_id`),
+  CONSTRAINT `FK_{DBPREFIX}change_entry` FOREIGN KEY (`entry_id`) REFERENCES `{DBPREFIX}entry` (`entry_id`),
   CONSTRAINT `FK_{DBPREFIX}change_submitter` FOREIGN KEY (`submitter_id`) REFERENCES `{DBPREFIX}user` (`user_id`),
   CONSTRAINT `FK_{DBPREFIX}change_resolver` FOREIGN KEY (`resolver_id`) REFERENCES `{DBPREFIX}user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

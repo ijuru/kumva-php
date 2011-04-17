@@ -83,12 +83,13 @@ class SearchService extends Service {
 		$tagDefCriteria = array();
 		foreach ($relationships as $relationship)
 			$tagDefCriteria[] = 'dt.relationship_id = '.$relationship->getId();
-			
-		// If not including proposals, then only use active taggings
-		if (!$incProposals)
-			$tagDefCriteria[] = 'dt.active = 1';
 	
 		$sql .= "  WHERE (".implode(' OR ', $tagCriteria).") AND (".implode(' OR ', $tagDefCriteria).") ";
+		
+		// If not including proposals, then only use active taggings
+		if (!$incProposals)
+			$sql .= 'AND dt.active = 1 ';
+		
 		$sql .= "  GROUP BY dt.definition_id ";			
 		$sql .= ") m ON m.definition_id = d.definition_id ";
 		
