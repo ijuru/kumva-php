@@ -91,7 +91,7 @@ ku_sitetrans('KU_STR_HISTORY', 'History');
 ku_sitetrans('KU_STR_HOME', 'Home');
 ku_sitetrans('KU_STR_IMPORT', 'Import');
 ku_sitetrans('KU_STR_INSTALL', 'Install');
-ku_sitetrans('KU_STR_INTERJECTION', 'Irangamutima');
+ku_sitetrans('KU_STR_INTERJECTION', 'Interjection');
 ku_sitetrans('KU_STR_KUMVAVERSION', 'Kumva version');
 ku_sitetrans('KU_STR_LANGUAGE', 'Language');
 ku_sitetrans('KU_STR_LANGUAGES', 'Languages');
