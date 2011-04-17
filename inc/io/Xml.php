@@ -46,17 +46,9 @@ class Xml {
 	 * @param Entry entry the entry
 	 */
 	public static function entry($entry) {
-		$accepted = $entry->getAccepted();
-		$proposed = $entry->getProposed();
-	
-		echo '<entry ';
-		if ($accepted)
-			echo 'accepted="'.$accepted->getRevision().'" ';
-		if ($proposed)
-			echo 'proposed="'.$proposed->getRevision().'" ';	
-		echo '>';
+		echo '<entry>';
 		
-		$definitions = Dictionary::getDefinitionService()->getEntryDefinitions($entry);
+		$definitions = Dictionary::getDefinitionService()->getEntryRevisions($entry);
 	
 		foreach ($definitions as $definition)
 			Xml::definition($definition, TRUE);
@@ -74,6 +66,7 @@ class Xml {
 		
 		echo '<definition ';
 		echo 'revision="'.aka_prepxmlval($definition->getRevision()).'" ';
+		echo 'revisionstatus="'.strtolower(RevisionStatus::toString($definition->getRevision())).'" ';
 		echo 'wordclass="'.$definition->getWordClass().'" ';
 		echo 'nounclasses="'.implode(',', $definition->getNounClasses()).'" ';
 		echo 'flags="'.$flags.'" ';

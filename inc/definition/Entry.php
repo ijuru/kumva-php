@@ -62,7 +62,7 @@ class Entry extends Entity {
 	 */
 	public function getRevisions() {
 		if ($this->revisions === NULL)
-			$this->revisions = Dictionary::getDefinitionService()->getEntryDefinitions($this);
+			$this->revisions = Dictionary::getDefinitionService()->getEntryRevisions($this);
 		
 		return $this->revisions;
 	}

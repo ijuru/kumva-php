@@ -44,13 +44,11 @@ if ($action == 'delete' && !$pendingChange) {
 	}
 }
 
-// Get entry definitions
-$definitions = Dictionary::getDefinitionService()->getEntryDefinitions($entry);
-$viewRev = (int)Request::getGetParam('rev', 0);
-if ($viewRev)
-	$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, $viewRev); // Get specified rev
-else
-	$definition = $definitions[0]; // Default to latest revision
+// Get revision to view
+$viewRev = (int)Request::getGetParam('rev', Revision::HEAD);
+$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, $viewRev);
+if (!$definition)
+	$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::LAST);
 
 $canEdit = !$entry->isDeleted() && !$pendingChange && Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
 $canDelete = !$entry->isDeleted() && !$pendingChange && Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
@@ -79,7 +77,11 @@ function deleteEntry(id) {
 			
 			<?php echo KU_STR_REVISION; ?>
 			<select name="rev">
-				<?php foreach ($definitions as $def) { 
+				<?php 
+				
+				$definitions = Dictionary::getDefinitionService()->getEntryRevisions($entry);
+				
+				foreach ($definitions as $def) { 
 					$isCurrent = $definition->getRevision() == $def->getRevision();
 					
 					if ($def->isAcceptedRevision())

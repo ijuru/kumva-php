@@ -47,7 +47,7 @@ class DefinitionService extends Service {
 	 * Gets all the definitions for the given entry
 	 * @return array the definitions
 	 */
-	public function getEntryDefinitions($entry) {
+	public function getEntryRevisions($entry) {
 		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` 
 				WHERE entry_id = '.$entry->getId(). '
 				ORDER BY revision DESC';
@@ -69,9 +69,9 @@ class DefinitionService extends Service {
 	 * @return array the definitions
 	 */
 	public function getAcceptedDefinitions() {
-		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` d 
-				WHERE d.revisionstatus = 1
-				ORDER BY e.entry_id ASC';
+		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'definition`
+				WHERE revisionstatus = 1
+				ORDER BY entry_id ASC';
 		return Definition::fromQuery($this->database->query($sql));
 	}
 	
@@ -183,9 +183,7 @@ class DefinitionService extends Service {
 	 */
 	public function saveEntry($entry) {
 		if ($entry->isNew()) {
-			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'entry` VALUES('
-				.'NULL,'
-				.aka_prepsqlval($entry->getDeleteChange()).')';
+			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'entry` VALUES(NULL)';
 			
 			$res = $this->database->insert($sql);
 			if ($res === FALSE) 
@@ -193,12 +191,11 @@ class DefinitionService extends Service {
 			$entry->setId($res);
 		}
 		else {
-			$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'entry` SET '
-				.'delete_change_id = '.aka_prepsqlval($entry->getDeleteChange()).' '
-				.'WHERE entry_id = '.$entry->getId();
+			//$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'entry` SET '
+				//.'WHERE entry_id = '.$entry->getId();
 			
-			if ($this->database->query($sql) === FALSE)
-				return FALSE;
+			//if ($this->database->query($sql) === FALSE)
+				//return FALSE;
 		}
 		return TRUE;
 	}
