@@ -42,14 +42,7 @@ class SearchService extends Service {
 		$langs = $query->getLang() ? array($query->getLang()) : Dictionary::getLanguageService()->getLexicalLanguages(TRUE);
 		
 		$sql = "SELECT SQL_CALC_FOUND_ROWS d.*, CONCAT(COALESCE(d.prefix, ''), d.lemma) as `entry`
-				FROM `".KUMVA_DB_PREFIX."definition` d 
-				INNER JOIN `".KUMVA_DB_PREFIX."entry` e ON e.entry_id = d.entry_id ";
-		
-		// Return proposed definitions as well?
-		if ($incProposals)
-			$sql .= " AND (e.accepted_id = d.definition_id OR e.proposed_id = d.definition_id) ";
-		else
-			$sql .= " AND e.accepted_id = d.definition_id ";
+				FROM `".KUMVA_DB_PREFIX."definition` d ";
 		
 		/////////// Tag based criteria /////////////
 		
@@ -90,23 +83,38 @@ class SearchService extends Service {
 		$tagDefCriteria = array();
 		foreach ($relationships as $relationship)
 			$tagDefCriteria[] = 'dt.relationship_id = '.$relationship->getId();
+			
+		// If not including proposals, then only use active taggings
+		if (!$incProposals)
+			$tagDefCriteria[] = 'dt.active = 1';
 	
 		$sql .= "  WHERE (".implode(' OR ', $tagCriteria).") AND (".implode(' OR ', $tagDefCriteria).") ";
 		$sql .= "  GROUP BY dt.definition_id ";			
 		$sql .= ") m ON m.definition_id = d.definition_id ";
 		
-		/////////// Definition criteria /////////////
+		/////////////////// Definition criteria //////////////////
+		
+		$defCriteria = array();
+		
+		// Return proposed definitions as well?
+		if ($incProposals)
+			$defCriteria[] = "(d.revisionstatus = 1 OR d.revisionstatus = 2)";
+		else
+			$defCriteria[] = "d.revisionstatus = 1";
 			
 		// Filter by wordclass
 		if ($query->getWordClass())
-			$sql .= 'AND d.wordclass = '.aka_prepsqlval($query->getWordClass()).' ';
+			$defCriteria[] = 'd.wordclass = '.aka_prepsqlval($query->getWordClass());
 			
 		// Filter by verified state
 		$verified = $query->getVerified();
 		if ($verified !== NULL)
-			$sql .= 'AND d.verified = '.(int)$verified.' ';
+			$defCriteria[] = 'd.verified = '.(int)$verified;
+			
+		$sql .= ' WHERE '.implode(' AND ', $defCriteria).' ';
 		
-		// Order by
+		//////////////////// Order by //////////////////////////////
+		
 		switch ($orderBy) {
 		case OrderBy::ENTRY:
 			$sql .= "ORDER BY `entry` ASC ";

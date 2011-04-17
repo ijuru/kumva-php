@@ -75,7 +75,7 @@ include_once 'tpl/header.php';
 					<td>&nbsp;</td>
 					<td>
 					<?php 
-						if ($definition->equals($entry->getProposed()))
+						if ($definition->isProposedRevision())
 							Templates::icon('proposal', KU_STR_PROPOSAL);
 						else
 						 	Templates::icon('entry', KU_STR_ENTRY);

@@ -260,7 +260,7 @@ class Change extends Entity {
 	public function toString() {	
 		if ($this->getAction() == Action::DELETE) {
 			$entry = Dictionary::getChangeService()->getEntryByDeleteChange($this);
-			$definition = Dictionary::getDefinitionService()->getDefinitionByRevision($entry, Revision::LAST);
+			$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::LAST);
 		}
 		else {
 			$definition = Dictionary::getChangeService()->getChangeDefinition($this);

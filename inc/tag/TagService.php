@@ -34,7 +34,7 @@ class TagService extends Service {
 	public function getTags($relationshipId = NULL, $textLike = NULL, $limit = 0) {
 		$sql = 'SELECT DISTINCT t.* FROM `'.KUMVA_DB_PREFIX.'tag` t 
 				INNER JOIN `'.KUMVA_DB_PREFIX.'definition_tag` dt ON dt.tag_id = t.tag_id
-				WHERE 1=1 ';
+				WHERE dt.active = 1 ';
 		
 		if ($relationshipId != NULL && is_array($relationshipId))
 			$sql .= 'AND dt.relationship_id IN ('.implode(',', $relationshipId).') ';

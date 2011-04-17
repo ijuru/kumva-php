@@ -37,7 +37,7 @@ class Session {
 		// Attempt authentication by cookies
 		$login = Request::getCookie('login', '');
 		$password = Request::getCookie('password', '');	
-		if ($login != '' && $password != '' && KUMVA_HASCONFIG)
+		if ($login && $password)
 			$this->login($login, $password);
 		
 		// TODO make default language configurable

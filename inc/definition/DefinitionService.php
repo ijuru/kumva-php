@@ -70,7 +70,7 @@ class DefinitionService extends Service {
 	 */
 	public function getAcceptedDefinitions() {
 		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` d 
-				INNER JOIN `'.KUMVA_DB_PREFIX.'entry` e ON e.accepted_id = d.definition_id
+				WHERE d.revisionstatus = 1
 				ORDER BY e.entry_id ASC';
 		return Definition::fromQuery($this->database->query($sql));
 	}
@@ -81,24 +81,25 @@ class DefinitionService extends Service {
 	 * @param int revision the revision number
 	 * @return Definition the definition
 	 */
-	public function getDefinitionByRevision($entry, $revision) {
+	public function getEntryRevision($entry, $revision) {
 		switch ($revision) {
 		case Revision::ACCEPTED:
-			return $entry->getAccepted();
-		case Revision::PROPOSED:
-			return $entry->getProposed();
-		case Revision::HEAD:
-			$acceptedRev = $entry->getAccepted() ? $entry->getAccepted()->getRevision() : 0;
-			$proposedRev = $entry->getProposed() ? $entry->getProposed()->getRevision() : 0;
-			$revision = max($acceptedRev, $proposedRev);
-		case Revision::LAST:
-			$revision = $this->database->scalar(
-				'SELECT max(revision) FROM `'.KUMVA_DB_PREFIX.'definition` WHERE entry_id = '.$entry->getId());
+			$where = 'entry_id = '.$entry->getId().' AND revisionstatus = 1';
 			break;
+		case Revision::PROPOSED:
+			$where = 'entry_id = '.$entry->getId().' AND revisionstatus = 2';
+			break;
+		case Revision::HEAD:
+			$where = 'entry_id = '.$entry->getId().' AND (revisionstatus = 1 OR revisionstatus = 2) ORDER BY revision DESC LIMIT 1';
+			break;
+		case Revision::LAST:
+			$where = 'entry_id = '.$entry->getId().' ORDER BY revision DESC LIMIT 1';
+			break;
+		default:
+			$where = 'entry_id = '.$entry->getId().' AND revision = '.(int)$revision;
 		}
 	
-		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` 
-									 WHERE entry_id = '.$entry->getId().' AND revision = '.(int)$revision);
+		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` WHERE '.$where);
 		return ($row != NULL) ? Definition::fromRow($row) : NULL;
 	}
 	
@@ -120,15 +121,14 @@ class DefinitionService extends Service {
 		else
 			mt_srand();	
 		
-		$join = 'INNER JOIN `'.KUMVA_DB_PREFIX.'entry` e ON e.accepted_id = d.definition_id';	
-		$where = 'WHERE d.verified = 1 AND d.flags = 0';
+		$where = 'WHERE d.revisionstatus = 1 AND d.verified = 1 AND d.flags = 0';
 		
 		// Geta total number of suitable entries
-		$total = $this->database->scalar("SELECT COUNT(*) FROM `".KUMVA_DB_PREFIX."definition` d $join $where");
+		$total = $this->database->scalar("SELECT COUNT(*) FROM `".KUMVA_DB_PREFIX."definition` d $where");
 		if ($total > 0) {
 			// Select a row with random offset
 			$offset = mt_rand(0, $total - 1);
-			$row = $this->database->row("SELECT * FROM `".KUMVA_DB_PREFIX."definition` d $join $where LIMIT $offset, 1");
+			$row = $this->database->row("SELECT * FROM `".KUMVA_DB_PREFIX."definition` d $where LIMIT $offset, 1");
 			return ($row != NULL) ? Definition::fromRow($row) : NULL;
 		}
 		return NULL;
@@ -185,8 +185,6 @@ class DefinitionService extends Service {
 		if ($entry->isNew()) {
 			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'entry` VALUES('
 				.'NULL,'
-				.aka_prepsqlval($entry->getAccepted()).','
-				.aka_prepsqlval($entry->getProposed()).','
 				.aka_prepsqlval($entry->getDeleteChange()).')';
 			
 			$res = $this->database->insert($sql);
@@ -196,8 +194,6 @@ class DefinitionService extends Service {
 		}
 		else {
 			$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'entry` SET '
-				.'accepted_id = '.aka_prepsqlval($entry->getAccepted()).','
-				.'proposed_id = '.aka_prepsqlval($entry->getProposed()).','
 				.'delete_change_id = '.aka_prepsqlval($entry->getDeleteChange()).' '
 				.'WHERE entry_id = '.$entry->getId();
 			
@@ -218,6 +214,7 @@ class DefinitionService extends Service {
 				.'NULL,'
 				.aka_prepsqlval($definition->getEntry()).','
 				.aka_prepsqlval($definition->getRevision()).','
+				.aka_prepsqlval($definition->getRevisionStatus()).','
 				.aka_prepsqlval($definition->getChange()).','
 				.aka_prepsqlval($definition->getWordClass()).','
 				.aka_prepsqlval($definition->getPrefix()).','
@@ -237,6 +234,7 @@ class DefinitionService extends Service {
 			$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'definition` SET '
 				.'entry_id = '.aka_prepsqlval($definition->getEntry()).','
 				.'revision = '.aka_prepsqlval($definition->getRevision()).','
+				.'revisionstatus = '.aka_prepsqlval($definition->getRevisionStatus()).','
 				.'change_id = '.aka_prepsqlval($definition->getChange()).','
 				.'wordclass = '.aka_prepsqlval($definition->getWordClass()).','
 				.'prefix = '.aka_prepsqlval($definition->getPrefix()).','
@@ -359,11 +357,10 @@ class DefinitionService extends Service {
 	 */
 	public function getContentStatistics() {
 		$stats = array();
-		$stats['entries'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'entry` WHERE accepted_id IS NOT NULL');
+		$stats['entries'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'definition` WHERE d.revisionstatus = 1');
 		$stats['entries_unverified'] = $this->database->scalar(
 			'SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'definition` d 
-			 INNER JOIN `'.KUMVA_DB_PREFIX.'entry` e ON e.accepted_id = d.definition_id 
-			 WHERE d.verified = 0');
+			 WHERE d.revisionstatus = 1 AND d.verified = 0');
 		return $stats;
 	}
 	
@@ -373,7 +370,7 @@ class DefinitionService extends Service {
 	 */
 	public function getWordClassCounts() {
 		$sql = 'SELECT `wordclass`, COUNT(*) AS `count` FROM `'.KUMVA_DB_PREFIX.'definition` d
-				INNER JOIN `'.KUMVA_DB_PREFIX.'entry` e ON e.accepted_id = d.definition_id 
+				WHERE d.revisionstatus = 1
 				GROUP BY `wordclass` ORDER BY `wordclass` ASC';
 		return $this->database->rows($sql, 'wordclass');
 	}

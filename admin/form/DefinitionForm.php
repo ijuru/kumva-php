@@ -34,7 +34,7 @@ class DefinitionForm extends Form {
 		$entryId = (int)Request::getGetParam('id', 0);
 		if ($entryId) {
 			$this->entry = Dictionary::getDefinitionService()->getEntry($entryId);
-			$definition = $this->entry->getProposed() ? $this->entry->getProposed() : $this->entry->getAccepted();
+			$definition = $this->entry->getHead();
 			$this->change = $definition->getChange();
 			return $definition;
 		}
@@ -106,7 +106,7 @@ class DefinitionForm extends Form {
 				$change = Change::create(Action::CREATE);
 			}
 			else {
-				$last = Dictionary::getDefinitionService()->getDefinitionByRevision($entry, Revision::LAST);
+				$last = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::LAST);
 				$revision = $last->getRevision() + 1;
 				$change = Change::create(Action::MODIFY);
 			}
@@ -118,13 +118,9 @@ class DefinitionForm extends Form {
 			// Save as new proposal definition
 			$definition->setId(0);
 			$definition->setRevision($revision);
+			$definition->setRevisionStatus(RevisionStatus::PROPOSED);
 			$definition->setChange($change);
 			if (!Dictionary::getDefinitionService()->saveDefinition($definition))
-				return FALSE;
-	
-			// Update entry to point to new proposal
-			$entry->setProposed($definition);
-			if (!Dictionary::getDefinitionService()->saveEntry($entry))
 				return FALSE;
 				
 			// Notify subscribed users
@@ -146,14 +142,6 @@ class DefinitionForm extends Form {
 	}
 	
 	/**
-	 * Gets whether this form is editing a proposal
-	 * @return bool TRUE if form definition is a proposal
-	 */
-	public function isProposal() {
-		return ($this->entry && $this->entry->getProposed() !== NULL);
-	}
-	
-	/**
 	 * Gets whether the current user can update the definition
 	 * @return bool TRUE if user can update
 	 */
@@ -163,7 +151,7 @@ class DefinitionForm extends Form {
 			
 		$curUser = Session::getCurrent()->getUser();
 		
-		if ($this->isProposal()) {
+		if ($this->getEntity()->isProposedRevision()) {
 			if ($curUser->hasRole(Role::EDITOR))
 				return TRUE;
 			elseif ($this->change->getSubmitter()->equals($curUser))
@@ -178,7 +166,7 @@ class DefinitionForm extends Form {
 	 * @return bool TRUE if user can propose a change
 	 */
 	public function canPropose() {
-		if ($this->entry && $this->entry->isDeleted() || $this->isProposal())
+		if ($this->entry && $this->entry->isDeleted() || $this->getEntity()->isProposedRevision())
 			return FALSE;
 			
 		return Session::getCurrent()->hasRole(Role::CONTRIBUTOR);

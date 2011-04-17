@@ -24,11 +24,22 @@
  * Revision number presets
  */
 class Revision {
-	const FIRST = 	 1;
+	const FIRST = 	  1;
 	const ACCEPTED = -1001;
 	const PROPOSED = -1002;
 	const HEAD = 	 -1003; // Latest of accepted or proposal
 	const LAST =	 -1004; // Absolute last
+}
+
+/**
+ * Revision status enum
+ */
+class RevisionStatus extends Enum {
+	const ARCHIVED = 0;
+	const ACCEPTED = 1;
+	const PROPOSED = 2;
+	
+	protected static $strings = array('archived', 'accepted', 'proposed');
 }
  
 /**
@@ -50,6 +61,7 @@ class Flags extends Enum {
 class Definition extends Entity {
 	private $entryId;
 	private $revision;
+	private $revisionStatus;
 	private $changeId;
 	private $wordClass;
 	private $prefix;
@@ -72,6 +84,7 @@ class Definition extends Entity {
 	 * @param int id the definition id
 	 * @param int entryId the entry id
 	 * @param int revision the revision number
+	 * @param int revisionStatus the revision status (archived, accepted etc)
 	 * @param int changeId the change id
 	 * @param string wordClass the word class, e,g, 'n'
 	 * @param string prefix the prefix, e.g 'umu'
@@ -83,12 +96,13 @@ class Definition extends Entity {
 	 * @param bool verified TRUE if definition has been verified
 	 */
 	public function __construct(
-			$id = 0, $entryId = 0, $revision = 0, $changeId = 0,
+			$id = 0, $entryId = 0, $revision = 0, $revisionStatus = 0, $changeId = 0,
 			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $meaning = '', $comment = '', $flags = 0, $verified = FALSE) 
 	{
 		$this->id = (int)$id;
 		$this->entryId = $entryId;
 		$this->revision = (int)$revision;
+		$this->revisionStatus = (int)$revisionStatus;
 		$this->changeId = $changeId;
 		$this->wordClass = $wordClass;
 		$this->prefix = $prefix;
@@ -106,7 +120,7 @@ class Definition extends Entity {
 	 * @return Definition the definition
 	 */
 	public static function fromRow(&$row) {
-		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['meaning'], $row['comment'], $row['flags'], $row['verified']);
+		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['revisionstatus'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['meaning'], $row['comment'], $row['flags'], $row['verified']);
 	}
 	
 	/**
@@ -143,6 +157,22 @@ class Definition extends Entity {
 	 */
 	public function setRevision($revision) {
 		$this->revision = $revision;
+	}
+	
+	/**
+	 * Gets the revision number
+	 * @return int the revision number
+	 */
+	public function getRevisionStatus() {
+		return $this->revisionStatus;
+	}
+	
+	/**
+	 * Sets the revision status
+	 * @param int revision the revision status
+	 */
+	public function setRevisionStatus($revisionStatus) {
+		$this->revisionStatus = $revisionStatus;
 	}
 	
 	/**
@@ -389,6 +419,22 @@ class Definition extends Entity {
 	 */
 	public function setExamples($examples) {
 		$this->examples = $examples;
+	}
+	
+	/**
+	 * Gets if definition is the accepted revision
+	 * @return bool TRUE if definition is accepted
+	 */
+	public function isAcceptedRevision() {
+		return $this->revisionStatus == RevisionStatus::ACCEPTED;
+	}
+	
+	/**
+	 * Gets if definition is the proposed revision
+	 * @return bool TRUE if definition is proposed
+	 */
+	public function isProposedRevision() {
+		return $this->revisionStatus == RevisionStatus::PROPOSED;
 	}
 	
 	/**

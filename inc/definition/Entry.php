@@ -24,13 +24,9 @@
  * Dictionary entry class
  */
 class Entry extends Entity {
-	private $acceptedId;
-	private $proposedId;
 	private $deleteChangeId;
 	
 	// Lazy loaded properties
-	private $accepted;
-	private $proposed;
 	private $head;
 	private $deleteChange;
 	private $revisions;
@@ -38,13 +34,9 @@ class Entry extends Entity {
 	/**
 	 * Constructs an entry
 	 * @param int id the id
-	 * @param int acceptedId the accepted revision id
-	 * @param int proposedId the proposed revision id
 	 */
-	public function __construct($id = 0, $acceptedId = NULL, $proposedId = NULL, $deleteChangeId = NULL) {
+	public function __construct($id = 0, $deleteChangeId = NULL) {
 		$this->id = (int)$id;
-		$this->acceptedId = $acceptedId;
-		$this->proposedId = $proposedId;
 		$this->deleteChangeId = $deleteChangeId;
 	}
 	
@@ -54,47 +46,7 @@ class Entry extends Entity {
 	 * @return Entry the entry
 	 */
 	public static function fromRow(&$row) {
-		return new Entry($row['entry_id'], $row['accepted_id'], $row['proposed_id'], $row['delete_change_id']);
-	}
-	
-	/**
-	 * Gets the accepted definition using lazy loading
-	 * @return Definition the accepted definition
-	 */
-	public function getAccepted() {
-		if (!$this->accepted && $this->acceptedId)
-			$this->accepted = Dictionary::getDefinitionService()->getDefinition($this->acceptedId);
-		
-		return $this->accepted;
-	}
-	
-	/**
-	 * Sets the accepted revision
-	 * @param Definition accepted the accepted definition
-	 */
-	public function setAccepted($accepted) {
-		$this->accepted = $accepted;
-		$this->acceptedId = $accepted ? $accepted->getId() : NULL;
-	}
-	
-	/**
-	 * Gets the proposed revision using lazy loading
-	 * @return Revision the approved revision
-	 */
-	public function getProposed() {
-		if (!$this->proposed && $this->proposedId)
-			$this->proposed = Dictionary::getDefinitionService()->getDefinition($this->proposedId);
-		
-		return $this->proposed;
-	}
-	
-	/**
-	 * Sets the proposed revision
-	 * @param Revision proposed the revision
-	 */
-	public function setProposed($proposed) {
-		$this->proposed = $proposed;
-		$this->proposedId = $proposed ? $proposed->getId() : NULL;
+		return new Entry($row['entry_id'], $row['delete_change_id']);
 	}
 	
 	/**
@@ -103,7 +55,7 @@ class Entry extends Entity {
 	 */
 	public function getHead() {
 		if (!$this->head)
-			$this->head = Dictionary::getDefinitionService()->getEntryHeadDefinition($this);
+			$this->head = Dictionary::getDefinitionService()->getEntryRevision($this, Revision::HEAD);
 		
 		return $this->head;
 	}
@@ -140,11 +92,11 @@ class Entry extends Entity {
 	}
 	
 	/**
-	 * Gets whether this entry has been deleted
+	 * Gets whether this entry has been deleted - i.e. it's headless
 	 * @return bool TRUE if entry has been deleted
 	 */
 	public function isDeleted() {
-		return !($this->acceptedId || $this->proposedId);
+		return !$this->getHead();
 	}
 }
 

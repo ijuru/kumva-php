@@ -68,7 +68,7 @@ var exampleId = 1000000;
 <?php
 if ($form->entry && $form->entry->isDeleted())
 	echo '<div class="info">'.KU_MSG_ENTRYDELETED.'</div>'; 
-elseif ($form->isProposal())
+elseif ($definition->isProposedRevision())
 	printf('<div class="info">'.KU_MSG_DEFINITIONPROPOSAL.'</div>', 'change.php?id='.$form->change->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT)); 
 	
 if (count($form->getErrors()->get()) > 0)

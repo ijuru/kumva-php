@@ -46,15 +46,16 @@ if ($action == 'delete' && !$entry->isNew()) {
 $definitions = Dictionary::getDefinitionService()->getEntryDefinitions($entry);
 $viewRev = (int)Request::getGetParam('rev', 0);
 if ($viewRev)
-	$definition = Dictionary::getDefinitionService()->getDefinitionByRevision($entry, $viewRev); // Get specified rev
+	$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, $viewRev); // Get specified rev
 else
 	$definition = $definitions[0]; // Default to latest revision
 
 // Get pending change if there is one
+$proposed = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::PROPOSED);
 if ($entry->getDeleteChange() && $entry->getDeleteChange()->isPending())
 	$pendingChange = $entry->getDeleteChange();
-elseif ($entry->getProposed())
-	$pendingChange = $entry->getProposed()->getChange();
+elseif ($proposed)
+	$pendingChange = $proposed->getChange();
 else
 	$pendingChange = NULL;
 	
@@ -89,9 +90,9 @@ function deleteEntry(id) {
 			<select name="rev">
 				<?php foreach ($definitions as $def) { 
 					$isCurrent = $definition->getRevision() == $def->getRevision();
-					if ($def->equals($entry->getAccepted()))
+					if ($def->isAcceptedRevision())
 						$label = $def->getRevision().' ('.KU_STR_ACCEPTED.')';
-					elseif ($def->equals($entry->getProposed()))
+					elseif ($def->isProposedRevision())
 						$label = $def->getRevision().' ('.KU_STR_PROPOSED.')';
 					else
 						$label = $def->getRevision()

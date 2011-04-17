@@ -148,20 +148,20 @@ class ChangeService extends Service {
 			return FALSE;
 		
 		if ($change->getAction() == Action::CREATE || $change->getAction() == Action::MODIFY) {
-			$proposal = $this->getChangeDefinition($change);
-			$entry = $proposal->getEntry();
-			$accepted = $proposal;
+			// Mark definition revision as accepted
+			$definition = $this->getChangeDefinition($change);
+			$definition->setRevisionStatus(RevisionStatus::ACCEPTED);
+			if (!Dictionary::getDefinitionService()->saveDefinition($definition))
+				return FALSE;
 		}
 		else {
 			$entry = $this->getEntryByDeleteChange($change);
-			$accepted = NULL;	
+			$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::HEAD);
+			$definition->setRevisionStatus(RevisionStatus::ARCHIVED);
+			if (!Dictionary::getDefinitionService()->saveDefinition($definition))
+				return FALSE;
+	
 		}
-		
-		// Update entry revision references
-		$entry->setAccepted($accepted);
-		$entry->setProposed(NULL);
-		if (!Dictionary::getDefinitionService()->saveEntry($entry))
-			return FALSE;	
 	
 		$change->setStatus(Status::ACCEPTED);
 		$change->setResolver(Session::getCurrent()->getUser());
