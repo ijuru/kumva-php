@@ -28,17 +28,19 @@ Session::requireUser();
 $entryId = (int)Request::getGetParam('id', 0);
 $entry = ($entryId > 0) ? Dictionary::getDefinitionService()->getEntry($entryId) : new Entry();
 
+// Get pending change if there is one
+$pendingChanges = Dictionary::getChangeService()->getChangesByEntry($entry, Status::PENDING);
+$pendingChange = count($pendingChanges) ? $pendingChanges[0] : NULL;
+$pendingChangeUrl = $pendingChange ? 'change.php?id='.$pendingChange->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT) : NULL;
+
 // Process delete request
 $action = Request::getPostParam('action');
-if ($action == 'delete' && !$entry->isNew()) {
-	$change = Change::create(ACTION::DELETE);
+if ($action == 'delete' && !$pendingChange) {
+	$change = Change::create($entry, ACTION::DELETE);
 	if (Dictionary::getChangeService()->saveChange($change)) {
-		$entry->setDeleteChange($change);
-		if (Dictionary::getDefinitionService()->saveEntry($entry)) {
-			$change->watch();
-			Notifications::newChange($change);
-			Request::redirect('change.php?id='.$change->getId().'&ref='.urlencode(KUMVA_URL_CURRENT));
-		}
+		$change->watch();
+		Notifications::newChange($change);
+		Request::redirect('change.php?id='.$change->getId().'&ref='.urlencode(KUMVA_URL_CURRENT));
 	}
 }
 
@@ -49,17 +51,6 @@ if ($viewRev)
 	$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, $viewRev); // Get specified rev
 else
 	$definition = $definitions[0]; // Default to latest revision
-
-// Get pending change if there is one
-$proposed = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::PROPOSED);
-if ($entry->getDeleteChange() && $entry->getDeleteChange()->isPending())
-	$pendingChange = $entry->getDeleteChange();
-elseif ($proposed)
-	$pendingChange = $proposed->getChange();
-else
-	$pendingChange = NULL;
-	
-$pendingChangeUrl = $pendingChange ? 'change.php?id='.$pendingChange->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT) : NULL;
 
 $canEdit = !$entry->isDeleted() && !$pendingChange && Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
 $canDelete = !$entry->isDeleted() && !$pendingChange && Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
@@ -90,12 +81,13 @@ function deleteEntry(id) {
 			<select name="rev">
 				<?php foreach ($definitions as $def) { 
 					$isCurrent = $definition->getRevision() == $def->getRevision();
+					
 					if ($def->isAcceptedRevision())
 						$label = $def->getRevision().' ('.KU_STR_ACCEPTED.')';
 					elseif ($def->isProposedRevision())
 						$label = $def->getRevision().' ('.KU_STR_PROPOSED.')';
 					else
-						$label = $def->getRevision()
+						$label = $def->getRevision();
 					?>
 					<option value="<?php echo $def->getRevision(); ?>" <?php echo $isCurrent ? 'selected="selected"' : ''; ?>><?php echo $label; ?></option>
 				<?php } ?>
@@ -121,8 +113,6 @@ if ($pendingChange && $pendingChange->getAction() == Action::DELETE)
 	$message = sprintf(KU_MSG_ENTRYDELETECHANGEPENDING, $pendingChangeUrl);
 elseif ($pendingChange)
 	$message = sprintf(KU_MSG_ENTRYCHANGEPENDING, $pendingChangeUrl);
-elseif ($entry->isDeleted() && $entry->getDeleteChange())
-	$message = sprintf(KU_MSG_ENTRYDELETEDBYCHANGE, 'change.php?id='.$entry->getDeleteChange()->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT));
 elseif ($entry->isDeleted())
 	$message = KU_MSG_ENTRYDELETED;
 elseif (!$definition->isVerified())

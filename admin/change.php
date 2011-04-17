@@ -27,7 +27,7 @@ Session::requireUser();
 $changeId = (int)Request::getGetParam('id', 0);
 $change = Dictionary::getChangeService()->getChange($changeId);
 if ($change->getAction() == Action::DELETE) {
-	$entry = Dictionary::getChangeService()->getEntryByDeleteChange($change);
+	$entry = $change->getEntry();
 	$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::LAST);
 }
 else {
@@ -187,19 +187,21 @@ function onActionSubmit() {
 		<td colspan="2" style="padding: 0">
 			<div id="difftable">
 				<?php 
+				$accepted = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::ACCEPTED);
+				
 				if ($change->getStatus() == Status::PENDING) {
 					if ($change->getAction() == Action::CREATE)
 						Diff::definitions($definition, KU_STR_PROPOSED, NULL, NULL);
 					elseif ($change->getAction() == Action::MODIFY)
-						Diff::definitions($entry->getAccepted(), KU_STR_CURRENT, $definition, KU_STR_PROPOSED);
+						Diff::definitions($accepted, KU_STR_CURRENT, $definition, KU_STR_PROPOSED);
 					elseif ($change->getAction() == Action::DELETE)
-						Diff::definitions($entry->getAccepted(), KU_STR_CURRENT, NULL, NULL);
+						Diff::definitions($accepted, KU_STR_CURRENT, NULL, NULL);
 				}
 				else {
 					if ($change->getAction() == Action::CREATE)
 						Diff::definitions($definition, KU_STR_PROPOSED, NULL, NULL);
 					elseif ($change->getAction() == Action::MODIFY)
-						Diff::definitions($definition, KU_STR_PROPOSED, $entry->getAccepted(), KU_STR_CURRENT);
+						Diff::definitions($definition, KU_STR_PROPOSED, $accepted, KU_STR_CURRENT);
 					elseif ($change->getAction() == Action::DELETE)
 						Diff::definitions($definition, KU_STR_LAST, NULL, NULL);
 				}

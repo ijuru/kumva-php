@@ -24,20 +24,16 @@
  * Dictionary entry class
  */
 class Entry extends Entity {
-	private $deleteChangeId;
-	
 	// Lazy loaded properties
 	private $head;
-	private $deleteChange;
 	private $revisions;
 	
 	/**
 	 * Constructs an entry
 	 * @param int id the id
 	 */
-	public function __construct($id = 0, $deleteChangeId = NULL) {
+	public function __construct($id = 0) {
 		$this->id = (int)$id;
-		$this->deleteChangeId = $deleteChangeId;
 	}
 	
 	/**
@@ -46,7 +42,7 @@ class Entry extends Entity {
 	 * @return Entry the entry
 	 */
 	public static function fromRow(&$row) {
-		return new Entry($row['entry_id'], $row['delete_change_id']);
+		return new Entry($row['entry_id']);
 	}
 	
 	/**
@@ -58,26 +54,6 @@ class Entry extends Entity {
 			$this->head = Dictionary::getDefinitionService()->getEntryRevision($this, Revision::HEAD);
 		
 		return $this->head;
-	}
-	
-	/**
-	 * Gets the delete change using lazy loading
-	 * @return Change the delete change
-	 */
-	public function getDeleteChange() {
-		if (!$this->deleteChange && $this->deleteChangeId)
-			$this->deleteChange = Dictionary::getChangeService()->getChange($this->deleteChangeId);
-		
-		return $this->deleteChange;
-	}
-	
-	/**
-	 * Sets the delete change
-	 * @param Change change the delete change
-	 */
-	public function setDeleteChange($change) {
-		$this->deleteChange = $change;
-		$this->deleteChangeId = $change ? $change->getId() : NULL;
 	}
 	
 	/**

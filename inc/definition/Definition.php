@@ -100,7 +100,7 @@ class Definition extends Entity {
 			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $meaning = '', $comment = '', $flags = 0, $verified = FALSE) 
 	{
 		$this->id = (int)$id;
-		$this->entryId = $entryId;
+		$this->entryId = (int)$entryId;
 		$this->revision = (int)$revision;
 		$this->revisionStatus = (int)$revisionStatus;
 		$this->changeId = $changeId;

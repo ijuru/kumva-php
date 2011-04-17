@@ -36,15 +36,18 @@ class ChangeService extends Service {
 	
 	/**
 	 * Gets all changes
+	 * @param Entry entry the entry
 	 * @param User submitter the submitter
 	 * @param int status the status (NULL means any status)
 	 * @param bool orderByResolved TRUE to order changes by resolved date
 	 * @param Paging paging the paging object
 	 * @return array the changes
 	 */
-	public function getChanges($submitter = NULL, $status = NULL, $resolver = NULL, $orderByResolved = FALSE, $paging = NULL) {
+	public function getChanges($entry, $submitter = NULL, $status = NULL, $resolver = NULL, $orderByResolved = FALSE, $paging = NULL) {
 		$sql = 'SELECT SQL_CALC_FOUND_ROWS c.* FROM `'.KUMVA_DB_PREFIX.'change` c WHERE 1=1 ';	
 		
+		if ($entry)
+			$sql .= 'AND c.`entry_id` = '.$entry->getId().' ';
 		if ($submitter)
 			$sql .= 'AND c.`submitter_id` = '.$submitter->getId().' ';
 		if ($status !== NULL)
@@ -58,23 +61,13 @@ class ChangeService extends Service {
 	}
 	
 	/**
-	 * Gets the definition which the given change is assigned to
-	 * @param Change change the change
-	 * @return Definition the definition
+	 * Gets all changes for the given entry
+	 * @param User submitter the submitter
+	 * @param int status the status (NULL means any status)
+	 * @return array the changes
 	 */
-	public function getChangeDefinition($change) {
-		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` WHERE change_id = '.$change->getId());
-		return ($row != NULL) ? Definition::fromRow($row) : NULL;
-	}
-	
-	/**
-	 * Gets the definition which the given change is assigned to
-	 * @param Change change the change
-	 * @return Definition the definition
-	 */
-	public function getEntryByDeleteChange($change) {
-		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'entry` WHERE delete_change_id = '.$change->getId());
-		return ($row != NULL) ? Entry::fromRow($row) : NULL;
+	public function getChangesByEntry($entry, $status) {
+		return $this->getChanges($entry, NULL, $status, NULL, FALSE, NULL);
 	}
 	
 	/**
@@ -84,7 +77,7 @@ class ChangeService extends Service {
 	 * @return array the changes
 	 */
 	public function getChangesBySubmitter($submitter, $status, $paging) {
-		return $this->getChanges($submitter, $status, NULL, FALSE, $paging);
+		return $this->getChanges(NULL, $submitter, $status, NULL, FALSE, $paging);
 	}
 	
 	/**
@@ -94,7 +87,17 @@ class ChangeService extends Service {
 	 * @return array the changes
 	 */
 	public function getChangesByResolver($resolver, $status, $paging) {
-		return $this->getChanges(NULL, $status, $resolver, TRUE, $paging);
+		return $this->getChanges(NULL, NULL, $status, $resolver, TRUE, $paging);
+	}
+	
+	/**
+	 * Gets the definition which the given change is assigned to
+	 * @param Change change the change
+	 * @return Definition the definition
+	 */
+	public function getChangeDefinition($change) {
+		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` WHERE change_id = '.$change->getId());
+		return ($row != NULL) ? Definition::fromRow($row) : NULL;
 	}
 	
 	/**
@@ -146,21 +149,23 @@ class ChangeService extends Service {
 	public function acceptChange($change) {
 		if ($change->getStatus() != Status::PENDING)
 			return FALSE;
+			
+		$entry = $change->getEntry();
 		
-		if ($change->getAction() == Action::CREATE || $change->getAction() == Action::MODIFY) {
-			// Mark definition revision as accepted
-			$definition = $this->getChangeDefinition($change);
-			$definition->setRevisionStatus(RevisionStatus::ACCEPTED);
-			if (!Dictionary::getDefinitionService()->saveDefinition($definition))
+		// Archive the currently accepted revision
+		$accepted = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::ACCEPTED);
+		if ($accepted) {
+			$accepted->setRevisionStatus(RevisionStatus::ARCHIVED);
+			if (!Dictionary::getDefinitionService()->saveDefinition($accepted))
 				return FALSE;
 		}
-		else {
-			$entry = $this->getEntryByDeleteChange($change);
-			$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::HEAD);
-			$definition->setRevisionStatus(RevisionStatus::ARCHIVED);
-			if (!Dictionary::getDefinitionService()->saveDefinition($definition))
+		
+		if ($change->getAction() == Action::CREATE || $change->getAction() == Action::MODIFY) {
+			// Mark proposal revision as accepted
+			$proposal = $this->getChangeDefinition($change);
+			$proposal->setRevisionStatus(RevisionStatus::ACCEPTED);
+			if (!Dictionary::getDefinitionService()->saveDefinition($proposal))
 				return FALSE;
-	
 		}
 	
 		$change->setStatus(Status::ACCEPTED);
@@ -180,18 +185,12 @@ class ChangeService extends Service {
 			return FALSE;
 			
 		if ($change->getAction() == Action::CREATE || $change->getAction() == Action::MODIFY) {
+			// Archive the proposal revision
 			$proposal = $this->getChangeDefinition($change);
-			$entry = $proposal->getEntry();
+			$proposal->setRevisionStatus(RevisionStatus::ARCHIVED);
+			if (!Dictionary::getDefinitionService()->saveDefinition($proposal))
+				return FALSE;
 		}
-		else {
-			$entry = $this->getEntryByDeleteChange($change);
-			// TODO...
-		}
-		
-		// Update entry revision references
-		$entry->setProposed(NULL);
-		if (!Dictionary::getDefinitionService()->saveEntry($entry))
-			return FALSE;	
 	
 		$change->setStatus(Status::REJECTED);
 		$change->setResolver(Session::getCurrent()->getUser());
@@ -209,6 +208,7 @@ class ChangeService extends Service {
 		if ($change->isNew()) {
 			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'change` VALUES('
 				.'NULL,'
+				.aka_prepsqlval($change->getEntry()).','
 				.aka_prepsqlval($change->getAction()).','
 				.aka_prepsqlval($change->getSubmitter()).','
 				.aka_timetosql($change->getSubmitted()).','
@@ -223,6 +223,7 @@ class ChangeService extends Service {
 		}
 		else {
 			$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'change` SET '
+				.'entry_id = '.aka_prepsqlval($change->getEntry()).','
 				.'action = '.aka_prepsqlval($change->getAction()).','
 				.'submitter_id = '.aka_prepsqlval($change->getSubmitter()).','
 				.'submitted = '.aka_timetosql($change->getSubmitted()).','

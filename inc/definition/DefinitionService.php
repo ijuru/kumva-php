@@ -357,10 +357,9 @@ class DefinitionService extends Service {
 	 */
 	public function getContentStatistics() {
 		$stats = array();
-		$stats['entries'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'definition` WHERE d.revisionstatus = 1');
+		$stats['entries'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'definition` WHERE revisionstatus = 1');
 		$stats['entries_unverified'] = $this->database->scalar(
-			'SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'definition` d 
-			 WHERE d.revisionstatus = 1 AND d.verified = 0');
+			'SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'definition` WHERE revisionstatus = 1 AND verified = 0');
 		return $stats;
 	}
 	
@@ -369,8 +368,8 @@ class DefinitionService extends Service {
 	 * @return array the word class counts
 	 */
 	public function getWordClassCounts() {
-		$sql = 'SELECT `wordclass`, COUNT(*) AS `count` FROM `'.KUMVA_DB_PREFIX.'definition` d
-				WHERE d.revisionstatus = 1
+		$sql = 'SELECT `wordclass`, COUNT(*) AS `count` FROM `'.KUMVA_DB_PREFIX.'definition`
+				WHERE revisionstatus = 1
 				GROUP BY `wordclass` ORDER BY `wordclass` ASC';
 		return $this->database->rows($sql, 'wordclass');
 	}

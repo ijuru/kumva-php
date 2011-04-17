@@ -48,6 +48,7 @@ class Status extends Enum {
  * Change being made to the dictionary
  */
 class Change extends Entity {
+	private $entryId;
 	private $action;
 	private $submitterId;
 	private $submitted;
@@ -56,6 +57,7 @@ class Change extends Entity {
 	private $resolved;
 	
 	// Lazy loaded properties
+	private $entry;
 	private $submitter;
 	private $resolver;
 	private $comments;
@@ -64,6 +66,7 @@ class Change extends Entity {
 	/**
 	 * Constructs a new change
 	 * @param int id the id
+	 * @param int entryId the entry id
 	 * @param int action the action type
 	 * @param int submitterId the submitter user id
 	 * @param int submitted the timestamp of submission
@@ -71,8 +74,9 @@ class Change extends Entity {
 	 * @param int resolverId the resolver user id
 	 * @param int resolved the timestamp of acceptance/rejection
 	 */
-	public function __construct($id, $action, $submitterId, $submitted, $status, $resolverId = NULL, $resolved = NULL) {
+	public function __construct($id, $entryId, $action, $submitterId, $submitted, $status, $resolverId = NULL, $resolved = NULL) {
 		$this->id = (int)$id;
+		$this->entryId = (int)$entryId;
 		$this->action = (int)$action;
 		$this->submitterId = (int)$submitterId;
 		$this->submitted = (int)$submitted;
@@ -87,19 +91,38 @@ class Change extends Entity {
 	 * @return Change the change
 	 */
 	public static function fromRow(&$row) {
-		return new Change($row['change_id'], $row['action'], $row['submitter_id'], 
+		return new Change($row['change_id'], $row['entry_id'], $row['action'], $row['submitter_id'], 
 			aka_timefromsql($row['submitted']), $row['status'], $row['resolver_id'], aka_timefromsql($row['resolved']));
 	}
 	
 	/**
 	 * Creates a new pending change
-	 * @param int entryId the entry id
-	 * @param int proposalId the proposal id
+	 * @param Entry entry the entry
 	 * @param int action the action type
 	 * @return Change the change
 	 */
-	public static function create($action) {
-		return new Change(0, $action, Session::getCurrent()->getUser()->getId(), time(), Status::PENDING);
+	public static function create($entry, $action) {
+		return new Change(0, $entry->getId(), $action, Session::getCurrent()->getUser()->getId(), time(), Status::PENDING);
+	}
+	
+	/**
+	 * Gets the entry using lazy loading
+	 * @return Entry the entry
+	 */
+	public function getEntry() {
+		if (!$this->entry && $this->entryId)
+			$this->entry = Dictionary::getDefinitionService()->getEntry($this->entryId);
+			
+		return $this->entry;
+	}
+	
+	/**
+	 * Sets the entry
+	 * @param entry Entry the entry
+	 */
+	public function setEntry($entry) {
+		$this->entryId = $entry ? $entry->getId() : 0;
+		$this->entry = $entry;
 	}
 	
 	/**
@@ -257,14 +280,14 @@ class Change extends Entity {
 	 * Gets a string representation of this change
 	 * @return string the string representation
 	 */
-	public function toString() {	
+	public function toString() {
 		if ($this->getAction() == Action::DELETE) {
-			$entry = Dictionary::getChangeService()->getEntryByDeleteChange($this);
+			$entry = $this->getEntry();
 			$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::LAST);
 		}
-		else {
+		else
 			$definition = Dictionary::getChangeService()->getChangeDefinition($this);
-		}
+
 		return '#'.$this->id.' '.strtolower(Action::toString($this->action)).'('.$definition->getPrefix().$definition->getLemma().')';
 	}	
 }

@@ -363,7 +363,7 @@ class Templates {
 			<?php }
 			foreach($changes as $change) { 
 				if ($change->getAction() == Action::DELETE) {
-					$entry = Dictionary::getChangeService()->getEntryByDeleteChange($change);
+					$entry = $change->getEntry();
 					$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::LAST);
 				}
 				else
