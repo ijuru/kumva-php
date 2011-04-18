@@ -45,18 +45,15 @@ function installSearchEngine() {
 <ol>
 	<li>
 		<p><a name="cantfindword" /><b>Why doesn't this dictionary contain ...?</b><br/>
-		There are many reasons why you might not be able to find the word you are looking for. Firstly, the dictionary might be missing the word. We try to spot missing words by looking at
-		the logs of what people have searched for, and then add them if appropriate. Secondly you might be searching for a conjugated form of a verb rather than the general form. Try stripping
-		off prefixes and suffixes, e.g. <i>ndagukunda</i> which means 'I love you' becomes just <i>kunda</i> which is the verb 'to love'.</p>
+		There are many reasons why you might not be able to find the word you are looking for. Firstly, the dictionary might be missing the word. We try to spot missing words by looking at the logs of what people have searched for, and then add them if appropriate. Secondly you might be searching for a conjugated form of a verb rather than the general form. Try stripping off prefixes and suffixes, e.g. <i>ndagukunda</i> which means 'I love you' becomes just <i>kunda</i> which is the verb 'to love'.</p>
 	</li>
 	<li>
 		<p><a name="howaccurate" /><b>How accurate is this dictionary?</b><br/>
-		All dictionaries have mistakes and this dictionary is no exception. This dictionary is also very much still a work in progress. Some definitions have been copied from older dictionaries and 
-		have not yet been verified. If you find something that you think is incorrect, please <a href="feedback.php">tell us</a>.</p>
+		All dictionaries have mistakes and this dictionary is no exception. This dictionary is also very much still a work in progress. Some definitions have been copied from older dictionaries and have not yet been verified. If you find something that you think is incorrect, please <a href="feedback.php">tell us</a>.</p>
 	</li>
     <li>
     	<p><a name="download" /><b>Can I download the dictionary?</b><br/>
-		This dictionary is open source so <?php ku_page('feedback', 'contact us'); ?> and we will send you a copy of it.</p>
+		This dictionary is open source so <?php ku_page('feedback', 'contact us'); ?> and we can send you the data. Please remember that it is always being updated so such data will become out of date quickly, and there is no printable version of the dictionary.</p>
     </li>
     <li>
 		<p><a name="searchpartial" /><b>How do I search for part of a word?</b><br/>
