@@ -67,7 +67,7 @@ class Lexical {
 		if (self::hasLangFunction($lang, 'stem'))
 			return self::callLangFunction($lang, 'stem', array($text));
 		
-		return self::stripPunctuation($text);
+		return strtolower(self::stripPunctuation($text));
 	}
 
 	/**

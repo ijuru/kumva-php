@@ -155,7 +155,7 @@ class Relationship extends Entity {
 		$tokens = explode(':', $tagString);
 		$lang = count($tokens) > 1 ? trim($tokens[0]) : $this->getDefaultLang(TRUE);
 		$text = count($tokens) > 1 ? trim($tokens[1]) : trim($tokens[0]);
-		return new Tag(0, strtolower($lang), strtolower($text), NULL, NULL);
+		return new Tag(0, strtolower($lang), $text, NULL, NULL);
 	}
 	
 	/**

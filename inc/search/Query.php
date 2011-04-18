@@ -68,7 +68,7 @@ class Query {
 	public static function parse($string) {
 		// Capture and remove all query parameters, pattern is what is left
 		self::$parsedParams = array();
-		$pattern = trim(preg_replace_callback("/(\w+):\s*(\w+)/", 'Query::parseParamMatchCallback', $string));
+		$pattern = strtolower(trim(preg_replace_callback("/(\w+):\s*(\w+)/", 'Query::parseParamMatchCallback', $string)));
 		
 		// If pattern starts or ends with an * then we should do a partial match
 		$partialMatch = aka_startswith($pattern, '*') || aka_endswith($pattern, '*');

@@ -41,6 +41,8 @@ $kumva_en_soundmaps = array('ISE' => 'IZE', 'OUR' => 'OR', 'TRE\B' => 'TER', 			
  */
 function kumva_en_stem($text) {
 	global $kumva_porter2;
+	
+	$text = strtolower($text);
     return $kumva_porter2->Stem($text);
 }
 

@@ -146,8 +146,10 @@ class TagService extends Service {
 	 * @return bool TRUE if operation was successful, else FALSE
 	 */
 	public function addTag($definition, $relationship, $order, $weight, $tag) {
-		$tagId = $this->database->scalar("SELECT `tag_id` FROM `".KUMVA_DB_PREFIX."tag`
-				WHERE `lang` = '".$tag->getLang()."' AND `text` = ".aka_prepsqlval($tag->getText()));
+		// Query tags to see if an exact match already exists
+		$sql = "SELECT `tag_id` FROM `".KUMVA_DB_PREFIX."tag`
+				WHERE `lang` = '".$tag->getLang()."' AND `text` = ".aka_prepsqlval($tag->getText()).' COLLATE utf8_bin';
+		$tagId = $this->database->scalar($sql);
 		if ($tagId === FALSE) {
 			if ($this->saveTag($tag) == FALSE)
 				return FALSE;

@@ -48,6 +48,7 @@ $kumva_rw_suffixes = array('mo', 'yo', 'ho');
 function kumva_rw_stem($text) {
 	global $kumva_rw_suffixes;
 	
+	$text = strtolower($text);
 	$text = Lexical::stripPunctuation($text);
 	
 	// If its long enough then strip any pronominal suffixes
