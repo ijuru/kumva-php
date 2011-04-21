@@ -79,8 +79,7 @@ class Notifications {
 		
 		$users1 = $change->getWatchers();
 		$users2 = self::getUsersWithSubscription(Subscription::NEW_COMMENT);
-		$users = Entity::union($users1, $users2);
-		$users = self::removeCurrentUser($users);
+		$users = self::removeCurrentUser(Entity::union($users1, $users2));
 		
 		return Mailer::sendToUsers($users, $subject, $message);
 	}
@@ -95,9 +94,12 @@ class Notifications {
 		
 		$message = "Change ".$change->toString()." was accepted.\n";
 		$message .= "----------------\n";
-		$message .= 'To view this change go to '.KUMVA_URL_ROOT.'/admin/change.php?id='.$change->getId();	
+		$message .= 'To view this change go to '.KUMVA_URL_ROOT.'/admin/change.php?id='.$change->getId();
 		
-		$users = self::removeCurrentUser($change->getWatchers());	
+		$users1 = $change->getWatchers();
+		$users2 = self::getUsersWithSubscription(Subscription::CHANGE_RESOLVED);
+		$users = self::removeCurrentUser(Entity::union($users1, $users2));
+			
 		return Mailer::sendToUsers($users, $subject, $message);
 	}
 	
@@ -115,7 +117,10 @@ class Notifications {
 		$message .= "----------------\n";
 		$message .= 'To view this change go to '.KUMVA_URL_ROOT.'/admin/change.php?id='.$change->getId();
 		
-		$users = self::removeCurrentUser($change->getWatchers());
+		$users1 = $change->getWatchers();
+		$users2 = self::getUsersWithSubscription(Subscription::CHANGE_RESOLVED);
+		$users = self::removeCurrentUser(Entity::union($users1, $users2));
+		
 		return Mailer::sendToUsers($users, $subject, $message);
 	}
 	

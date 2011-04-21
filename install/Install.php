@@ -105,7 +105,8 @@ function kumva_install_insertdata($db) {
 		
 	// Create standard subscriptions
 	if ($db->query("INSERT INTO `".KUMVA_DB_PREFIX."subscription` VALUES(NULL, 'New change', 'Another user has submitted a change proposal')")
-	 && $db->query("INSERT INTO `".KUMVA_DB_PREFIX."subscription` VALUES(NULL, 'New comment', 'Another user has commented on a change proposal')"))
+	 && $db->query("INSERT INTO `".KUMVA_DB_PREFIX."subscription` VALUES(NULL, 'New comment', 'Another user has commented on a change proposal')")
+	 && $db->query("INSERT INTO `".KUMVA_DB_PREFIX."subscription` VALUES(NULL, 'Change resolved', 'A change has been resolved by an editor')"))
 		kumva_info("Created subscriptions");
 	else
 		return kumva_error("Unable to create subscriptions");

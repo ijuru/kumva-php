@@ -30,14 +30,16 @@ class Subscription extends Entity {
 	// Built-in subscriptions
 	const NEW_CHANGE = 1;
 	const NEW_COMMENT = 2;
+	const CHANGE_RESOLVED = 3;
 	
 	/**
 	 * Constructs a subscription based on an id
-	 * @param int the id
+	 * @param int id the id
+	 * @param string description the description
 	 */
 	public function __construct($id, $name, $description) {
-		$this->id = (int)$id;	
-		$this->name = $name;
+		$this->id = (int)$id;
+		$this->name = $name;	
 		$this->description = $description;
 	}
 	
