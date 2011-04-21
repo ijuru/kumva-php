@@ -19,6 +19,8 @@
  *
  * Purpose: User validator class
  */
+ 
+define('KUMVA_LOGIN_MINLEN', 4);
 
 /**
  * Validator for user objects
@@ -30,8 +32,18 @@ class UserValidator extends Validator {
 			
 		if (!$user->getLogin())
 			$errors->addForProperty('login', KU_MSG_ERROREMPTY);
+		elseif (strlen($user->getLogin()) < KUMVA_LOGIN_MINLEN)
+			$errors->addForProperty('login', KU_MSG_ERRORTOOSHORT);	
 		elseif (!preg_match("/^[A-Za-z0-9]+$/", $user->getLogin()))
 			$errors->addForProperty('login', KU_MSG_ERRORALPHANUMERIC);
+		else {
+			// Check for user with same login
+			$userWithLogin = Dictionary::getUserService()->getUserByLogin($user->getLogin());
+			if ($user->isNew() && $userWithLogin)
+				$errors->addForProperty('login', KU_MSG_ERRORALREADYTAKEN);
+			elseif (!$user->isNew() && $userWithLogin && !$user->equals($userWithLogin))
+				$errors->addForProperty('login', KU_MSG_ERRORALREADYTAKEN);
+		}
 			
 		if (!$user->getEmail())
 			$errors->addForProperty('email', KU_MSG_ERROREMPTY);

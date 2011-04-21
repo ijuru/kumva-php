@@ -35,6 +35,16 @@ class UserService extends Service {
 	}
 	
 	/**
+	 * Gets the user with the given login
+	 * @param string login the login
+	 * @return User the user
+	 */
+	public function getUserByLogin($login) {
+		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'user` WHERE login = '.aka_prepsqlval($login));	
+		return ($row != NULL) ? User::fromRow($row) : NULL;
+	}
+	
+	/**
 	 * Gets the user with the given login and password
 	 * @param string login the user login
 	 * @param string password the user password

@@ -133,7 +133,9 @@ CREATE TABLE `{DBPREFIX}user` (
   `timezone` varchar(50) DEFAULT NULL,
   `lastlogin` timestamp NULL DEFAULT NULL,
   `voided` tinyint(1) NOT NULL,
-  PRIMARY KEY (`user_id`)
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `UQ_{DBPREFIX}user_login` (`login`),
+  UNIQUE KEY `UQ_{DBPREFIX}user_email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `{DBPREFIX}rank` (
