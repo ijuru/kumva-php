@@ -85,8 +85,9 @@ if (Request::isPost()) {
 	$action = Request::getPostParam('action', NULL);
 	$commentText = Request::getPostParam('comment');
 
+	// If action succeeds, reload URL to prevent form resubmission
 	if (processAction($change, $action, $commentText))
-		$commentText = '';
+		Request::redirect(KUMVA_URL_CURRENT);
 }
 
 // Process watch/unwatch request
