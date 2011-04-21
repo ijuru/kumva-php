@@ -288,15 +288,13 @@ class Widgets {
 	}
 	
 	/**
-	 *
+	 * Creates a list of active users
 	 */
 	public static function userList() {
 		echo '<ul>';
 		foreach (Dictionary::getUserService()->getUsers() as $user) {
 			echo '<li>';
 			echo $user->getWebsite() ? '<a href="'.$user->getWebsite().'">'.$user->getName().'</a>' : $user->getName();
-			if ($user->hasRole(Role::EDITOR))
-				echo ' (Editor)';
 			echo '</li>';
 		}
 		echo '</ul>';
