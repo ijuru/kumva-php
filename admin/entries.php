@@ -42,7 +42,7 @@ include_once 'tpl/header.php';
 		<div style="float: left">
 			<?php Widgets::searchForm('entries.php', 'q', 'start', TRUE); ?>
 			&nbsp;&nbsp;
-			<a href="https://github.com/rowanseymour/kumva/wiki/Query-syntax">Syntax guide...</a>
+			<a href="https://github.com/ijuru/kumva/wiki/Query-syntax">Syntax guide...</a>
 		</div>
 		<div style="float: right">
 			<?php Templates::buttonLink('add', 'entryedit.php', KU_STR_ADD); ?>
