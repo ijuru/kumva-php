@@ -136,8 +136,10 @@ class DefinitionForm extends Form {
 		}
 		elseif ($saveType == 'update') {
 			// If its new, then maked it the accepted revision
-			if ($definition->isNew())
+			if ($definition->isNew()) {
+				$definition->setRevision(1);
 				$definition->setRevisionStatus(RevisionStatus::ACCEPTED);
+			}
 			
 			return Dictionary::getDefinitionService()->saveDefinition($definition);
 		}
