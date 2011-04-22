@@ -216,7 +216,10 @@ function onActionSubmit() {
 	<tr>
 		<td colspan="3" class="sectionheader"><?php echo KU_STR_COMMENTS; ?></td>
 	</tr>
-	<?php foreach($comments as $comment) { ?>
+	<?php 
+	foreach($comments as $comment) {
+		$text = Templates::parseReferences(aka_prephtml($comment->getText(), TRUE), 'entries.php');
+	?>
 	<tr id="comment-<?php echo $comment->getId(); ?>">
 		<td width="300" style="border-bottom: solid 1px #EEE">
 			<?php Templates::icon($comment->isApproval() ? 'approve' : 'comment'); ?>
@@ -225,7 +228,7 @@ function onActionSubmit() {
 			
 			<?php Templates::userLink($comment->getUser()); ?>
 		</td>
-		<td style="border-bottom: solid 1px #EEE"><?php echo Templates::parseReferences(htmlspecialchars($comment->getText()), 'entries.php'); ?></td>
+		<td style="border-bottom: solid 1px #EEE"><?php echo $text; ?></td>
 		<td style="border-bottom: solid 1px #EEE" align="right">
 			<?php 
 			if (Session::getCurrent()->hasRole(Role::ADMINISTRATOR)) 

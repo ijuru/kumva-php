@@ -149,6 +149,17 @@ function aka_prepcsvval($val) {
 }
 
 /**
+ * Prepares a value for inclusion in HTML 
+ * @param mixed val the value to prepare
+ * @param bool newLines TRUE if newlines should be preserved as <br/> tags
+ */
+function aka_prephtml($val, $newLines = FALSE) {
+	$html = htmlspecialchars($val);
+	
+	return $newLines ? str_replace("\n", '<br/>', $val) : $html;
+}
+
+/**
  * Registers a javascript file to be included in js/master.js.php
  * @param string path the path of the javascript file
  */
