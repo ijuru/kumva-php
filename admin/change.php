@@ -82,6 +82,15 @@ function processAction($change, $action, $commentText) {
 
 // Process action
 if (Request::isPost()) {
+
+	// Process watch/unwatch request
+	$watch = Request::getPostParam('watch', NULL);
+	if ($watch == 'watch')
+		$change->watch();
+	elseif ($watch == 'unwatch')
+		$change->unwatch();
+
+	// Process comment/resolve
 	$action = Request::getPostParam('action', NULL);
 	$commentText = Request::getPostParam('comment');
 
@@ -89,13 +98,6 @@ if (Request::isPost()) {
 	if (processAction($change, $action, $commentText))
 		Request::redirect(KUMVA_URL_CURRENT);
 }
-
-// Process watch/unwatch request
-$watch = Request::getPostParam('watch', NULL);
-if ($watch == 'watch')
-	$change->watch();
-elseif ($watch == 'unwatch')
-	$change->unwatch();
 
 $comments = $change->getComments();
 $watchers = $change->getWatchers();
