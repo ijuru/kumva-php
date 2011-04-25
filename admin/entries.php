@@ -36,18 +36,24 @@ if ($q != '') {
 include_once 'tpl/header.php';
 
 ?>
-	<h3><?php echo KU_STR_ENTRIES; ?></h3>
-	
-	<div class="listcontrols">
-		<div style="float: left">
-			<?php Widgets::searchForm('entries.php', 'q', 'start', TRUE); ?>
-			&nbsp;&nbsp;
-			<a href="https://github.com/ijuru/kumva/wiki/Query-syntax">Syntax guide...</a>
-		</div>
-		<div style="float: right">
-			<?php Templates::buttonLink('add', 'entryedit.php', KU_STR_ADD); ?>
-		</div>
-	</div> 
+<script type="text/javascript">
+$(function() {
+	$('#query').focus();
+});
+</script>
+
+<h3><?php echo KU_STR_ENTRIES; ?></h3>
+
+<div class="listcontrols">
+	<div style="float: left">
+		<?php Widgets::searchForm('entries.php', 'q', 'start', TRUE); ?>
+		&nbsp;&nbsp;
+		<a href="https://github.com/ijuru/kumva/wiki/Query-syntax">Syntax guide...</a>
+	</div>
+	<div style="float: right">
+		<?php Templates::buttonLink('add', 'entryedit.php', KU_STR_ADD); ?>
+	</div>
+</div> 
 
 <?php if (isset($search)) { ?>	
 	<table class="list" cellspacing="0" border="0">
