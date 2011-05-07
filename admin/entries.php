@@ -51,7 +51,7 @@ $(function() {
 		<a href="https://github.com/ijuru/kumva/wiki/Query-syntax">Syntax guide...</a>
 	</div>
 	<div style="float: right">
-		<?php Templates::buttonLink('add', 'entryedit.php', KU_STR_ADD); ?>
+		<?php Templates::buttonLink('add', 'entryedit.php?new='.urlencode($q), KU_STR_ADD); ?>
 	</div>
 </div> 
 
@@ -75,7 +75,7 @@ $(function() {
 			foreach($search->getResults() as $definition) {
 				$entry = $definition->getEntry();
 				$itemUrl = 'entry.php?id='.$entry->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
-				$editUrl = 'definition.php?id='.$definition->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
+				$editUrl = 'entryedit.php?id='.$entry->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
 				?>
 				<tr class="rowlink" onclick="aka_goto('<?php echo $itemUrl; ?>')">
 					<td>&nbsp;</td>

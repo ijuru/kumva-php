@@ -39,7 +39,10 @@ class DefinitionForm extends Form {
 			return $definition;
 		}
 		
-		return new Definition();
+		$initialLemma = Request::getGetParam('new', '');
+		$def = new Definition();
+		$def->setLemma($initialLemma);
+		return $def;
 	}
 	
 	/**
