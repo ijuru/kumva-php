@@ -37,7 +37,7 @@ function installSearchEngine() {
     <li><a href="#searchpartial">How do I search for part of a word?</a></li>
     <li><a href="#browserplugin">How can I add this dictionary to my browser's search engines?</a></li>
     <li><a href="#rudewords">Why does this dictionary contain rude words?</a></li>
-	<li><a href="#loveletter">Can this dictionary help me write a love letter?</a></li>
+	<li><a href="#getinvolved">How can I get involved?</a></li>
 </ol>
 
 <h3><?php echo KU_STR_ANSWERS; ?></h3>
@@ -75,7 +75,7 @@ function installSearchEngine() {
 		Most words that people might consider rude in one context have a legitimate meaning in another context. Therefore this dictionary strives to contain all valid words regardless of any rude connotations, but does denote these words as having such connotations.</p>
 	</li>
 	<li>
-		<p><a name="loveletter" /><b>Can this dictionary help me write a love letter?</b><br/>
-		The most popular search term is "I love you". If you are trying to write something to impress that special person, <a href="http://kinyarwanda.net/love/">this page</a> is for you.</p>
+		<p><a name="getinvolved" /><b>How can I get involved?</b><br/>
+		We are an online community who are building this dictionary out of a passion for promoting Kinyarwanda. If you are interested in getting involved and contributing your knowledge then please <?php ku_page('feedback', 'get in touch'); ?>.</p>
 	</li>
 </ol>
