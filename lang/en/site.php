@@ -252,6 +252,7 @@ ku_sitetrans('KU_MSG_NOMATCHINGCHANGES', 'No matching changes');
 ku_sitetrans('KU_MSG_NOMATCHINGWORDS', 'No matching words. Try removing prefixes, suffixes and pluralizations, e.g. <em>nagiyeyo</em> becomes <em>giye</em>, <em>mwiza</em> becomes <em>iza</em>, <em>children</em> becomes <em>child</em>');
 ku_sitetrans('KU_MSG_NOREPORTRESULTS', 'No results to display');
 ku_sitetrans('KU_MSG_PAGER', 'Showing %d to %d of %d');
+ku_sitetrans('KU_MSG_PLEASECOMPLETEALL', 'Please complete all fields');
 ku_sitetrans('KU_MSG_SEARCHTIME', 'Search took %d ms');
 ku_sitetrans('KU_MSG_TAGSCLEANUP', 'There are <b>%d</b> tag(s) in the database which aren\'t being used - this will remove them.');
 ku_sitetrans('KU_MSG_TAGSREGENERATE', 'This will regenerate tag stem and sound information which is used for searching.');

@@ -220,48 +220,50 @@ class Widgets {
 	 */
 	public static function feedbackForm() {
 		// Process email submission
-		if (isset($_POST['feedback'])) {
-			$name = trim(Request::getPostParam('name'));
-			$email = trim(Request::getPostParam('email'));
-			$feedback = trim(Request::getPostParam('feedback'));
-			$email_sent = Notifications::newFeedback($name, $email, $feedback);
+		if (Request::hasPostParam('feedback_message')) {
+			$name = trim(Request::getPostParam('feedback_name'));
+			$email = trim(Request::getPostParam('feedback_email'));
+			$message = trim(Request::getPostParam('feedback_message'));
+			$email_sent = Notifications::newFeedback($name, $email, $message);
 	
-			if ($email_sent) {
-				$feedback = "";
-		
-				// Send confirmation email
-				if ($email != '') {
-					Mailer::send($email, "Feedback received", "Thank you for your help!");
-				}
-			}
+			if ($email_sent)
+				$feedback = '';
 		} 
 		else {
 			$name = '';
 			$email = '';
-			$feedback = '';
+			$message = '';
 		}	
 	?>
-		<form method="post">
+	<script type="text/javascript">
+	function checkFields() {
+		var valid = $('#feedback_name').val() != '' && $('#feedback_email').val() != '' && $('#feedback_message').val() != '';
+		if (!valid)
+			alert("<?php echo KU_MSG_PLEASECOMPLETEALL; ?>");
+		return valid;
+	}
+	</script>
+	<form method="post" onsubmit="return checkFields();">
 		<?php if (!isset($email_sent)) { ?>
-		<table align="center" cellspacing="5" cellpadding="0" border="0">
-			<tr>
-				<td width="100"><?php echo KU_STR_NAME; ?></td>
-				<td width="200"><input type="text" name="name" style="width: 190px" value="<?php echo $name; ?>" /></td>
-				<td width="100" align="center"><?php echo KU_STR_EMAIL; ?></td>
-				<td width="200"><input type="text" name="email" style="width: 190px" value="<?php echo $email; ?>" /></td>
-			</tr>
-			<tr>
-				<td width="100" valign="top"><?php echo KU_STR_COMMENT; ?></td>
-				<td colspan="3"><textarea rows="3" name="feedback" style="width: 500px"><?php echo $feedback; ?></textarea></td>
-			</tr>
-			<tr>
-				<td colspan="4" align="center"><input type="submit" value="Send" /></td>
-			</tr>
-		</table>
+			<table align="center" cellspacing="5" cellpadding="0" border="0">
+				<tr>
+					<td width="100"><?php echo KU_STR_NAME; ?></td>
+					<td width="200"><input type="text" id="feedback_name" name="feedback_name" style="width: 190px" value="<?php echo $name; ?>" /></td>
+					<td width="100" align="center"><?php echo KU_STR_EMAIL; ?></td>
+					<td width="200"><input type="text" id="feedback_email" name="feedback_email" style="width: 190px" value="<?php echo $email; ?>" /></td>
+				</tr>
+				<tr>
+					<td width="100" valign="top"><?php echo KU_STR_COMMENT; ?></td>
+					<td colspan="3"><textarea rows="3" id="feedback_message" name="feedback_message" style="width: 500px"><?php echo $message; ?></textarea></td>
+				</tr>
+				<tr>
+					<td colspan="4" align="center"><input type="submit" value="Send" /></td>
+				</tr>
+			</table>
 		<?php } elseif ($email_sent) { ?>
-		<div class="msginfo" style="text-align: center">Feedback sent - thank you for your help!</div>
+			<div class="msginfo" style="text-align: center">Feedback sent - thank you for your help!</div>
 		<?php } else { ?>
-		<div class="msgerror" style="text-align: center">Feedback could not be sent, sorry</div>
+			<div class="msgerror" style="text-align: center">Feedback could not be sent, sorry</div>
 		<?php } ?>	
 	</form>
 	<?php

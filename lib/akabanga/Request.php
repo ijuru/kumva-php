@@ -137,6 +137,15 @@ class Request {
 	}
 	
 	/**
+	 * Gets if the named POST parameter exists
+	 * @param string name the name of the parameter
+	 * @return bool TRUE if parameter exists, else FALSE
+	 */
+	public static function hasPostParam($name) {
+		return isset($_POST[$name]);
+	}
+	
+	/**
 	 * Gets the value of the named POST parameter
 	 * @param string name the name of the parameter
 	 * @param string default the default value
