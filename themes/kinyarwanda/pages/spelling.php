@@ -139,6 +139,6 @@
 <a name="variations"></a>
 <h3>Common variations</h3>
 <ul>
-	<li>Sometimes <span lang="rw">ku+u</span> is written as just <span lang="rw">ku</span> rather than <span lang="rw">kwu</span>. Likewise <span lang="rw">ku+o</span> is written as just <span lang="rw">ko</span> rather than <span lang="rw">kwo</span>. This is most commonly seen in verb infinitives like <span lang="rw"><?php ku_query('kwumva'); ?></span> or <span lang="rw"><?php ku_query('kwoga'); ?></span> which are often spelled <span lang="rw">kumva</span> and <span lang="rw">koga</span>.</li>
+	<li>Sometimes <span lang="rw">ku+u</span> is written as <span lang="rw">kwu</span> rather than <span lang="rw">ku</span>. Likewise <span lang="rw">ku+o</span> is sometimes written as <span lang="rw">kwo</span> rather than <span lang="rw">ko</span>. This is most commonly seen in verb infinitives like <span lang="rw"><?php ku_query('kumva'); ?></span> or <span lang="rw"><?php ku_query('koga'); ?></span> which are sometimes spelled <span lang="rw">kwumva</span> and <span lang="rw">kwoga</span>.</li>
 	<li>A few words commonly occur without their final syllable, such as <span lang="rw"><?php ku_query('ikizamini'); ?></span> (<span lang="rw">ikizami</span>) and <span lang="rw"><?php ku_query('imodokari'); ?></span> (<span lang="rw">imodoka</span>)</li>
 </ul>
