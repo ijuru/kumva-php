@@ -21,8 +21,8 @@
  */
  
 // Kumva version number
-define('KUMVA_VERSION', '3.0 BETA');
-define('KUMVA_VER_RESOURCES', '20110404'); // Used to version/cachebust resources
+define('KUMVA_VERSION', '3.0.1 BETA');
+define('KUMVA_VER_RESOURCES', '20110516'); // Used to version/cachebust resources
 
 ////////////////////////// Setup directory/URL constants /////////////////////////////
  
@@ -141,6 +141,7 @@ require_once KUMVA_DIR_INC.'/report/ReportService.php';
 require_once KUMVA_DIR_INC.'/page/Page.php';
 require_once KUMVA_DIR_INC.'/page/PageService.php';
 
+require_once KUMVA_DIR_INC.'/theme/Markup.php';
 require_once KUMVA_DIR_INC.'/theme/Theme.php';
 require_once KUMVA_DIR_INC.'/theme/Templates.php';
 require_once KUMVA_DIR_INC.'/theme/Diff.php';

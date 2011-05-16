@@ -220,7 +220,9 @@ function onActionSubmit() {
 	</tr>
 	<?php 
 	foreach($comments as $comment) {
-		$text = Templates::parseReferences(aka_prephtml($comment->getText(), TRUE), 'entries.php');
+		$text = aka_prephtml($comment->getText(), TRUE);
+		$text = Markup::urlsToLinks($text);
+		$text = Templates::parseReferences($text, 'entries.php');
 	?>
 	<tr id="comment-<?php echo $comment->getId(); ?>">
 		<td width="300" style="border-bottom: solid 1px #EEE">
