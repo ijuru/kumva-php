@@ -38,8 +38,7 @@ class Diff {
 		$fieldLabels = array();
 		$fieldLabels[] = KU_STR_WORDCLASS;
 		$fieldLabels[] = KU_STR_NOUNCLASSES;
-		$fieldLabels[] = KU_STR_PREFIX;
-		$fieldLabels[] = KU_STR_LEMMA;
+		$fieldLabels[] = KU_STR_PREFIX.' | '.KU_STR_LEMMA;
 		$fieldLabels[] = KU_STR_MODIFIER;
 		$fieldLabels[] = KU_STR_MEANING;
 		$fieldLabels[] = KU_STR_COMMENT;
@@ -95,8 +94,7 @@ class Diff {
 		$fields = array();
 		$fields[] = $definition->getWordClass();
 		$fields[] = aka_makecsv($definition->getNounClasses());
-		$fields[] = $definition->getPrefix();
-		$fields[] = $definition->getLemma();
+		$fields[] = $definition->getPrefix().'|'.$definition->getLemma();
 		$fields[] = $definition->getModifier();
 		$fields[] = $definition->getMeaning();
 		$fields[] = $definition->getComment();
