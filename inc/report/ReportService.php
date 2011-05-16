@@ -37,7 +37,7 @@ kumva_registerreport('no-wordclass', 'Entries with no wordclass', 'kumva_report_
 kumva_registerreport('no-tags', 'Entries with no tags (i.e. never searchable)', 'kumva_report_notags');
 kumva_registerreport('no-examples', 'Entries with no examples', 'kumva_report_noexamples');
 kumva_registerreport('duplicate-entries', 'Possible duplicate entries', 'kumva_report_duplicateentries');
-kumva_registerreport('top-searches', 'Most common search terms', 'kumva_report_topsearches');
+kumva_registerreport('top-searches', 'Most common search terms (last month)', 'kumva_report_topsearches');
 
 /**
  * Gets entries without a wordclass

@@ -61,7 +61,9 @@ include_once 'tpl/header.php';
 		<th><?php echo KU_STR_LOGIN; ?></th>
 		<th><?php echo KU_STR_EMAIL; ?></th>
 		<th><?php echo KU_STR_ROLES; ?></th>
-		<th><?php echo KU_STR_ACTIVITY; ?></th>
+		<th><?php Templates::icon('proposal', KU_STR_PROPOSALS); ?></th>
+		<th><?php Templates::icon('proposal_accepted', KU_STR_ACCEPTED); ?></th>
+		<th><?php Templates::icon('comments', KU_STR_COMMENTS); ?></th>
 		<th><?php echo KU_STR_LASTLOGIN; ?></th>
 		<th style="width: 30px">&nbsp;</th>
 	</tr>
@@ -93,14 +95,9 @@ include_once 'tpl/header.php';
 			echo aka_makecsv($roles);
 			?>
 			</td>
-			<td style="text-align: center">
-			<?php 
-			echo $userStats['proposals'].' ';
-			Templates::icon('proposal', KU_STR_PROPOSALS);
-			echo ' '.$userStats['comments'].' ';
-			Templates::icon('comments', KU_STR_COMMENTS);
-			?>
-			</td>
+			<td style="text-align: center"><?php echo $userStats['proposals']; ?></td>
+			<td style="text-align: center"><?php echo $userStats['accepted']; ?></td>
+			<td style="text-align: center"><?php echo $userStats['comments']; ?></td>
 			<td style="text-align: center"><?php Templates::dateTime($user->getLastLogin()); ?></td>
 			<td>&nbsp;</td>
 		</tr>
