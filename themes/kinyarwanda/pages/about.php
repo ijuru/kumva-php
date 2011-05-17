@@ -20,20 +20,17 @@
  * Purpose: About page
  */
 ?>
-<p>This is a Kinyarwanda and English dictionary created to help people who are learning either language. What makes it different to other 
-dictionaries is that it has been designed for a Bantu language. Words are stored with prefixes, stems and modifiers, so it allows you to 
-search for different forms of the same word. You can search for singular forms and plural forms of nouns, and present tense or past tense
-forms of verbs.</p>
+<p>This is a Kinyarwanda - English dictionary created to help people who are learning either language. What makes it different to other 
+dictionaries is that the software has been designed for a Bantu language. Words are stored with prefixes, stems and modifiers, so it allows you to search for different forms of the same word. You can search for singular forms and plural forms of nouns, and present tense or past tense forms of verbs.</p>
 
 <h2><?php echo KU_STR_COPYRIGHT; ?></h2>	
-<p>The dictionary content and reference materials are released under a <a href="http://creativecommons.org/licenses/by-nc-sa/2.0/uk/">Creative Commons licence</a> which permits you to share, modify, reproduce it in any form, provided that it is not used for commercial purposes, 
-and that you give credit to this project. The site code is released under a <a href="http://www.gnu.org/licenses/gpl.html">GNU General Public License</a> and is available for download from <a href="<?php echo KUMVA_URL_PROJECT; ?>">Git hub</a>.</p>
+<p>The dictionary content and reference materials are released under a <a href="http://creativecommons.org/licenses/by-nc-sa/2.0/uk/">Creative Commons licence</a> which permits you to share, modify, reproduce it in any form, provided that it is not used for commercial purposes, and that you give credit to this project. The site code is released under a <a href="http://www.gnu.org/licenses/gpl.html">GNU General Public License</a> and is available for download from <a href="<?php echo KUMVA_URL_PROJECT; ?>">Github</a>.</p>
 
 <h2><?php echo KU_STR_CREDITS; ?></h2>
-<p>This dictionary is updated by an online team:
+<p>This dictionary is continually improved and updated by the following online team:
 	<?php Widgets::userList(); ?>
 </p>
-<p>Much of the content has been derived from the following sources:</p>
+<p>Some of the content has been derived from the following sources:</p>
 <ul>
 	<li><a href="http://marston.freemethodistchurch.org/Dictionaries.htm">Kinyarwanda-English Dictionary</a> by <i>Betty Ellen Cox.</i></li>
 	<li>Kinyarwanda Dictionary by <i>Emmanuel Habumuremyi</i>.</li>
