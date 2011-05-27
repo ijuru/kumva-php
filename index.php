@@ -78,8 +78,10 @@ if (isset($search)) {
 	}	
 } else {
 ?>
-<div style="padding: 32px; text-align: center">
-	<?php Widgets::randomDefinition(); ?>
+<div id="page">
+	<div style="padding: 32px; text-align: center">
+		<?php Widgets::randomDefinition(); ?>
+	</div>
 </div>
 <?php
 }

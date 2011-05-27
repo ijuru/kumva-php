@@ -72,7 +72,7 @@ body:before { /* Opera Fix */
 	height: 40px;
 	line-height: 40px;
 	padding: 0 10px 0 10px;
-	background-color: #a6bea5;
+	background-color: #a6caae;
 }
 
 #topdivider form {
@@ -154,8 +154,8 @@ ul.listmenu li {
 }
 
 .info {
-	background-color: #f4f2d3;
-	color: #515237;
+	background-color: #ede5d9;
+	color: #4a2d17;
 	padding: 5px 10px 5px 10px;
 	overflow: hidden;
 }
