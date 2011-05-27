@@ -47,17 +47,19 @@ if (isset($search)) {
 	// Show results if they exist
 	if ($search->hasResults()) {
 	?>
-		<ul id="results">
-		<?php
-			foreach ($search->getResults() as $def) {
-				echo '<li class="definition">';
-				Templates::entry($def);
-				echo '</li>';
-			}
-		?>		
-		</ul>
+		<div id="page">
+			<ul id="results">
+			<?php
+				foreach ($search->getResults() as $def) {
+					echo '<li class="definition">';
+					Templates::entry($def);
+					echo '</li>';
+				}
+			?>		
+			</ul>
+		</div>
 		<div class="info">
-			<div id="pager">
+			<div style="float: left">
 			<?php
 			if ($paging->getTotalPages() > 1) {
 				Templates::pagerButtons($paging);
@@ -66,7 +68,7 @@ if (isset($search)) {
 			printf(KU_MSG_PAGER, $paging->getStart() + 1, $paging->getStart() + $search->getResultCount(), $paging->getTotal());
 			?>			
 			</div>
-			<div id="stats">
+			<div style="float: right">
 				<small><?php echo sprintf(KU_MSG_SEARCHTIME, $search->getTime()); ?></small>
 			</div>
 		</div>

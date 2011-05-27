@@ -98,13 +98,14 @@ class Widgets {
 		/* ]]> */
 		</script>
 		<form id="searchForm" method="get" action="<?php echo $url; ?>" onsubmit="$('#start').val(0)">
-			<input id="start" name="<?php echo $startParam; ?>" type="hidden" value="<?php echo $startValue; ?>" />	
 			<input id="query" name="<?php echo $queryParam; ?>" type="text" value="<?php echo $queryValue; ?>" size="40" maxlength="40" />
+			<input id="start" name="<?php echo $startParam; ?>" type="hidden" value="<?php echo $startValue; ?>" />	
 			<?php if ($adminStyle) {
 				Templates::button('search', "aka_submit(this)", KU_STR_SEARCH); 
 			} else { ?>
-				<input type="submit" value="<?php echo KU_STR_SEARCH; ?>" />
+				<input type="submit" id="searchbtn" value="<?php echo KU_STR_SEARCH; ?>" />
 			<?php } ?>
+			
 		</form>
 		<?php
 	}

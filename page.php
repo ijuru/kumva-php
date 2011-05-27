@@ -61,7 +61,7 @@ if ($page != NULL) {
 	echo '<h2>'.$page->getTitle().'</h2>';
 	echo '</div>';
 
-	echo '<div class="content">';
+	echo '<div id="page">';
 	$page->doInclude();
 	echo '</div>';
 }

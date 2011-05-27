@@ -37,35 +37,48 @@ function kumva_pagelink($name) {
 }
 
 ?>
-
+<!--[if !IE 7]>
+	<style type="text/css">
+		#wrap {display:table;height:100%}
+	</style>
+<![endif]-->
 <body>
-	<div id="header">
-		<div id="gutter">
-			<div style="float: left"><?php Widgets::facebookLikeButton(); ?></div>
-			<div style="float: right">
-				<?php if (Session::getCurrent()->getUser()) { 
-					Templates::icon('administer');
-					echo '&nbsp;&nbsp;<a href="'.KUMVA_URL_ROOT.'/admin">'.KU_STR_ADMINSITE.'</a> | ';
-				} 
-				echo KU_STR_LANGUAGE.': ';
-				Templates::languageSelect(); 
-				?>
-			</div>
-		</div>
-		
-		<h1><?php echo KUMVA_TITLE_LONG; ?></h1>
-		
-		<ul class="listmenu">
-			<li><?php echo kumva_menulink('index.php', KU_STR_DICTIONARY); ?></li>
-			<li><?php echo kumva_pagelink('reference'); ?></li>
-			<li><?php echo kumva_pagelink('statistics'); ?></li>
-			<li><?php echo kumva_pagelink('faq'); ?></li>
-			<li><?php echo kumva_pagelink('about'); ?></li>
-		</ul>
-	</div>
+	<div id="wrap">
 	
-	<div id="topdivider">
-		<div <?php echo $isHome ? '' : 'style="float:right"'?>>
-			<?php Widgets::searchForm(); ?>
+		<div id="header">
+			<div id="gutter">
+				<div style="float: left; padding-top: 10px">
+					<?php Widgets::facebookLikeButton(); ?>
+				</div>
+				
+				<div style="float: right">
+					<?php if (Session::getCurrent()->getUser()) { 
+						Templates::icon('administer');
+						echo '&nbsp;&nbsp;<a href="'.KUMVA_URL_ROOT.'/admin">'.KU_STR_ADMINSITE.'</a> | ';
+					} 
+					echo KU_STR_LANGUAGE.': ';
+					Templates::languageSelect(); 
+					?>
+				</div>
+			</div>
+			
+			<div id="banner">
+				<h1><?php echo KUMVA_TITLE_LONG; ?></h1>
+			</div>
+			
+			<ul class="listmenu">
+				<li><?php echo kumva_menulink('index.php', KU_STR_DICTIONARY); ?></li>
+				<li><?php echo kumva_pagelink('reference'); ?></li>
+				<li><?php echo kumva_pagelink('statistics'); ?></li>
+				<li><?php echo kumva_pagelink('faq'); ?></li>
+				<li><?php echo kumva_pagelink('about'); ?></li>
+			</ul>
+			
+			<div id="topdivider">
+				<div <?php echo $isHome ? '' : 'style="float:right"'?>>
+					<?php Widgets::searchForm(); ?>
+				</div>
+			</div> 
 		</div>
-	</div> 
+			
+		<div id="content">

@@ -22,7 +22,7 @@
  
 // Kumva version number
 define('KUMVA_VERSION', '3.0.1 BETA');
-define('KUMVA_VER_RESOURCES', '20110516'); // Used to version/cachebust resources
+define('KUMVA_VER_RESOURCES', '20110527'); // Used to version/cachebust resources
 
 ////////////////////////// Setup directory/URL constants /////////////////////////////
  

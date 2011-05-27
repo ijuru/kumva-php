@@ -7,10 +7,6 @@
 	font-size: 12px;
 }
 
-body, html {
-	height: 100%;	
-}
-
 body, html, form, img {
 	margin: 0;
 	padding: 0;
@@ -32,6 +28,10 @@ select {
 }
 
 /**** Sticky footer from http://www.cssstickyfooter.com ****/
+
+body, html {
+	height: 100%;	
+}
 
 #wrap {min-height: 100%;}
 
@@ -152,8 +152,6 @@ body:before { /*Opera Fix*/
 
 #footer { 
 	background: url(submenu_bk.png) #EEE;
-	/*padding: 5px 10px 5px 10px;*/
-	/*min-height: 20px;*/
 }
 
 #content h3 {
