@@ -53,7 +53,7 @@ $page = Theme::getPage($name);
 
 // Output page title and content
 if ($page != NULL) {
-	echo '<div class="info">';
+	echo '<div id="info">';
 	// Output breadcrumb trail for page hierarchy
 	if ($page->getParent() != NULL)
 		Templates::pageHierarchy($page);
@@ -66,7 +66,7 @@ if ($page != NULL) {
 	echo '</div>';
 }
 else
-	echo '<div class="info">No such page!</div>';
+	echo '<div id="info">No such page!</div>';
 	
 Theme::footer();
 ?>

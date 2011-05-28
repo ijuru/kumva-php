@@ -30,11 +30,10 @@ body, html { /* Sticky footer from http://www.cssstickyfooter.com */
 } 
 
 #gutter, #footer {
-	background-color: #F2F2F2;
-	color: #555;
 	height: 40px;
 	line-height: 40px;
 	padding: 0 10px 0 10px;
+	background-color: #F2F2F2;
 }
 
 body:before { /* Opera Fix */
@@ -58,36 +57,42 @@ body:before { /* Opera Fix */
 	background-image: url('banner.png');
 }
 
-#header a {
-	text-decoration: none;
-	color: #6E9E6E;
-	font-weight: bold;
-}
-
-#header a.active {
-	color: #353;
-}
-
-#topdivider {
+#searchbar {
 	height: 40px;
 	line-height: 40px;
 	padding: 0 10px 0 10px;
-	background-color: #a6caae;
+	background-color: #63ca93;
 }
 
-#topdivider form {
+#searchbar form {
 	text-align: center;
 }
 
-#topdivider input#query {
+#searchbar input#query {
 	border: 0;
 	padding: 5px;
 	background-image: url('vshadow.png');
 	background-repeat: repeat-x;
 }
 
-#topdivider input#searchbtn {
+#searchbar input#searchbtn {
 	padding: 5px;
+}
+
+#info, #pager {
+	background-color: #ffe3b9;
+	color: #5f5240;
+}
+
+#info {
+	padding: 5px 10px 5px 10px;
+	overflow: hidden;
+}
+
+#pager {
+	height: 40px;
+	line-height: 40px;
+	padding: 0 10px 0 10px;
 }
 
 #page {
@@ -97,22 +102,14 @@ body:before { /* Opera Fix */
 	background-repeat: repeat-x;
 }
 
-#footer {
-	background-color: #F2F2F2;
-}
-
-#footer a {
-	color: #6E6E9E;
+#gutter a, #footer a {
+	color: #6384a7;
 	text-decoration: none;
 	font-weight: bold;
 }
 
-#footer a.active {
-	color: #333355;
-}
-
 /**
- * Interface fonts and coloring 
+ * Common elements 
  */
  
 * {
@@ -129,19 +126,37 @@ h3 {
 	font-size: 16px;
 }
 
-ul.listmenu {
+/**
+ * Main menu
+ */
+
+ul#mainmenu {
 	list-style: none;
 	padding: 5px 0 5px 0;
 	margin: 0;
 	text-align: center;
 }
 
-ul.listmenu li {
+ul#mainmenu li {
 	display: inline;
-	font-size: smaller;
 	margin: 0;
-	padding: 5px;
+	padding: 5px 10px 5px 10px;
 }
+
+ul#mainmenu li a {
+	text-decoration: none;
+	font-size: 16px;
+	color: #23995a;
+	font-weight: bold;
+}
+
+ul#mainmenu li a.active {
+	color: #353;
+}
+
+/**
+ *
+ */
 
 .msgerror {
 	color: #A66;
@@ -151,13 +166,6 @@ ul.listmenu li {
 .msginfo {
 	color: #6A6;
 	font-weight: bold;
-}
-
-.info {
-	background-color: #ede5d9;
-	color: #4a2d17;
-	padding: 5px 10px 5px 10px;
-	overflow: hidden;
 }
 
 .button {
@@ -294,11 +302,11 @@ table.grammar {
 }
 
 table.grammar th {
-	background-color: #FFC;
+	background-color: #ffe3b9;
 }
 
 table.grammar td, table.grammar th {
-	border: 1px solid #CC8;
+	border: 1px solid #ffe3b9;
 	padding: 2px;
 }
 

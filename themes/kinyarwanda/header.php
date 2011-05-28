@@ -66,7 +66,7 @@ function kumva_pagelink($name) {
 				<h1><?php echo KUMVA_TITLE_LONG; ?></h1>
 			</div>
 			
-			<ul class="listmenu">
+			<ul id="mainmenu">
 				<li><?php echo kumva_menulink('index.php', KU_STR_DICTIONARY); ?></li>
 				<li><?php echo kumva_pagelink('reference'); ?></li>
 				<li><?php echo kumva_pagelink('statistics'); ?></li>
@@ -74,7 +74,7 @@ function kumva_pagelink($name) {
 				<li><?php echo kumva_pagelink('about'); ?></li>
 			</ul>
 			
-			<div id="topdivider">
+			<div id="searchbar">
 				<div <?php echo $isHome ? '' : 'style="float:right"'?>>
 					<?php Widgets::searchForm(); ?>
 				</div>

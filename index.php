@@ -40,7 +40,7 @@ if (isset($search)) {
 		 	? 'similar sounding words'
 		 	: '<em><a href="?q='.$search->getSuggestionPattern().'">'.$search->getSuggestionPattern().'</a></em>';
 		?>
-		<div class="info">No matching words. Showing results for <?php echo $suggestion; ?> instead...</div>
+		<div id="info">No matching words. Showing results for <?php echo $suggestion; ?> instead...</div>
 		<?php
 	}
 
@@ -58,7 +58,7 @@ if (isset($search)) {
 			?>		
 			</ul>
 		</div>
-		<div class="info">
+		<div id="pager">
 			<div style="float: left">
 			<?php
 			if ($paging->getTotalPages() > 1) {
