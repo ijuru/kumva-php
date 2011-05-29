@@ -66,7 +66,17 @@ class Widgets {
 		<meta property="fb:admins" content="<?php echo KUMVA_FACEBOOK_SITEADMIN; ?>" />
 		<?php } if (defined('KUMVA_GOOGLE_SITEVERIFICATION')) { ?>
 		<meta name="google-site-verification" content="<?php echo KUMVA_GOOGLE_SITEVERIFICATION; ?>" />
-		<?php }
+		<?php } ?>
+	
+		<!-- SoundManager2 -->
+		<link rel="stylesheet" type="text/css" href="js/sm2/mp3-player-button.css" />
+		<script type="text/javascript" src="js/sm2/soundmanager2-nodebug-jsmin.js"></script>
+		<script type="text/javascript" src="js/sm2/mp3-player-button.js"></script>
+		<script>
+			soundManager.url = 'js/sm2/'; // required: path to directory containing SM2 SWF files
+		</script>
+		
+		<?php
 	}
 	
 	/**
@@ -205,15 +215,7 @@ class Widgets {
 	 * @param string sound the url of the sound file
 	 */
 	public static function soundPlayButton($sound) {
-		$swfUrl = 'lib/xspf/player.swf?&song_url='.urlencode($sound);
-		?>
-
-		<span style="display:inline-block; vertical-align: middle">
-			<object type="application/x-shockwave-flash" data="<?php echo $swfUrl; ?>" width="17" height="17">
-				<param name="movie" value="<?php echo $swfUrl; ?>" />
-			</object>
-		</span>
-		<?php
+		echo '<a href="'.$sound.'" class="sm2_button">X</a>';
 	}
 	
 	/**
