@@ -16,7 +16,9 @@ body, html { /* Sticky footer from http://www.cssstickyfooter.com */
 	height: 100%;	
 }
 
-#wrap {min-height: 100%;}
+#wrap {
+	min-height: 100%;
+}
 
 #content {
 	overflow: auto; 
