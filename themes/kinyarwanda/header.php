@@ -8,8 +8,8 @@
 	<?php Widgets::headers(); ?>
 	
 	<!-- Site specific headers -->
-	<link rel="stylesheet" href="<?php echo KUMVA_URL_THEME; ?>/gfx/default.css" type="text/css" />
-	<link rel="shortcut icon" href="<?php echo KUMVA_URL_THEME; ?>/gfx/favicon.ico" />
+	<link rel="stylesheet" href="<?php echo KUMVA_URL_THEME; ?>/gfx/default.css?<?php echo KUMVA_VER_RESOURCES; ?>" type="text/css" />
+	<link rel="shortcut icon" href="<?php echo KUMVA_URL_THEME; ?>/gfx/favicon.ico?<?php echo KUMVA_VER_RESOURCES; ?>" />
 </head>
 
 <?php
