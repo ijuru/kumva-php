@@ -73,7 +73,7 @@ if (isset($search)) {
 			</div>
 		</div>
 	<?php } else { ?>
-		<div class="info"><?php echo KU_MSG_NOMATCHINGWORDS; ?></div>
+		<div id="info"><?php echo KU_MSG_NOMATCHINGWORDS; ?></div>
 	<?php
 	}	
 } else {
