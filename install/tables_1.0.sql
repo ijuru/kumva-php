@@ -42,7 +42,7 @@ CREATE TABLE `{DBPREFIX}definition` (
   `meaning` varchar(255) DEFAULT NULL,
   `comment` varchar(255) DEFAULT NULL,
   `flags` int(10) NOT NULL,
-  `verified` tinyint(1) NOT NULL,
+  `unverified` tinyint(1) NOT NULL,
   PRIMARY KEY (`definition_id`),
   UNIQUE KEY `UQ_{DBPREFIX}definition_change` (`change_id`),
   KEY `IN_{DBPREFIX}definition_lemma` (`lemma`),

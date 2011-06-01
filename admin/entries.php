@@ -93,7 +93,7 @@ $(function() {
 					<td style="text-align: center"><?php echo $definition->getWordClass(); ?></td>
 					<td style="text-align: center"><?php echo aka_makecsv($definition->getNounClasses()); ?></td>
 					<td><?php echo $definition->getMeaning(); ?></td>
-					<td style="text-align: center"><?php if ($definition->isVerified()) Templates::icon('tick'); ?></td>
+					<td style="text-align: center"><?php if (!$definition->isUnverified()) Templates::icon('tick'); ?></td>
 					<td>
 					<?php 
 					if (Session::getCurrent()->hasRole(Role::CONTRIBUTOR))

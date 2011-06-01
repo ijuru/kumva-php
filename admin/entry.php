@@ -117,7 +117,7 @@ elseif ($pendingChange)
 	$message = sprintf(KU_MSG_ENTRYCHANGEPENDING, $pendingChangeUrl);
 elseif ($entry->isDeleted())
 	$message = KU_MSG_ENTRYDELETED;
-elseif (!$definition->isVerified())
+elseif ($definition->isUnverified())
 	$message = KU_MSG_ENTRYNOTVERIFIED;
 	
 if (isset($message))

@@ -121,7 +121,7 @@ class DefinitionService extends Service {
 		else
 			mt_srand();	
 		
-		$where = 'WHERE d.revisionstatus = 1 AND d.verified = 1 AND d.flags = 0';
+		$where = 'WHERE d.revisionstatus = 1 AND d.unverified = 0 AND d.flags = 0';
 		
 		// Geta total number of suitable entries
 		$total = $this->database->scalar("SELECT COUNT(*) FROM `".KUMVA_DB_PREFIX."definition` d $where");
@@ -220,7 +220,7 @@ class DefinitionService extends Service {
 				.aka_prepsqlval($definition->getMeaning()).','
 				.aka_prepsqlval($definition->getComment()).','
 				.aka_prepsqlval($definition->getFlags()).','
-				.aka_prepsqlval($definition->isVerified()).')';
+				.aka_prepsqlval($definition->isUnverified()).')';
 			
 			$res = $this->database->insert($sql);
 			if ($res === FALSE) 
@@ -240,7 +240,7 @@ class DefinitionService extends Service {
 				.'meaning = '.aka_prepsqlval($definition->getMeaning()).','
 				.'comment = '.aka_prepsqlval($definition->getComment()).','
 				.'flags = '.aka_prepsqlval($definition->getFlags()).','
-				.'verified = '.aka_prepsqlval($definition->isVerified()).' '
+				.'unverified = '.aka_prepsqlval($definition->isUnverified()).' '
 				.'WHERE definition_id = '.$definition->getId();
 			
 			if ($this->database->query($sql) === FALSE)
@@ -356,7 +356,7 @@ class DefinitionService extends Service {
 		$stats = array();
 		$stats['entries'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'definition` WHERE revisionstatus = 1');
 		$stats['entries_unverified'] = $this->database->scalar(
-			'SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'definition` WHERE revisionstatus = 1 AND verified = 0');
+			'SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'definition` WHERE revisionstatus = 1 AND unverified = 1');
 		return $stats;
 	}
 	

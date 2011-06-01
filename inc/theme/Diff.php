@@ -47,7 +47,7 @@ class Diff {
 			$fieldLabels[] = KU_STR_TAGS.': '.$relationship->getTitle();
 		for ($e = 1; $e <= KUMVA_MAX_EXAMPLES; $e++)
 			$fieldLabels[] = KU_STR_EXAMPLE.': '.$e;
-		$fieldLabels[] = KU_STR_VERIFIED;
+		$fieldLabels[] = KU_STR_UNVERIFIED;
 		
 		?>
 		<table width="100%" class="diff">
@@ -113,7 +113,7 @@ class Diff {
 		for ($e = 0; $e < KUMVA_MAX_EXAMPLES; $e++)
 			$fields[] = isset($examples[$e]) ? ($examples[$e]->getForm().' - '.$examples[$e]->getMeaning()) : '';
 			
-		$fields[] = $definition->isVerified() ? 'Yes' : 'No';
+		$fields[] = $definition->isUnverified() ? 'Yes' : 'No';
 			
 		return $fields;
 	}

@@ -167,8 +167,8 @@ $form->start('definitionform');
 		<td colspan="2" class="sectionheader">Meta</td>
 	</tr>
 	<tr>
-		<th><?php echo KU_STR_VERIFIED; ?></th>
-		<td><?php $form->checkbox('verified'); ?> <?php $form->errors('verified'); ?></td>
+		<th><?php echo KU_STR_UNVERIFIED; ?></th>
+		<td><?php $form->checkbox('unverified'); ?> <?php $form->errors('unverified'); ?></td>
 	</tr>
 	<tr>
 		<td colspan="2"><hr />

@@ -70,7 +70,7 @@ class Definition extends Entity {
 	private $meaning;
 	private $comment;
 	private $flags;
-	private $verified;
+	private $unverified;
 	
 	// Lazy loaded properties
 	private $entry;
@@ -93,11 +93,11 @@ class Definition extends Entity {
 	 * @param string meaning the meaning, e.g. 'man, husband'
 	 * @param string comment the comment
 	 * @param int flags the flags
-	 * @param bool verified TRUE if definition has been verified
+	 * @param bool unverified TRUE if definition is unverified
 	 */
 	public function __construct(
 			$id = 0, $entryId = 0, $revision = 0, $revisionStatus = 0, $changeId = 0,
-			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $meaning = '', $comment = '', $flags = 0, $verified = FALSE) 
+			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $meaning = '', $comment = '', $flags = 0, $unverified = FALSE) 
 	{
 		$this->id = (int)$id;
 		$this->entryId = (int)$entryId;
@@ -111,7 +111,7 @@ class Definition extends Entity {
 		$this->meaning = $meaning;
 		$this->comment = $comment;
 		$this->flags = (int)$flags;
-		$this->verified = (bool)$verified;
+		$this->unverified = (bool)$unverified;
 	}
 	
 	/**
@@ -120,7 +120,7 @@ class Definition extends Entity {
 	 * @return Definition the definition
 	 */
 	public static function fromRow(&$row) {
-		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['revisionstatus'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['meaning'], $row['comment'], $row['flags'], $row['verified']);
+		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['revisionstatus'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['meaning'], $row['comment'], $row['flags'], $row['unverified']);
 	}
 	
 	/**
@@ -353,19 +353,19 @@ class Definition extends Entity {
 	}
 	
 	/**
-	 * Gets if this has been verified
-	 * @return bool TRUE if has been verified
+	 * Gets if this is unverified
+	 * @return bool TRUE if unverified
 	 */
-	public function isVerified() {
-		return $this->verified;
+	public function isUnverified() {
+		return $this->unverified;
 	}
 	
 	/**
-	 * Sets if this has been verified
-	 * @param bool proposal TRUE if has been verified, else FALSE
+	 * Sets if this is unverified
+	 * @param bool unverified TRUE if unverified, else FALSE
 	 */
-	public function setVerified($verified) {
-		$this->verified = (bool)$verified;
+	public function setUnverified($unverified) {
+		$this->unverified = (bool)$unverified;
 	}
 	
 	/**

@@ -197,6 +197,7 @@ ku_sitetrans('KU_STR_TIMEZONE', 'Timezone');
 ku_sitetrans('KU_STR_TITLE', 'Title');
 ku_sitetrans('KU_STR_TOTAL', 'Total');
 ku_sitetrans('KU_STR_TOTALENTRIES', 'Total entries');
+ku_sitetrans('KU_STR_UNVERIFIED', 'Unverified');
 ku_sitetrans('KU_STR_UNWATCH', 'Unwatch');
 ku_sitetrans('KU_STR_USAGEEXAMPLES', 'Usage examples');
 ku_sitetrans('KU_STR_USER', 'User');

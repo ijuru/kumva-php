@@ -110,7 +110,7 @@ class SearchService extends Service {
 		// Filter by verified state
 		$verified = $query->getVerified();
 		if ($verified !== NULL)
-			$defCriteria[] = 'd.verified = '.(int)$verified;
+			$defCriteria[] = 'd.unverified = '.(int)(!$verified);
 			
 		$sql .= ' WHERE '.implode(' AND ', $defCriteria).' ';
 		
