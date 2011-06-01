@@ -40,9 +40,9 @@ class Diff {
 		$fieldLabels[] = KU_STR_NOUNCLASSES;
 		$fieldLabels[] = KU_STR_PREFIX.' | '.KU_STR_LEMMA;
 		$fieldLabels[] = KU_STR_MODIFIER;
-		$fieldLabels[] = KU_STR_MEANING;
+		$fieldLabels[] = KU_STR_MEANINGS;
 		$fieldLabels[] = KU_STR_COMMENT;
-		$fieldLabels[] = KU_STR_FLAGS;
+
 		foreach (Dictionary::getTagService()->getRelationships() as $relationship)
 			$fieldLabels[] = KU_STR_TAGS.': '.$relationship->getTitle();
 		for ($e = 1; $e <= KUMVA_MAX_EXAMPLES; $e++)
@@ -96,15 +96,25 @@ class Diff {
 		$fields[] = aka_makecsv($definition->getNounClasses());
 		$fields[] = $definition->getPrefix().'|'.$definition->getLemma();
 		$fields[] = $definition->getModifier();
-		$fields[] = $definition->getMeaning();
-		$fields[] = $definition->getComment();
 		
-		$flagNames = array();
-		foreach (Flags::values() as $flag) {
-			if ($definition->getFlag($flag))
-				$flagNames[] = Flags::toString($flag);
+		$meaningStrs = array();
+		foreach ($definition->getMeanings() as $meaning) {
+			$meaningStr = aka_prephtml($meaning->getMeaning());
+			
+			if ($meaning->getFlags() > 0) {
+				$flagNames = array();
+				foreach (Flags::values() as $flag) {
+					if ($meaning->getFlag($flag))
+						$flagNames[] = Flags::toLocalizedString($flag);
+				}
+				
+				$meaningStr .= ' ['.implode(', ', $flagNames).']'; 
+			}
+			$meaningStrs[] = $meaningStr;
 		}
-		$fields[] = implode(', ', $flagNames);
+		
+		$fields[] = implode('<br/>', $meaningStrs);
+		$fields[] = $definition->getComment();
 		
 		foreach (Dictionary::getTagService()->getRelationships() as $relationship)
 			$fields[] = aka_makecsv($relationship->makeTagStrings($definition->getTags($relationship->getId())));

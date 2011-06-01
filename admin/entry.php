@@ -142,13 +142,18 @@ if (isset($message))
 		<?php 
 		$meanings = $definition->getMeanings();
 		foreach ($meanings as $meaning) {
-			$flagNames = array();
-			foreach (Flags::values() as $flag) {
-				if ($meaning->getFlag($flag))
-					$flagNames[] = Flags::toLocalizedString($flag);
+			echo aka_prephtml($meaning->getMeaning());
+			
+			if ($meaning->getFlags() > 0) {
+				$flagNames = array();
+				foreach (Flags::values() as $flag) {
+					if ($meaning->getFlag($flag))
+						$flagNames[] = Flags::toLocalizedString($flag);
+				}
+				
+				echo ' ['.implode(', ', $flagNames).']'; 
 			}
-
-			echo aka_prephtml($meaning->getMeaning()).' ['.implode(', ', $flagNames).']<br/>'; 
+			echo '<br/>';
 		}
 			
 		?>
