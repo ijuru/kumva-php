@@ -62,6 +62,14 @@ class BeanUtilsTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(12, BeanUtils::getProperty($bean, 'value'));
 	}
 	
+	public function test_getPropertyOfAll() {
+		$beans[] = new TestBean('first', 12);
+		$beans[] = new TestBean('second', 34);
+		$beans[] = new TestBean('third', 56);
+		$this->assertEquals(array('first', 'second', 'third'), BeanUtils::getPropertyOfAll($beans, 'name'));
+		$this->assertEquals(array(12, 34, 56), BeanUtils::getPropertyOfAll($beans, 'value'));
+	}
+	
 	public function test_setProperty() {
 		$bean = new TestBean('first', 12);
 		BeanUtils::setProperty($bean, 'name', 'second');

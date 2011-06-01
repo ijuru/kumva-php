@@ -37,6 +37,21 @@ class BeanUtils {
 	} 
 	
 	/**
+	 * Gets the specified bean property of each object in the given array
+	 * @param array objects the array of objects
+	 * @param string name the name of the bean property
+	 * @param bool asBool whether to get property with an "is_" method
+	 * @return array the property values
+	 */
+	public static function getPropertyOfAll($objects, $name, $asBool = FALSE) {
+		$method = ($asBool ? 'is' : 'get').ucfirst($name);
+		$values = array();
+		foreach ($objects as $object)
+			$values[] = $object->{$method}();
+		return $values;
+	}
+	
+	/**
 	 * Sets the specified bean property on the given object
 	 * @param object object the object
 	 * @param string name the name of the bean property
