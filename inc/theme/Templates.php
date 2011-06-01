@@ -82,12 +82,6 @@ class Templates {
 			$clsName = Theme::getNounClassName($cls);
 			echo ' <a class="nounclass" href="page.php?name='.$nounPage.'#classes" title="'.KU_STR_NOUNCLASS.' '.$clsName.'">'.$cls.'</a>';
 		}
-		
-		// Display flags
-		foreach (Flags::values() as $flag) {
-			if ($definition->getFlag($flag))
-				echo ' <span class="flag">'.Flags::toString($flag).'</span>';
-		}
 	
 		// Display variant tags
 		$tags = $definition->getTags(Relationship::VARIANT);
@@ -99,10 +93,16 @@ class Templates {
 			echo ' ('.KU_STR_ALSO.' '.implode(', ', $tagsHtml).') ';
 		}
 
-		// Display meaning with parsed references
-		if ($definition->getMeaning()) {
-			$meaning = self::parseReferences(htmlspecialchars($definition->getMeaning()), 'index.php');
-			echo '&nbsp;&nbsp;<span class="meaning">'.$meaning.'</span>';	
+		// Display meanings with parsed references
+		foreach ($definition->getMeanings() as $meaning) {
+			$meaningText = self::parseReferences(aka_prephtml($meaning->getMeaning()), 'index.php');
+			echo '&nbsp;&nbsp;<span class="meaning">'.$meaningText.'</span>';	
+			
+			// Display meaning flags
+			foreach (Flags::values() as $flag) {
+				if ($meaning->getFlag($flag))
+					echo ' <span class="flag">'.Flags::toString($flag).'</span>';
+			}
 		}
 	
 		// Display comment with parsed references

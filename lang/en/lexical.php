@@ -69,7 +69,9 @@ function kumva_en_sound($text) {
  * @return array the array of tag strings
  */
 function kumva_en_autotag_meaning($definition) {
-	$tags = aka_parsecsv($definition->getMeaning());
+	$tags = array();
+	foreach ($definition->getMeanings() as $meaning)
+		$tags = array_merge($tags, aka_parsecsv($meaning->getMeaning()));
 	
 	if ($definition->getWordClass() == 'v') {
 		// Strip infinitive prepositions

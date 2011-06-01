@@ -137,25 +137,26 @@ if (isset($message))
 		<td><?php echo $definition->getModifier(); ?></td>
 	</tr>
 	<tr>
-		<th><?php echo KU_STR_MEANING; ?></th>
-		<td><?php echo $definition->getMeaning(); ?></td>
+		<th><?php echo KU_STR_MEANINGS; ?></th>
+		<td>
+		<?php 
+		$meanings = $definition->getMeanings();
+		foreach ($meanings as $meaning) {
+			$flagNames = array();
+			foreach (Flags::values() as $flag) {
+				if ($meaning->getFlag($flag))
+					$flagNames[] = Flags::toLocalizedString($flag);
+			}
+
+			echo aka_prephtml($meaning->getMeaning()).' ['.implode(', ', $flagNames).']<br/>'; 
+		}
+			
+		?>
+		</td>
 	</tr>
 	<tr>
 		<th><?php echo KU_STR_COMMENT; ?></th>
 		<td><?php echo $definition->getComment(); ?></td>
-	</tr>
-	<tr>
-		<th><?php echo KU_STR_FLAGS; ?></th>
-		<td>
-		<?php
-			$flagNames = array();
-			foreach (Flags::values() as $flag) {
-				if ($definition->getFlag($flag))
-					$flagNames[] = Flags::toLocalizedString($flag);
-			}
-			echo implode(', ', $flagNames);
-		?>
-		</td>
 	</tr>
 	<tr>
 		<td colspan="2" class="sectionheader"><?php echo KU_STR_TAGS; ?></td>

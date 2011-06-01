@@ -41,19 +41,6 @@ class RevisionStatus extends Enum {
 	
 	protected static $strings = array('archived', 'accepted', 'proposed');
 }
- 
-/**
- * Information flags which can be set on definitions
- */
-class Flags extends Enum {
-	const OLD = 0;
-	const RARE = 1;
-	const SLANG = 2;
-	const RUDE = 3;
-	
-	protected static $strings = array('old', 'rare', 'slang', 'rude');
-	protected static $localized = array(KU_STR_OLD, KU_STR_RARE, KU_STR_SLANG, KU_STR_RUDE);
-}
 
 /**
  * Word definition class
@@ -67,17 +54,16 @@ class Definition extends Entity {
 	private $prefix;
 	private $lemma;
 	private $modifier;
-	private $meaning;
 	private $comment;
-	private $flags;
 	private $unverified;
 	
 	// Lazy loaded properties
 	private $entry;
 	private $change;
 	private $nounClasses;
-	private $examples;
+	private $meanings;
 	private $tags = array();
+	private $examples;
 	
 	/**
 	 * Constructs a definition
@@ -90,14 +76,12 @@ class Definition extends Entity {
 	 * @param string prefix the prefix, e.g 'umu'
 	 * @param string lemma the lemma, e.g. 'gabo'
 	 * @param string modifier the modifier, e.g. 'aba-'
-	 * @param string meaning the meaning, e.g. 'man, husband'
 	 * @param string comment the comment
-	 * @param int flags the flags
 	 * @param bool unverified TRUE if definition is unverified
 	 */
 	public function __construct(
 			$id = 0, $entryId = 0, $revision = 0, $revisionStatus = 0, $changeId = 0,
-			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $meaning = '', $comment = '', $flags = 0, $unverified = FALSE) 
+			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $comment = '', $unverified = FALSE) 
 	{
 		$this->id = (int)$id;
 		$this->entryId = (int)$entryId;
@@ -108,9 +92,7 @@ class Definition extends Entity {
 		$this->prefix = $prefix;
 		$this->lemma = $lemma;
 		$this->modifier = $modifier;
-		$this->meaning = $meaning;
 		$this->comment = $comment;
-		$this->flags = (int)$flags;
 		$this->unverified = (bool)$unverified;
 	}
 	
@@ -120,7 +102,7 @@ class Definition extends Entity {
 	 * @return Definition the definition
 	 */
 	public static function fromRow(&$row) {
-		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['revisionstatus'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['meaning'], $row['comment'], $row['flags'], $row['unverified']);
+		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['revisionstatus'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['comment'], $row['unverified']);
 	}
 	
 	/**
@@ -260,22 +242,6 @@ class Definition extends Entity {
 	}
 	
 	/**
-	 * Gets the meaning
-	 * @return string the meaning
-	 */
-	public function getMeaning() {
-		return $this->meaning;
-	}
-	
-	/**
-	 * Sets the meaning
-	 * @param string meaning the meaning
-	 */
-	public function setMeaning($meaning) {
-		$this->meaning = $meaning;
-	}
-	
-	/**
 	 * Gets the comment
 	 * @return string the comment
 	 */
@@ -311,48 +277,6 @@ class Definition extends Entity {
 	}
 	
 	/**
-	 * Gets the state of the given flag
-	 * @param int flag the flag
-	 * @return bool TRUE if flag is set, else FALSE
-	 */
-	public function getFlag($flag) {
-		$mask = pow(2, $flag);
-		return $this->flags & $mask;
-	}
-	
-	/**
-	 * Gets the flags
-	 * @return int the flags
-	 */
-	public function getFlags() {
-		return $this->flags;
-	}
-	
-	/**
-	 * Sets the state of the given flag
-	 * @param int flag the flag
-	 * @param bool state TRUE to set flag, else FALSE
-	 */
-	public function setFlag($flag, $state) {
-		$mask = pow(2, $flag);
-		if ($state)
-			$this->flags |= $mask;
-		else
-			$this->flags &= ~$mask;
-	}
-	
-	/**
-	 * Sets the flags
-	 * @param mixed flags the flags (can be an bit field int or CSV string)
-	 */
-	public function setFlags($flags) {
-		if (!is_int($flags))
-			$flags = Flags::toBits(Flags::parseCSVString($flags));
-		
-		$this->flags = $flags;
-	}
-	
-	/**
 	 * Gets if this is unverified
 	 * @return bool TRUE if unverified
 	 */
@@ -366,6 +290,25 @@ class Definition extends Entity {
 	 */
 	public function setUnverified($unverified) {
 		$this->unverified = (bool)$unverified;
+	}
+	
+	/**
+	 * Gets meanings using lazy loading
+	 * @return array the meanings
+	 */
+	public function getMeanings() {
+		if ($this->meanings === NULL)
+			$this->meanings = Dictionary::getDefinitionService()->getDefinitionMeanings($this);
+		
+		return $this->meanings;
+	}
+	
+	/**
+	 * Sets meanings
+	 * @param array meanings the meanings
+	 */
+	public function setMeanings($meanings) {
+		$this->meanings = $meanings;
 	}
 	
 	/**

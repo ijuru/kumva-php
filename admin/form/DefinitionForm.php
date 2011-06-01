@@ -41,6 +41,7 @@ class DefinitionForm extends Form {
 		
 		$initialLemma = Request::getGetParam('new', '');
 		$def = new Definition();
+		$def->setMeanings(array(new Meaning()));
 		$def->setLemma($initialLemma);
 		return $def;
 	}
@@ -53,11 +54,19 @@ class DefinitionForm extends Form {
 		$nounClasses = aka_parsecsv(Request::getPostParam('nounclasses'), TRUE);
 		$definition->setNounClasses($nounClasses);
 		
-		// Bind flags
-		$definition->setFlags(0);
-		$flags = Request::getPostParams('flags_');
-		foreach ($flags as $flag => $state)
-			$definition->setFlag($flag, TRUE);
+		// Bind meanings
+		$meanTextParams = Request::getPostParams('meaningtext_');
+		$meanings = array();
+		foreach ($meanTextParams as $param => $text) {
+			$meaning = new Meaning(0, $text, 0);
+			
+			$meanFlagParams = Request::getPostParams('meaningflag_'.$param.'_');
+			foreach ($meanFlagParams as $flag => $state)
+				$meaning->setFlag($flag, TRUE);
+				
+			$meanings[] = $meaning;
+		}	
+		$definition->setMeanings($meanings);
 		
 		// Bind tags
 		$tagParams = Request::getPostParams('tags_');
@@ -67,6 +76,15 @@ class DefinitionForm extends Form {
 			$definition->setTagsFromStrings($relationship, $tagStrings);
 		}
 		
+		// Bind examples
+		$exFormParams = Request::getPostParams('exampleform_');
+		$examples = array();
+		foreach ($exFormParams as $param => $form) {
+			$meaning = Request::getPostParam('examplemeaning_'.$param);
+			$examples[] = new Example(0, $form, $meaning);
+		}	
+		$definition->setExamples($examples);
+		
 		// Handle any autotag requests
 		$autotagRelId = Request::getPostParam('autotag', 0);
 		if ($autotagRelId > 0) {
@@ -74,15 +92,6 @@ class DefinitionForm extends Form {
 			$tagStrings = Lexical::autoTag($definition, $relationship);
 			$definition->setTagsFromStrings($relationship, $tagStrings);
 		}
-		
-		// Bind examples
-		$exFormParams = Request::getPostParams('exampleform');
-		$examples = array();
-		foreach ($exFormParams as $param => $form) {
-			$meaning = Request::getPostParam('examplemeaning'.$param);
-			$examples[] = new Example(0, $form, $meaning);
-		}	
-		$definition->setExamples($examples);
 	}
 	
 	/**

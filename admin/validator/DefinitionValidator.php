@@ -27,12 +27,19 @@ class DefinitionValidator extends Validator {
 	public function validate($definition, $errors) {
 		if (strlen($definition->getLemma()) == 0)
 			$errors->addForProperty('lemma', KU_MSG_ERROREMPTY);
-		if (strlen($definition->getMeaning()) == 0)
-			$errors->addForProperty('meaning', KU_MSG_ERROREMPTY);
+		if (count($definition->getMeanings()) == 0)
+			$errors->addForProperty('meanings', KU_MSG_ERROREMPTY);
 		
 		foreach ($definition->getNounClasses() as $nounClass) {
 			if ($nounClass < 1) {
 				$errors->addForProperty('nounClasses', KU_MSG_ERRORNOUNCLASS);
+				break;
+			}
+		}
+		
+		foreach ($definition->getMeanings() as $meaning) {
+			if (strlen($meaning->getMeaning()) == 0) {
+				$errors->addForProperty('meanings', KU_MSG_ERROREMPTY);
 				break;
 			}
 		}

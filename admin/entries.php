@@ -65,7 +65,7 @@ $(function() {
 			<th><?php echo KU_STR_MODIFIER; ?></th>
 			<th><?php echo KU_STR_WORDCLASS; ?></th>
 			<th><?php echo KU_STR_NOUNCLASSES; ?></th>
-			<th><?php echo KU_STR_MEANING; ?></th>
+			<th><?php echo KU_STR_MEANINGS; ?></th>
 			<th><?php echo KU_STR_VERIFIED; ?></th>
 			<th style="width: 20px">&nbsp;</th>
 			<th style="width: 30px">&nbsp;</th>
@@ -76,6 +76,7 @@ $(function() {
 				$entry = $definition->getEntry();
 				$itemUrl = 'entry.php?id='.$entry->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
 				$editUrl = 'entryedit.php?id='.$entry->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
+				$meanings = BeanUtils::getPropertyOfAll($definition->getMeanings(), 'meaning');
 				?>
 				<tr class="rowlink" onclick="aka_goto('<?php echo $itemUrl; ?>')">
 					<td>&nbsp;</td>
@@ -92,7 +93,7 @@ $(function() {
 					<td><?php echo $definition->getModifier(); ?></td>
 					<td style="text-align: center"><?php echo $definition->getWordClass(); ?></td>
 					<td style="text-align: center"><?php echo aka_makecsv($definition->getNounClasses()); ?></td>
-					<td><?php echo $definition->getMeaning(); ?></td>
+					<td><?php echo implode('<br/>', $meanings); ?></td>
 					<td style="text-align: center"><?php if (!$definition->isUnverified()) Templates::icon('tick'); ?></td>
 					<td>
 					<?php 

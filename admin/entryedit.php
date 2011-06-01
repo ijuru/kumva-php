@@ -40,12 +40,29 @@ function autoTag(relationshipId) {
 	$('#definitionform').submit();
 }
 
+function addNewMeaning() {
+	$('#meanings').append('<div id="meaning_' + meaningId + '" class="meaningfield">'
+			+ '<input name="meaningtext_' + meaningId + '" class="text" /> '
+			
+			<?php
+			foreach (Flags::values() as $flag) {
+				$flagName = Flags::toLocalizedString($flag);
+				echo "+ '<input type=\"checkbox\" name=\"meaningflag_' + meaningId + '_$flag\" /> $flagName&nbsp;&nbsp;'";
+			}
+			?>
+			
+			+ '<a href="javascript:deleteMeaning(' + meaningId +')"><?php Templates::icon('delete', KU_STR_REMOVE); ?></a>'
+			+ '</div>'
+	);
+	meaningId++;
+}
+
 function addNewExample() {
 	if ($('div.examplefield').size() < <?php echo KUMVA_MAX_EXAMPLES; ?>) {
-		$('#examples').append('<div id="example_' + exampleId + '" class="examplefield">'
+		$('#meanings').append('<div id="example_' + exampleId + '" class="examplefield">'
 			+ '<input name="exampleform_' + exampleId + '" class="text" /> '
 			+ '<input name="examplemeaning_' + exampleId + '" class="text" /> '
-			+ '<a href="javascript:deleteExample(' + exampleId +')"><?php Templates::icon('delete', KU_STR_REMOVEEXAMPLE); ?></a>'
+			+ '<a href="javascript:deleteExample(' + exampleId +')"><?php Templates::icon('delete', KU_STR_REMOVE); ?></a>'
 			+ '</div>'
 		);
 		exampleId++;
@@ -54,11 +71,17 @@ function addNewExample() {
 	}
 }
 
+function deleteMeaning(index) {
+	if (confirm('<?php echo KU_MSG_CONFIRMREMOVEMEANING; ?>'))
+		$('#' + 'meaning_' + index).remove();
+}
+
 function deleteExample(index) {
 	if (confirm('<?php echo KU_MSG_CONFIRMREMOVEEXAMPLE; ?>'))
 		$('#' + 'example_' + index).remove();
 }
 
+var meaningId = 1000000;
 var exampleId = 1000000;
 /* ]]> */
 </script>
@@ -98,8 +121,35 @@ $form->start('definitionform');
 		<td><?php $form->textField('modifier'); ?> <?php $form->errors('modifier'); ?></td>
 	</tr>
 	<tr>
-		<th><?php echo KU_STR_MEANING; ?></th>
-		<td><?php $form->textField('meaning'); ?> <?php $form->errors('meaning'); ?></td>
+		<th><?php echo KU_STR_MEANINGS; ?></th>
+		<td id="meanings">
+			<?php 
+			$form->errors('meanings');
+			$meanCount = 0;
+			foreach ($form->getEntity()->getMeanings() as $meaning) { 
+				?>
+				<div id="meaning_<?php echo $meanCount; ?>" class="meaningfield">
+					<input name="meaningtext_<?php echo $meanCount; ?>" value="<?php echo $meaning->getMeaning(); ?>" class="text" />
+					<?php
+					foreach (Flags::values() as $flag) {
+						$flagState = $meaning->getFlag($flag);
+						$flagName = Flags::toLocalizedString($flag);
+						echo '<input type="checkbox" name="meaningflag_'.$meanCount.'_'.$flag.'" ';
+						echo ($flagState ? 'checked="checked"' : '').' /> '.$flagName.'&nbsp;&nbsp;';
+					}	
+					if ($meanCount > 0)
+						Templates::iconLink('delete', "javascript:deleteMeaning($meanCount)", KU_STR_REMOVE); 
+					?>
+				</div>
+				<?php 
+				$meanCount++; 
+			} 
+			?>
+		</td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td><?php Templates::button('add', "addNewMeaning()", KU_STR_ADD); ?></td>
 	</tr>
 	<tr>
 		<th><?php echo KU_STR_COMMENT; ?></th>
@@ -109,11 +159,7 @@ $form->start('definitionform');
 		<th><?php echo KU_STR_FLAGS; ?></th>
 		<td>
 		<?php
-			foreach (Flags::values() as $flag) {
-				$flagState = $definition->getFlag($flag);
-				$flagName = Flags::toLocalizedString($flag);
-				echo '<input type="checkbox" name="flags_'.$flag.'" '.($flagState ? 'checked="checked"' : '').' /> '.$flagName.'&nbsp;&nbsp;';
-			}
+			
 		?>
 		</td>
 	</tr>
@@ -123,11 +169,11 @@ $form->start('definitionform');
 	<?php foreach (Dictionary::getTagService()->getRelationships() as $relationship) { 
 		$tags = $form->getEntity()->getTags($relationship->getId());
 		$tagStrings = $relationship->makeTagStrings($tags);
-		$tagsText = htmlspecialchars(aka_makecsv($tagStrings));
+		$tagsText = aka_prephtml(aka_makecsv($tagStrings));
 	?>
 	<tr>
-		<td><b><?php echo htmlspecialchars($relationship->getTitle()); ?></b> (defaults to <b><?php echo $relationship->getDefaultLang(TRUE); ?></b>)<br />
-			<?php echo htmlspecialchars($relationship->getDescription()); ?>
+		<td><b><?php echo aka_prephtml($relationship->getTitle()); ?></b> (defaults to <b><?php echo $relationship->getDefaultLang(TRUE); ?></b>)<br />
+			<?php echo aka_prephtml($relationship->getDescription()); ?>
 		</td>
 		<td>
 			<textarea rows="3" cols="40" name="tags_<?php echo $relationship->getId(); ?>" class="text"><?php echo $tagsText; ?></textarea>
@@ -152,7 +198,7 @@ $form->start('definitionform');
 				<div id="example_<?php echo $exCount; ?>" class="examplefield">
 					<input name="exampleform_<?php echo $exCount; ?>" value="<?php echo $example->getForm(); ?>" class="text" />
 					<input name="examplemeaning_<?php echo $exCount; ?>" value="<?php echo $example->getMeaning(); ?>" class="text" />
-					<?php Templates::iconLink('delete', "javascript:deleteExample($exCount)", KU_STR_REMOVEEXAMPLE); ?>
+					<?php Templates::iconLink('delete', "javascript:deleteExample($exCount)", KU_STR_REMOVE); ?>
 				</div>
 				<?php 
 				$exCount++; 

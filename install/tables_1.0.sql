@@ -39,9 +39,7 @@ CREATE TABLE `{DBPREFIX}definition` (
   `prefix` varchar(10) DEFAULT NULL,
   `lemma` varchar(255) NOT NULL,
   `modifier` varchar(50) DEFAULT NULL,
-  `meaning` varchar(255) DEFAULT NULL,
   `comment` varchar(255) DEFAULT NULL,
-  `flags` int(10) NOT NULL,
   `unverified` tinyint(1) NOT NULL,
   PRIMARY KEY (`definition_id`),
   UNIQUE KEY `UQ_{DBPREFIX}definition_change` (`change_id`),
@@ -55,9 +53,20 @@ CREATE TABLE `{DBPREFIX}definition_nounclass` (
   `definition_id` int(10) unsigned NOT NULL,
   `order` int(10) unsigned NOT NULL,
   `nounclass` tinyint(3) unsigned NOT NULL,
-  PRIMARY KEY (`definition_id`,`nounclass`),
+  PRIMARY KEY (`definition_id`,`order`),
   KEY `FK_{DBPREFIX}definition_nounclass_definition` (`definition_id`),
   CONSTRAINT `FK_{DBPREFIX}definition_nounclass_definition` FOREIGN KEY (`definition_id`) REFERENCES `{DBPREFIX}definition` (`definition_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `{DBPREFIX}meaning` (
+  `meaning_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `definition_id` int(10) unsigned NOT NULL,
+  `order` int(10) unsigned NOT NULL,
+  `meaning` varchar(255) DEFAULT NULL,
+  `flags` int(10) NOT NULL,
+  PRIMARY KEY (`meaning_id`),
+  KEY `FK_{DBPREFIX}meaning` (`definition_id`),
+  CONSTRAINT `FK_{DBPREFIX}meaning` FOREIGN KEY (`definition_id`) REFERENCES `{DBPREFIX}definition` (`definition_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `{DBPREFIX}example` (

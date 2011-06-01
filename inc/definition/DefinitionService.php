@@ -167,6 +167,16 @@ class DefinitionService extends Service {
 	}
 	
 	/**
+	 * Gets the meanings for the given definition
+	 * @param Definition definition the definition
+	 * @return array the meanings
+	 */
+	public function getDefinitionMeanings($definition) {
+		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'meaning` WHERE definition_id = '.$definition->getId();
+		return Meaning::fromQuery($this->database->query($sql));
+	}
+	
+	/**
 	 * Gets the usage examples for the given definition
 	 * @param Definition definition the definition
 	 * @return array the examples
@@ -217,9 +227,7 @@ class DefinitionService extends Service {
 				.aka_prepsqlval($definition->getPrefix()).','
 				.aka_prepsqlval($definition->getLemma()).','
 				.aka_prepsqlval($definition->getModifier()).','
-				.aka_prepsqlval($definition->getMeaning()).','
 				.aka_prepsqlval($definition->getComment()).','
-				.aka_prepsqlval($definition->getFlags()).','
 				.aka_prepsqlval($definition->isUnverified()).')';
 			
 			$res = $this->database->insert($sql);
@@ -237,9 +245,7 @@ class DefinitionService extends Service {
 				.'prefix = '.aka_prepsqlval($definition->getPrefix()).','
 				.'lemma = '.aka_prepsqlval($definition->getLemma()).','
 				.'modifier = '.aka_prepsqlval($definition->getModifier()).','
-				.'meaning = '.aka_prepsqlval($definition->getMeaning()).','
 				.'comment = '.aka_prepsqlval($definition->getComment()).','
-				.'flags = '.aka_prepsqlval($definition->getFlags()).','
 				.'unverified = '.aka_prepsqlval($definition->isUnverified()).' '
 				.'WHERE definition_id = '.$definition->getId();
 			
@@ -248,37 +254,12 @@ class DefinitionService extends Service {
 				//return FALSE;
 		}
 
-		// Save noun classes, tags and examples		
+		// Save noun classes, meanings, tags and examples		
 		$this->saveDefinitionNounClasses($definition);
+		$this->saveDefinitionMeanings($definition);
 		$this->saveDefinitionTags($definition);
 		$this->saveDefinitionExamples($definition);
 		
-		return TRUE;
-	}
-	
-	/**
-	 * Saves examples for the given definition
-	 * @param Definition definition the definition
-	 * @return bool TRUE if examples were saved, else FALSE
-	 */
-	private function saveDefinitionExamples($definition) {
-		$examples = $definition->getExamples();
-	
-		// Delete any existing class assocations for this definition
-		$this->database->query('DELETE FROM `'.KUMVA_DB_PREFIX.'example` WHERE `definition_id` = '.$definition->getId());
-		
-		foreach ($examples as $example) {
-			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'example` VALUES('
-				.'NULL,'
-				.aka_prepsqlval($definition->getId()).','
-				.aka_prepsqlval($example->getForm()).','
-				.aka_prepsqlval($example->getMeaning()).')';
-			
-			$res = $this->database->insert($sql);
-			if ($res === FALSE)
-				return FALSE;
-			$example->setId($res);
-		}
 		return TRUE;
 	}
 	
@@ -300,6 +281,35 @@ class DefinitionService extends Service {
 			$order++;
 		}
 		
+		return TRUE;
+	}
+	
+	/**
+	 * Saves meanings for the given definition
+	 * @param Definition definition the definition
+	 * @return bool TRUE if examples were saved, else FALSE
+	 */
+	private function saveDefinitionMeanings($definition) {
+		$meanings = $definition->getMeanings();
+	
+		// Delete any existing class assocations for this definition
+		$this->database->query('DELETE FROM `'.KUMVA_DB_PREFIX.'meaning` WHERE `definition_id` = '.$definition->getId());
+		
+		$order = 0;
+		foreach ($meanings as $meaning) {
+			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'meaning` VALUES('
+				.'NULL,'
+				.aka_prepsqlval($definition->getId()).','
+				.$order.','
+				.aka_prepsqlval($meaning->getMeaning()).','
+				.aka_prepsqlval($meaning->getFlags()).')';
+			
+			$res = $this->database->insert($sql);
+			if ($res === FALSE)
+				return FALSE;
+			$meaning->setId($res);
+			$order++;
+		}
 		return TRUE;
 	}
 	
@@ -335,6 +345,32 @@ class DefinitionService extends Service {
 					$order++;
 				}
 			}
+		}
+		return TRUE;
+	}
+	
+	/**
+	 * Saves examples for the given definition
+	 * @param Definition definition the definition
+	 * @return bool TRUE if examples were saved, else FALSE
+	 */
+	private function saveDefinitionExamples($definition) {
+		$examples = $definition->getExamples();
+	
+		// Delete any existing class assocations for this definition
+		$this->database->query('DELETE FROM `'.KUMVA_DB_PREFIX.'example` WHERE `definition_id` = '.$definition->getId());
+		
+		foreach ($examples as $example) {
+			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'example` VALUES('
+				.'NULL,'
+				.aka_prepsqlval($definition->getId()).','
+				.aka_prepsqlval($example->getForm()).','
+				.aka_prepsqlval($example->getMeaning()).')';
+			
+			$res = $this->database->insert($sql);
+			if ($res === FALSE)
+				return FALSE;
+			$example->setId($res);
 		}
 		return TRUE;
 	}
