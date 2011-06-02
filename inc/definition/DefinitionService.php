@@ -135,20 +135,6 @@ class DefinitionService extends Service {
 	}
 	
 	/**
-	 * Gets the tags for the given definition
-	 * @param Definition definition the definition
-	 * @param int relationshipId the relationship id
-	 * @return array the tags
-	 */
-	public function getDefinitionTags($definition, $relationshipId) {
-		$sql = 'SELECT t.* FROM `'.KUMVA_DB_PREFIX.'tag` t 
-				INNER JOIN `'.KUMVA_DB_PREFIX.'definition_tag` dt ON dt.tag_id = t.tag_id
-				WHERE dt.definition_id = '.$definition->getId().' AND dt.relationship_id = '.$relationshipId.' 
-				ORDER BY dt.order ASC';		
-		return Tag::fromQuery($this->database->query($sql));
-	}
-	
-	/**
 	 * Gets the noun classes for the given definition
 	 * @param Definition definition the definition
 	 * @return array the noun classes (integers)
@@ -156,7 +142,7 @@ class DefinitionService extends Service {
 	public function getDefinitionNounClasses($definition) {
 		$sql = 'SELECT `nounclass` FROM `'.KUMVA_DB_PREFIX.'definition_nounclass` 
 		        WHERE `definition_id` = '.$definition->getId().'
-		        ORDER BY `order`';
+		        ORDER BY `order` ASC';
 		$res = $this->database->query($sql);
 		$classes = array();
 		if ($res) {
@@ -172,8 +158,24 @@ class DefinitionService extends Service {
 	 * @return array the meanings
 	 */
 	public function getDefinitionMeanings($definition) {
-		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'meaning` WHERE definition_id = '.$definition->getId();
+		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'meaning` 
+				WHERE definition_id = '.$definition->getId().' 
+				ORDER BY `order` ASC';
 		return Meaning::fromQuery($this->database->query($sql));
+	}
+	
+	/**
+	 * Gets the tags for the given definition
+	 * @param Definition definition the definition
+	 * @param int relationshipId the relationship id
+	 * @return array the tags
+	 */
+	public function getDefinitionTags($definition, $relationshipId) {
+		$sql = 'SELECT t.* FROM `'.KUMVA_DB_PREFIX.'tag` t 
+				INNER JOIN `'.KUMVA_DB_PREFIX.'definition_tag` dt ON dt.tag_id = t.tag_id
+				WHERE dt.definition_id = '.$definition->getId().' AND dt.relationship_id = '.$relationshipId.' 
+				ORDER BY dt.order ASC';		
+		return Tag::fromQuery($this->database->query($sql));
 	}
 	
 	/**
