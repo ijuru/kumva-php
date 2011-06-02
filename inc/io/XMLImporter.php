@@ -33,7 +33,7 @@ class XMLImporter extends Importer {
 	 * @param bool TRUE if definitions are verified
 	 * @return bool TRUE if successful, else FALSE
 	 */
-	public function load($path, $verified) {	
+	public function load($path, $unverified) {	
 		if (($xml = simplexml_load_file($path)) === FALSE)
 			return FALSE;
 		

@@ -25,12 +25,12 @@ include_once '../inc/kumva.php';
 Session::requireRole(Role::ADMINISTRATOR);
 
 if (isset($_FILES['importsrc'])) {
-	$verified = (bool)Request::getPostParam('verified', FALSE);
+	$unverified = (bool)Request::getPostParam('unverified', FALSE);
 	$importSrc = $_FILES['importsrc']['tmp_name'];
 	
 	$importer = new CSVImporter();// : new XMLImporter();
 	
-	$importer->run(FALSE, $importSrc, $verified);
+	$importer->run(FALSE, $importSrc, $unverified);
 }
 
 include_once 'tpl/header.php';
@@ -47,8 +47,8 @@ include_once 'tpl/header.php';
 			<td><input type="file" name="importsrc" /></td>
 		</tr>
 		<tr>
-			<th><?php echo KU_STR_VERIFIED; ?></th>
-			<td><input type="checkbox" value="1" name="verified" /></td>
+			<th><?php echo KU_STR_UNVERIFIED; ?></th>
+			<td><input type="checkbox" value="1" name="unverified" /></td>
 		</tr>
 		<tr>
 			<td colspan="2"><hr /><?php Templates::button('import', "aka_submit(this)", KU_STR_IMPORT); ?></td>

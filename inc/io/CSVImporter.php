@@ -69,7 +69,7 @@ class CSVImporter extends Importer {
 	 * @param bool TRUE if definitions are verified
 	 * @return bool TRUE if successful, else FALSE
 	 */
-	public function load($path, $verified) {	
+	public function load($path, $unverified) {	
 		$handle = @fopen($path, "r");
 		if (!$handle)
 			return FALSE;
@@ -80,7 +80,7 @@ class CSVImporter extends Importer {
 	
 		// Load each row as a definition
 		while (($row = fgetcsv($handle, 0, ",")) !== FALSE) {
-			if ($this->loadRow($row, $columns, $verified) !== FALSE)
+			if ($this->loadRow($row, $columns, $unverified) !== FALSE)
 				$this->defCount++;
 		}
 	
@@ -123,15 +123,15 @@ class CSVImporter extends Importer {
 	 * Loads a definition from a row
 	 * @param array row array of row values
 	 * @param array column array of column descriptors
-	 * @param bool TRUE if definitions default to verified
+	 * @param bool TRUE if definitions default to unverified
 	 * @return Definition the definition or FALSE if an error occured
 	 */
-	private function loadRow(&$row, &$columns, $verified) {
+	private function loadRow(&$row, &$columns, $unverified) {
 		$definition = new Definition();
 		$examples = array();
 		
-		// Default verified value
-		$definition->setVerified($verified);
+		// Default unverified value
+		$definition->setUnverified($unverified);
 		
 		for ($col = 0; $col < count($row); $col++) {
 			$value = $row[$col];

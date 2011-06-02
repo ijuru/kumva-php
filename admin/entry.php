@@ -140,8 +140,7 @@ if (isset($message))
 		<th><?php echo KU_STR_MEANINGS; ?></th>
 		<td>
 		<?php 
-		$meanings = $definition->getMeanings();
-		foreach ($meanings as $meaning) {
+		foreach ($definition->getMeanings() as $meaning) {
 			echo aka_prephtml($meaning->getMeaning());
 			
 			if ($meaning->getFlags() > 0) {
@@ -154,8 +153,7 @@ if (isset($message))
 				echo ' ['.implode(', ', $flagNames).']'; 
 			}
 			echo '<br/>';
-		}
-			
+		}	
 		?>
 		</td>
 	</tr>

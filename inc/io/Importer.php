@@ -32,7 +32,7 @@ abstract class Importer {
 	/**
 	 *
 	 */
-	public function run($clearExisting, $path, $verified) {
+	public function run($clearExisting, $path, $unverified) {
 		if ($clearExisting) {
 			if (!Dictionary::getDefinitionService()->clear()) {
 				$this->log('Unable to clear existing definitions');
@@ -42,7 +42,7 @@ abstract class Importer {
 				$this->log('Cleared existing definitions');
 		}
 		
-		if ($this->load($path, $verified)) {
+		if ($this->load($path, $unverified)) {
 			$this->log('Loaded '.$this->getDefinitionCount().' definitions and '.$this->getExampleCount().' examples');
 			return TRUE;
 		}
@@ -55,10 +55,10 @@ abstract class Importer {
 	/**
 	 * Loads definitions from a file
 	 * @param string path path of the file
-	 * @param bool TRUE if definitions are verified
+	 * @param bool TRUE if definitions are unverified
 	 * @return bool TRUE if successful, else FALSE
 	 */
-	public abstract function load($path, $verified);
+	public abstract function load($path, $unverified);
 	
 	/**
 	 * Logs a status message
