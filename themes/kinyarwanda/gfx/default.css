@@ -329,3 +329,23 @@ table.grammar th.group {
 	text-align: center;
 	border-top: solid 1px #EEE;
 }
+
+/**
+ * Sound buttons
+ */
+
+a.sm2_button {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	text-indent: -9999px;
+	background-image: url(../../../gfx/icons/play.png);
+}
+
+a.sm2_button.sm2_playing {
+	background-image: url(../../../gfx/icons/pause.png);
+}
+
+a.sm2_button.sm2_paused {
+	background-image: url(../../../gfx/icons/play.png);
+}

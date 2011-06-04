@@ -69,7 +69,6 @@ class Widgets {
 		<?php } ?>
 	
 		<!-- SoundManager2 -->
-		<link rel="stylesheet" type="text/css" href="js/sm2/mp3-player-button.css" />
 		<script type="text/javascript" src="js/sm2/soundmanager2-nodebug-jsmin.js"></script>
 		<script type="text/javascript" src="js/sm2/mp3-player-button.js"></script>
 		<script type="text/javascript">
