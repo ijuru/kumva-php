@@ -22,9 +22,6 @@
 
 include_once '../inc/kumva.php';
 
-$audioCount = 0;
-$imageCount = 0;
-
 $function = Request::getPostParam('function', NULL);
 if ($function == 'scan' && Session::getCurrent()->hasRole(Role::ADMINISTRATOR)) {
 	$entries = Dictionary::getDefinitionService()->getEntries();
@@ -34,14 +31,10 @@ if ($function == 'scan' && Session::getCurrent()->hasRole(Role::ADMINISTRATOR)) 
 		$audioPath = KUMVA_DIR_MEDIA.'/audio/'.$entry->getId().'.mp3';
 		$imagePath = KUMVA_DIR_MEDIA.'/image/'.$entry->getId().'.jpg';
 		$flags = 0;
-		if (file_exists($audioPath)) {
-			$audioCount++;
+		if (file_exists($audioPath))
 			$flags = aka_setbit($flags, Media::AUDIO);
-		}
-		if (file_exists($imagePath)) {
-			$imageCount++;
+		if (file_exists($imagePath))
 			$flags = aka_setbit($flags, Media::IMAGE);
-		}
 		
 		// Update entry if flags have changed
 		if ($entry->getMedia() != $flags) {
@@ -50,6 +43,8 @@ if ($function == 'scan' && Session::getCurrent()->hasRole(Role::ADMINISTRATOR)) 
 		}
 	}
 }
+
+$mediaCounts = Dictionary::getDefinitionService()->getMediaCounts();
 
 include_once 'tpl/header.php';
 ?>	
@@ -80,7 +75,7 @@ include_once 'tpl/header.php';
 		<td><?php Templates::icon('folder'); ?></td>
 		<td class="primarycol">media/audio</td>
 		<td><?php echo KU_STR_AUDIO; ?></td>
-		<td style="text-align: center"><?php echo $audioCount; ?></td>
+		<td style="text-align: center"><?php echo $mediaCounts['audio']; ?></td>
 		<td>&nbsp;</td>
 	</tr>
 	<tr>
@@ -88,7 +83,7 @@ include_once 'tpl/header.php';
 		<td><?php Templates::icon('folder'); ?></td>
 		<td class="primarycol">media/image</td>
 		<td><?php echo KU_STR_IMAGE; ?></td>
-		<td style="text-align: center"><?php echo $imageCount; ?></td>
+		<td style="text-align: center"><?php echo $mediaCounts['image']; ?></td>
 		<td>&nbsp;</td>
 	</tr>
 </table>

@@ -409,6 +409,17 @@ class DefinitionService extends Service {
 	}
 	
 	/**
+	 * Gets counts of entries with each media type
+	 * @return array the media type counts
+	 */
+	public function getMediaCounts() {
+		return $this->database->row('SELECT 
+				COUNT(CASE WHEN media & 1 THEN 1 ELSE NULL END) AS `audio`,
+				COUNT(CASE WHEN media & 2 THEN 1 ELSE NULL END) AS `image` 
+			FROM `'.KUMVA_DB_PREFIX.'entry`');
+	}
+	
+	/**
 	 * Gets counts of each word class
 	 * @return array the word class counts
 	 */

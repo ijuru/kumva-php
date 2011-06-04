@@ -31,7 +31,7 @@ $searchMisses = $searchStats['misses'];
 $searchSuggestions = $searchStats['suggestions'];
 
 $contentStats = Dictionary::getDefinitionService()->getContentStatistics();
-$mediaStats = $contentStats['media'];
+$mediaStats = Dictionary::getDefinitionService()->getMediaCounts();
 
 $changeStats = Dictionary::getChangeService()->getChangeStatistics();
 $changePending = isset($changeStats[Status::PENDING]) ? $changeStats[Status::PENDING]['count'] : 0;
