@@ -38,8 +38,8 @@ if ($q != '') {
 	$search = new Search($q, FALSE, $paging);
 	$search->run($source);
 	
-	foreach ($search->getResults() as $def)
-		Xml::definition($def);
+	foreach ($search->getResults() as $entry)
+		Xml::definition($entry->getHead());
 		
 	echo '</definitions>';
 }

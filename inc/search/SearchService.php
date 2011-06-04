@@ -25,24 +25,29 @@
  */
 class SearchService extends Service {
 	/**
-	 * Searches for all definitions that match the given search criteria
+	 * Searches for all entries that match the given search criteria
 	 * @param Query the query
 	 * @param int type the search type
 	 * @param Paging paging the paging object
-	 * @param bool incProposals TRUE if proposal definitions should be included, else FALSE
+	 * @param bool proposals TRUE if entries with proposal definitions should be included, else FALSE
 	 * @return array the matching definitions
 	 */
-	public function search($query, $type, $incProposals = FALSE, $orderBy = OrderBy::ENTRY, $paging = NULL) {
+	public function search($query, $type, $proposals = false, $orderBy = OrderBy::ENTRY, $paging = null) {
 		$pattern = $query->getPattern();
 		
 		// Search specific relationships or default to [meaning, form, or variant]
 		$relationships = $query->getRelationship() ? array($query->getRelationship()) : Dictionary::getTagService()->getRelationships(TRUE);
 		
 		// Search specific tag language or all configured tag languages?
-		$langs = $query->getLang() ? array($query->getLang()) : Dictionary::getLanguageService()->getLexicalLanguages(TRUE);
+		$langs = $query->getLang() ? array($query->getLang()) : Dictionary::getLanguageService()->getLexicalLanguages(true);
 		
-		$sql = "SELECT SQL_CALC_FOUND_ROWS d.*, CONCAT(COALESCE(d.prefix, ''), d.lemma) as `entry`
-				FROM `".KUMVA_DB_PREFIX."definition` d ";
+		$sql = "SELECT SQL_CALC_FOUND_ROWS e.*, CONCAT(COALESCE(d.prefix, ''), d.lemma) as `entry`
+				FROM `".KUMVA_DB_PREFIX."entry` e 
+				INNER JOIN `".KUMVA_DB_PREFIX."definition` d ON d.entry_id = e.entry_id AND ";
+		if ($proposals)
+			$sql .= '(d.revisionstatus = 1 OR d.revisionstatus = 2) ';
+		else
+			$sql .= 'd.revisionstatus = 1 ';
 		
 		/////////// Tag based criteria /////////////
 		
@@ -87,7 +92,7 @@ class SearchService extends Service {
 		$sql .= "  WHERE (".implode(' OR ', $tagCriteria).") AND (".implode(' OR ', $tagDefCriteria).") ";
 		
 		// If not including proposals, then only use active taggings
-		if (!$incProposals)
+		if (!$proposals)
 			$sql .= 'AND dt.active = 1 ';
 		
 		$sql .= "  GROUP BY dt.definition_id ";			
@@ -96,12 +101,6 @@ class SearchService extends Service {
 		/////////////////// Definition criteria //////////////////
 		
 		$defCriteria = array();
-		
-		// Return proposed definitions as well?
-		if ($incProposals)
-			$defCriteria[] = "(d.revisionstatus = 1 OR d.revisionstatus = 2)";
-		else
-			$defCriteria[] = "d.revisionstatus = 1";
 			
 		// Filter by wordclass
 		if ($query->getWordClass())
@@ -109,10 +108,15 @@ class SearchService extends Service {
 			
 		// Filter by verified state
 		$verified = $query->getVerified();
-		if ($verified !== NULL)
+		if ($verified !== null)
 			$defCriteria[] = 'd.unverified = '.(int)(!$verified);
 			
-		$sql .= ' WHERE '.implode(' AND ', $defCriteria).' ';
+		if (count($defCriteria) > 0)
+			$sql .= ' WHERE '.implode(' AND ', $defCriteria).' ';
+			
+		// If we matched against proposals then we might have 2 copies of one entry
+		if ($proposals)
+			$sql .= 'GROUP BY e.entry_id ';
 		
 		//////////////////// Order by //////////////////////////////
 		
@@ -131,7 +135,7 @@ class SearchService extends Service {
 		// Execute query
 		$result = $this->database->query($sql, $paging);
 		
-		return Definition::fromQuery($result);
+		return Entry::fromQuery($result);
 	}
 	
 	/**
@@ -153,7 +157,7 @@ class SearchService extends Service {
 			$sql .= 'AND h.source = '.aka_prepsqlval($source).' ';		
 		if (!$showCurrentUser) {
 			$user = Session::getCurrent()->getUser();
-			$userId = $user != NULL ? $user->getId() : NULL;
+			$userId = $user != null ? $user->getId() : null;
 			$sql .= 'AND (h.user_id IS NULL OR h.user_id != '.$userId.') ';	
 		}
 		if ($showOnlyMisses)
@@ -204,11 +208,11 @@ class SearchService extends Service {
 	 * @param string ref the coded referal source of this query
 	 * @return bool TRUE if operation was successful, else FALSE
 	 */
-	public function logSearch($pattern, $suggest, $iterations, $resultCount, $timeTaken, $source = NULL) {		
+	public function logSearch($pattern, $suggest, $iterations, $resultCount, $timeTaken, $source = null) {		
 		
 		$remoteAddr = $_SERVER['REMOTE_ADDR'];
 		$user = Session::getCurrent()->getUser();
-		$user_id = $user != NULL ? $user->getId() : NULL;
+		$user_id = $user != null ? $user->getId() : null;
 		
 		$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'searchrecord` VALUES(
 			NULL,'
@@ -223,7 +227,7 @@ class SearchService extends Service {
 			.aka_prepsqlval($user_id).')';
 
 				
-		return $this->database->query($sql) !== FALSE;
+		return $this->database->query($sql) !== false;
 	}
 }
 

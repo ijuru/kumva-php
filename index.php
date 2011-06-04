@@ -50,9 +50,9 @@ if (isset($search)) {
 		<div id="page">
 			<ul id="results">
 			<?php
-				foreach ($search->getResults() as $def) {
+				foreach ($search->getResults() as $entry) {
 					echo '<li class="definition">';
-					Templates::entry($def->getEntry(), $def);
+					Templates::entry($entry, Revision::ACCEPTED);
 					echo '</li>';
 				}
 			?>		

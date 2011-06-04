@@ -72,8 +72,9 @@ $(function() {
 		</tr>
 		<?php 
 		if ($search->hasResults()) {
-			foreach($search->getResults() as $definition) {
-				$entry = $definition->getEntry();
+			foreach($search->getResults() as $entry) {
+				$definition = $entry->getHead();
+				
 				$itemUrl = 'entry.php?id='.$entry->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
 				$editUrl = 'entryedit.php?id='.$entry->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
 				$meanings = BeanUtils::getPropertyOfAll($definition->getMeanings(), 'meaning');

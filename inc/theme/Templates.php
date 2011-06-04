@@ -54,11 +54,13 @@ class Templates {
 	}
 	
 	/**
-	 * Displays a definition as full dictionary entry with examples etc
+	 * Displays an entry as full dictionary entry with examples etc
 	 * @param Entry entry the entry 
-	 * @param Definition definition the definition
+	 * @param int revision the revision
 	 */
-	public static function entry($entry, $definition) {
+	public static function entry($entry, $revision) {
+		$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, $revision);
+	
 		// Display prefix+lemma
 		self::definition($definition);
 	

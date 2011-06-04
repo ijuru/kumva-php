@@ -86,7 +86,7 @@ class Entry extends Entity {
 	}
 	
 	/**
-	 * Gets the head revision () using lazy loading
+	 * Gets the head revision using lazy loading
 	 * @return Revision the head revision
 	 */
 	public function getHead() {
