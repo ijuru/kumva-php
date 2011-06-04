@@ -31,6 +31,7 @@ $searchMisses = $searchStats['misses'];
 $searchSuggestions = $searchStats['suggestions'];
 
 $contentStats = Dictionary::getDefinitionService()->getContentStatistics();
+$mediaStats = $contentStats['media'];
 
 $changeStats = Dictionary::getChangeService()->getChangeStatistics();
 $changePending = isset($changeStats[Status::PENDING]) ? $changeStats[Status::PENDING]['count'] : 0;
@@ -49,6 +50,8 @@ include_once 'tpl/header.php';
 				<ul>
 					<li><strong><?php echo $contentStats['entries']; ?></strong> entries</li>
 					<li><strong><a href="entries.php?q=verified:no"><?php echo $contentStats['entries_unverified']; ?></a></strong> unverified entries</li>
+					<li><strong><?php echo $mediaStats['audio']; ?></strong> entries with audio</li>
+					<li><strong><?php echo $mediaStats['image']; ?></strong> entries with images</li>
 				</ul>
 			</div>
 		</td>

@@ -400,6 +400,11 @@ class DefinitionService extends Service {
 		$stats['entries'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'definition` WHERE revisionstatus = 1');
 		$stats['entries_unverified'] = $this->database->scalar(
 			'SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'definition` WHERE revisionstatus = 1 AND unverified = 1');
+		$stats['media'] = $this->database->row(
+			'SELECT 
+				COUNT(CASE WHEN media & 1 THEN 1 ELSE NULL END) AS `audio`,
+				COUNT(CASE WHEN media & 2 THEN 1 ELSE NULL END) AS `image` 
+			FROM `'.KUMVA_DB_PREFIX.'entry`');
 		return $stats;
 	}
 	
