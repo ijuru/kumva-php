@@ -54,20 +54,27 @@ class Templates {
 	}
 	
 	/**
-	 * Displays a definition as full dictionary entry with examples etc 
+	 * Displays a definition as full dictionary entry with examples etc
+	 * @param Entry entry the entry 
 	 * @param Definition definition the definition
 	 */
-	public static function entry($definition) {
+	public static function entry($entry, $definition) {
 		// Display prefix+lemma
 		self::definition($definition);
 	
 		// Display modifier
 		if ($definition->getModifier())
-			echo ' (<span class="modifier">'.$definition->getModifier().'</span>)';
+			echo ' (<span class="modifier">'.$definition->getModifier().'</span>) ';
 			
 		// Display pronunciation
 		if ($definition->getPronunciation())
-			echo ' /<span class="pronunciation">'.$definition->getPronunciation().'</span>/';
+			echo ' /<span class="pronunciation">'.$definition->getPronunciation().'</span>/ ';
+			
+		// Display sound widget
+		if ($entry->hasMedia(Media::AUDIO)) {
+			Widgets::sound($entry->getId());
+			echo '&nbsp;';
+		}
 			
 		// Display word class
 		$wordClass = $definition->getWordClass();

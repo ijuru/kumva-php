@@ -35,6 +35,7 @@ $menu = array(
 	)),
 	array('pages.php', KU_STR_SITE, 'site', NULL, array(
 		array('pages.php', KU_STR_PAGES, 'pages', NULL),
+		array('media.php', KU_STR_MEDIA, 'media', NULL),
 		array('languages.php', KU_STR_LANGUAGES, 'languages', NULL),
 		array('settings.php', KU_STR_SETTINGS, 'settings', Role::ADMINISTRATOR)
 	))

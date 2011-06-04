@@ -48,6 +48,7 @@ unset($tempPath1, $tempPath2, $tempPath3, $urlRoot);
 // Get current absolute URL and login URL
 define('KUMVA_URL_CURRENT', 'http://'.$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"]);
 define('KUMVA_URL_LOGIN', KUMVA_URL_ROOT.'/admin/login.php');
+define('KUMVA_URL_MEDIA', KUMVA_URL_ROOT.'/media');
 
 // Project URLs
 define('KUMVA_URL_PROJECT', 'https://github.com/ijuru/kumva');

@@ -196,7 +196,9 @@ class DefinitionService extends Service {
 	 */
 	public function saveEntry($entry) {
 		if ($entry->isNew()) {
-			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'entry` VALUES(NULL)';
+			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'entry` VALUES('
+				.'NULL,'
+				.aka_prepsqlval($entry->getMedia()).')';
 			
 			$res = $this->database->insert($sql);
 			if ($res === FALSE) 
@@ -204,11 +206,12 @@ class DefinitionService extends Service {
 			$entry->setId($res);
 		}
 		else {
-			//$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'entry` SET '
-				//.'WHERE entry_id = '.$entry->getId();
+			$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'entry` SET '
+				.'media = '.aka_prepsqlval($entry->getMedia()).' '
+				.'WHERE entry_id = '.$entry->getId();
 			
-			//if ($this->database->query($sql) === FALSE)
-				//return FALSE;
+			if ($this->database->query($sql) === FALSE)
+				return FALSE;
 		}
 		return TRUE;
 	}
@@ -232,7 +235,6 @@ class DefinitionService extends Service {
 				.aka_prepsqlval($definition->getModifier()).','
 				.aka_prepsqlval($definition->getPronunciation()).','
 				.aka_prepsqlval($definition->getComment()).','
-				.aka_prepsqlval($definition->getMedia()).','
 				.aka_prepsqlval($definition->isUnverified()).')';
 			
 			$res = $this->database->insert($sql);
@@ -252,7 +254,6 @@ class DefinitionService extends Service {
 				.'modifier = '.aka_prepsqlval($definition->getModifier()).','
 				.'pronunciation = '.aka_prepsqlval($definition->getPronunciation()).','
 				.'comment = '.aka_prepsqlval($definition->getComment()).','
-				.'media = '.aka_prepsqlval($definition->getMedia()).','
 				.'unverified = '.aka_prepsqlval($definition->isUnverified()).' '
 				.'WHERE definition_id = '.$definition->getId();
 			

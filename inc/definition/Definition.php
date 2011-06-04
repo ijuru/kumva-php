@@ -56,7 +56,6 @@ class Definition extends Entity {
 	private $modifier;
 	private $pronunciation;
 	private $comment;
-	private $media;
 	private $unverified;
 	
 	// Lazy loaded properties
@@ -80,12 +79,11 @@ class Definition extends Entity {
 	 * @param string modifier the modifier, e.g. 'aba-'
 	 * @param string pronunciation the pronunciation, e.g. 'umugabo'
 	 * @param string comment the comment
-	 * @param int media the media flags
 	 * @param bool unverified TRUE if definition is unverified
 	 */
 	public function __construct(
 			$id = 0, $entryId = 0, $revision = 0, $revisionStatus = 0, $changeId = 0,
-			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $pronunciation = '', $comment = '', $media = 0, $unverified = FALSE) 
+			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $pronunciation = '', $comment = '', $unverified = FALSE) 
 	{
 		$this->id = (int)$id;
 		$this->entryId = (int)$entryId;
@@ -98,7 +96,6 @@ class Definition extends Entity {
 		$this->modifier = $modifier;
 		$this->pronunciation = $pronunciation;
 		$this->comment = $comment;
-		$this->media = (int)$media;
 		$this->unverified = (bool)$unverified;
 	}
 	
@@ -108,7 +105,7 @@ class Definition extends Entity {
 	 * @return Definition the definition
 	 */
 	public static function fromRow(&$row) {
-		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['revisionstatus'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['pronunciation'], $row['comment'], $row['media'], $row['unverified']);
+		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['revisionstatus'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['pronunciation'], $row['comment'], $row['unverified']);
 	}
 	
 	/**
@@ -296,22 +293,6 @@ class Definition extends Entity {
 	 */
 	public function setComment($comment) {
 		$this->comment = $comment;
-	}
-	
-	/**
-	 * Gets the media flags
-	 * @return int the media flags
-	 */
-	public function getMedia() {
-		return $this->media;
-	}
-	
-	/**
-	 * Sets the media flags
-	 * @param int media the media flags
-	 */
-	public function setMedia($media) {
-		$this->media = $media;
 	}
 	
 	/**

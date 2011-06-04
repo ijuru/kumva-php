@@ -52,7 +52,7 @@ if (isset($search)) {
 			<?php
 				foreach ($search->getResults() as $def) {
 					echo '<li class="definition">';
-					Templates::entry($def);
+					Templates::entry($def->getEntry(), $def);
 					echo '</li>';
 				}
 			?>		

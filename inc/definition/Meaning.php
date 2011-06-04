@@ -75,8 +75,7 @@ class Meaning extends Entity {
 	 * @return bool TRUE if flag is set, else FALSE
 	 */
 	public function getFlag($flag) {
-		$mask = pow(2, $flag);
-		return $this->flags & $mask;
+		return aka_getbit($this->flags, $flag);
 	}
 	
 	/**
@@ -93,11 +92,7 @@ class Meaning extends Entity {
 	 * @param bool state TRUE to set flag, else FALSE
 	 */
 	public function setFlag($flag, $state) {
-		$mask = pow(2, $flag);
-		if ($state)
-			$this->flags |= $mask;
-		else
-			$this->flags &= ~$mask;
+		$this->flags = aka_setbit($this->flags, $flag, $state);
 	}
 	
 	/**

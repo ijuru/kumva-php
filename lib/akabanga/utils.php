@@ -167,5 +167,30 @@ function aka_includejs($path) {
 	global $AKABANGA_JSINCLUDES;
 	$AKABANGA_JSINCLUDES[] = $path;
 }
+
+/**
+ * Gets the specified bit of a value
+ * @param int val the value
+ * @param int bit the bit number
+ * @return bool the bit state
+ */
+function aka_getbit($val, $bit) {
+	$mask = pow(2, $bit);
+	return (bool)($val & $mask);
+}
+
+/**
+ * Sets the specified bit of a value to true or false
+ * @param int val the value to modify
+ * @param int bit the bit number
+ * @param bool state the bit state (defaults to TRUE)
+ */
+function aka_setbit($val, $bit, $state = true) {
+	$mask = pow(2, $bit);
+	if ($state)
+		return $val | $mask;
+	else
+		return $val & ~$mask;
+}
  
 ?>

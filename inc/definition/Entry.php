@@ -19,11 +19,24 @@
  * 
  * Purpose: Entry class
  */
+ 
+/**
+ * Media type flags
+ */
+class Media extends Enum {
+	const AUDIO = 0;
+	const IMAGE = 1;
+	
+	protected static $strings = array('audio', 'image');
+	protected static $localized = array(KU_STR_AUDIO, KU_STR_IMAGE);
+}
 
 /**
  * Dictionary entry class
  */
 class Entry extends Entity {
+	private $media;
+	
 	// Lazy loaded properties
 	private $head;
 	private $revisions;
@@ -31,9 +44,11 @@ class Entry extends Entity {
 	/**
 	 * Constructs an entry
 	 * @param int id the id
+	 * @param int media the media flags
 	 */
-	public function __construct($id = 0) {
+	public function __construct($id = 0, $media = 0) {
 		$this->id = (int)$id;
+		$this->media = (int)$media;
 	}
 	
 	/**
@@ -42,7 +57,32 @@ class Entry extends Entity {
 	 * @return Entry the entry
 	 */
 	public static function fromRow(&$row) {
-		return new Entry($row['entry_id']);
+		return new Entry($row['entry_id'], $row['media']);
+	}
+	
+	/**
+	 * Gets the media flags
+	 * @return int the media flags
+	 */
+	public function getMedia() {
+		return $this->media;
+	}
+	
+	/**
+	 * Sets the media flags
+	 * @param int media the media flags
+	 */
+	public function setMedia($media) {
+		$this->media = $media;
+	}
+	
+	/**
+	 * Gets if the media type exists for this entry
+	 * @param int type the media type
+	 * @return bool true if media type exists
+	 */
+	public function hasMedia($type) {
+		return aka_getbit($this->media, $type);
 	}
 	
 	/**

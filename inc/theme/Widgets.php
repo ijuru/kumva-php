@@ -212,10 +212,13 @@ class Widgets {
 	
 	/**
 	 * Creates a small flash button to play the given sound file
-	 * @param string sound the url of the sound file
+	 * @param mixed sound the url of the sound file or id of an entry
 	 */
-	public static function soundPlayButton($sound) {
-		echo '<a href="'.$sound.'" class="sm2_button">X</a>';
+	public static function sound($sound) {
+		if (is_int($sound))
+			$sound = KUMVA_URL_MEDIA.'/audio/'.$sound.'.mp3';
+		
+		echo '<a href="'.$sound.'" class="sm2_button">&gt;</a>';
 	}
 	
 	/**
