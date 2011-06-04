@@ -62,20 +62,27 @@ class Xml {
  	 * @param bool incChange TRUE to include this definition's change information
 	 */
 	public static function definition($definition, $incChange = FALSE) {
-		$flags = Flags::makeCSVString(Flags::fromBits($definition->getFlags()));
 		
 		echo '<definition ';
 		echo 'revision="'.aka_prepxmlval($definition->getRevision()).'" ';
 		echo 'revisionstatus="'.strtolower(RevisionStatus::toString($definition->getRevision())).'" ';
 		echo 'wordclass="'.$definition->getWordClass().'" ';
 		echo 'nounclasses="'.implode(',', $definition->getNounClasses()).'" ';
-		echo 'flags="'.$flags.'" ';
-		echo 'verified="'.aka_prepxmlval($definition->isVerified()).'">';
+		echo 'unverified="'.aka_prepxmlval($definition->isUnverified()).'">';
 
 		echo '<prefix>'.aka_prepxmlval($definition->getPrefix()).'</prefix>';
 		echo '<lemma>'.aka_prepxmlval($definition->getLemma()).'</lemma>';
 		echo '<modifier>'.aka_prepxmlval($definition->getModifier()).'</modifier>';
-		echo '<meaning>'.aka_prepxmlval($definition->getMeaning()).'</meaning>';
+		echo '<pronunciation>'.aka_prepxmlval($definition->getPronunciation()).'</pronunciation>';
+		
+		echo '<meanings>';
+		foreach ($definition->getMeanings() as $meaning) {
+			$flags = Flags::makeCSVString(Flags::fromBits($meaning->getFlags()));
+			
+			echo '<meaning flags="'.$flags.'">'.aka_prepxmlval($meaning->getMeaning()).'</meaning>';
+		}
+		echo '</meanings>';
+		
 		echo '<comment>'.aka_prepxmlval($definition->getComment()).'</comment>';	
 		
 		// Tags

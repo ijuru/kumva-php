@@ -54,6 +54,7 @@ class Definition extends Entity {
 	private $prefix;
 	private $lemma;
 	private $modifier;
+	private $pronunciation;
 	private $comment;
 	private $unverified;
 	
@@ -81,7 +82,7 @@ class Definition extends Entity {
 	 */
 	public function __construct(
 			$id = 0, $entryId = 0, $revision = 0, $revisionStatus = 0, $changeId = 0,
-			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $comment = '', $unverified = FALSE) 
+			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $pronunciation = '', $comment = '', $unverified = FALSE) 
 	{
 		$this->id = (int)$id;
 		$this->entryId = (int)$entryId;
@@ -92,6 +93,7 @@ class Definition extends Entity {
 		$this->prefix = $prefix;
 		$this->lemma = $lemma;
 		$this->modifier = $modifier;
+		$this->pronunciation = $pronunciation;
 		$this->comment = $comment;
 		$this->unverified = (bool)$unverified;
 	}
@@ -102,7 +104,7 @@ class Definition extends Entity {
 	 * @return Definition the definition
 	 */
 	public static function fromRow(&$row) {
-		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['revisionstatus'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['comment'], $row['unverified']);
+		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['revisionstatus'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['pronunciation'], $row['comment'], $row['unverified']);
 	}
 	
 	/**
@@ -239,6 +241,22 @@ class Definition extends Entity {
 	 */
 	public function setModifier($modifier) {
 		$this->modifier = $modifier;
+	}
+	
+	/**
+	 * Gets the pronunciation
+	 * @return string the pronunciation
+	 */
+	public function getPronunciation() {
+		return $this->pronunciation;
+	}
+	
+	/**
+	 * Sets the comment
+	 * @param string comment the comment
+	 */
+	public function setPronunciation($pronunciation) {
+		$this->pronunciation = $pronunciation;
 	}
 	
 	/**

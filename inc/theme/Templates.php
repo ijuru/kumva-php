@@ -61,8 +61,13 @@ class Templates {
 		// Display prefix+lemma
 		self::definition($definition);
 	
+		// Display modifier
 		if ($definition->getModifier())
 			echo ' (<span class="modifier">'.$definition->getModifier().'</span>)';
+			
+		// Display pronunciation
+		if ($definition->getPronunciation())
+			echo ' /<span class="pronunciation">'.$definition->getPronunciation().'</span>/';
 			
 		// Display word class
 		$wordClass = $definition->getWordClass();
@@ -94,9 +99,16 @@ class Templates {
 		}
 
 		// Display meanings with parsed references
-		foreach ($definition->getMeanings() as $meaning) {
+		$meanings = $definition->getMeanings();
+		$numbered = count($meanings) > 1;
+		$number = 1;
+		foreach ($meanings as $meaning) {
 			$meaningText = self::parseReferences(aka_prephtml($meaning->getMeaning()), 'index.php');
-			echo '&nbsp;&nbsp;<span class="meaning">'.$meaningText.'</span>';	
+			echo '&nbsp;&nbsp;';
+			if ($numbered)
+				echo ($number++).'. ';
+				
+			echo '<span class="meaning">'.$meaningText.'</span>';	
 			
 			// Display meaning flags
 			foreach (Flags::values() as $flag) {

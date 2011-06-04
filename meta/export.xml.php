@@ -16,21 +16,42 @@
  * along with Kumva.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Copyright Rowan Seymour 2010
- *
- * Purpose: Export dictionary page
+ * 
+ * Purpose: Dictionary export script
  */
-
+ 
 include_once '../inc/kumva.php';
 
 Session::requireUser();
 
-include_once 'tpl/header.php';
-?>
-<h3><?php echo KU_STR_EXPORT ?></h3>
-<div class="description">Entries and definitions can be downloaded as XML files.</div>
-<ul>
-	<li><?php echo KU_STR_ACCEPTEDREVISIONS; ?>: <a href="../meta/export.xml.php">link</a></li>
-	<li><?php echo KU_STR_COMPLETEENTRIES; ?>: <a href="../meta/export.xml.php?changes=1">link</a></li>
-</ul>
+// The export type
+$incChanges = (bool)Request::getGetParam('changes', FALSE);
 
-<?php include_once 'tpl/footer.php'; ?>
+if ($incChanges)
+	Session::requireRole(Role::ADMINISTRATOR);
+
+header('Content-type: text/xml');
+header('Content-Disposition: attachment; filename='.($incChanges ? 'entries' : 'definitions').'-'.date('Y-m-d').'.xml');
+
+Xml::header();
+
+if ($incChanges) {
+	$entries = Dictionary::getDefinitionService()->getEntries();
+	
+	echo '<entries>';
+	foreach ($entries as $entry)
+		Xml::entry($entry);
+	echo '</entries>';	
+}
+else {	
+	$definitions = Dictionary::getDefinitionService()->getAcceptedDefinitions();
+	
+	echo '<definitions>';
+	foreach ($definitions as $definition)
+		Xml::definition($definition, FALSE);
+	echo '</definitions>';
+}
+
+Xml::footer();
+
+?>

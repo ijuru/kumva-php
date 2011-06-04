@@ -121,14 +121,15 @@ class DefinitionService extends Service {
 		else
 			mt_srand();	
 		
+		$join = 'INNER JOIN `'.KUMVA_DB_PREFIX.'meaning` m ON m.definition_id = d.definition_id';
 		$where = 'WHERE d.revisionstatus = 1 AND d.unverified = 0 AND d.flags = 0';
 		
 		// Geta total number of suitable entries
-		$total = $this->database->scalar("SELECT COUNT(*) FROM `".KUMVA_DB_PREFIX."definition` d $where");
+		$total = $this->database->scalar("SELECT COUNT(*) FROM `".KUMVA_DB_PREFIX."definition` d $join $where");
 		if ($total > 0) {
 			// Select a row with random offset
 			$offset = mt_rand(0, $total - 1);
-			$row = $this->database->row("SELECT * FROM `".KUMVA_DB_PREFIX."definition` d $where LIMIT $offset, 1");
+			$row = $this->database->row("SELECT * FROM `".KUMVA_DB_PREFIX."definition` d $join $where LIMIT $offset, 1");
 			return ($row != NULL) ? Definition::fromRow($row) : NULL;
 		}
 		return NULL;
@@ -229,6 +230,7 @@ class DefinitionService extends Service {
 				.aka_prepsqlval($definition->getPrefix()).','
 				.aka_prepsqlval($definition->getLemma()).','
 				.aka_prepsqlval($definition->getModifier()).','
+				.aka_prepsqlval($definition->getPronunciation()).','
 				.aka_prepsqlval($definition->getComment()).','
 				.aka_prepsqlval($definition->isUnverified()).')';
 			
@@ -247,13 +249,13 @@ class DefinitionService extends Service {
 				.'prefix = '.aka_prepsqlval($definition->getPrefix()).','
 				.'lemma = '.aka_prepsqlval($definition->getLemma()).','
 				.'modifier = '.aka_prepsqlval($definition->getModifier()).','
+				.'pronunciation = '.aka_prepsqlval($definition->getPronunciation()).','
 				.'comment = '.aka_prepsqlval($definition->getComment()).','
 				.'unverified = '.aka_prepsqlval($definition->isUnverified()).' '
 				.'WHERE definition_id = '.$definition->getId();
 			
 			if ($this->database->query($sql) === FALSE)
-				die($sql);
-				//return FALSE;
+				return FALSE;
 		}
 
 		// Save noun classes, meanings, tags and examples		

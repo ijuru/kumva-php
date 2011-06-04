@@ -137,6 +137,10 @@ if (isset($message))
 		<td><?php echo $definition->getModifier(); ?></td>
 	</tr>
 	<tr>
+		<th><?php echo KU_STR_PRONUNCIATION; ?></th>
+		<td>/<?php echo $definition->getPronunciation(); ?>/</td>
+	</tr>
+	<tr>
 		<th><?php echo KU_STR_MEANINGS; ?></th>
 		<td>
 		<?php 

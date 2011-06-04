@@ -6,9 +6,12 @@
  * Page structure 
  */
  
-html, body, form, img {
+html, body, form, select {
 	padding: 0;
 	margin: 0;
+}
+
+img {
 	border: 0;
 }
 

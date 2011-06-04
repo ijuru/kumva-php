@@ -135,6 +135,7 @@ ku_sitetrans('KU_STR_PREFIX', 'Inyomekwambere');
 ku_sitetrans('KU_STR_PREPOSITION', 'Indangahantu');
 ku_sitetrans('KU_STR_PREVIOUSPAGE', 'Ipaje ishize');
 ku_sitetrans('KU_STR_PRONOUN', 'Ikinyazina');
+ku_sitetrans('KU_STR_PRONUNCIATION', 'Pronunciation');
 ku_sitetrans('KU_STR_PROPERNOUN', 'Izina bwite');
 ku_sitetrans('KU_STR_PROPOSAL', 'Proposal');
 ku_sitetrans('KU_STR_PROPOSALS', 'Proposals');

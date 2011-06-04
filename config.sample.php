@@ -30,7 +30,6 @@ define('KUMVA_DB_PREFIX', 'tableprefix_');
 // Site constants
 define('KUMVA_TITLE_SHORT', 'Kumva');
 define('KUMVA_TITLE_LONG', 'Kumva: Bantu-English Dictionary');
-define('KUMVA_TITLE_WOTD', 'Kumva Word of the Day');
 define('KUMVA_THEME_NAME', 'mytheme');
 define('KUMVA_LANG_DEFS', 'rw');		// Language of definitions
 define('KUMVA_LANG_MEANING', 'en');		// Language of meanings

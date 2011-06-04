@@ -135,6 +135,7 @@ ku_sitetrans('KU_STR_PREFIX', 'Prefix');
 ku_sitetrans('KU_STR_PREPOSITION', 'Preposition');
 ku_sitetrans('KU_STR_PREVIOUSPAGE', 'Previous page');
 ku_sitetrans('KU_STR_PRONOUN', 'Pronoun');
+ku_sitetrans('KU_STR_PRONUNCIATION', 'Pronunciation');
 ku_sitetrans('KU_STR_PROPERNOUN', 'Proper noun');
 ku_sitetrans('KU_STR_PROPOSAL', 'Proposal');
 ku_sitetrans('KU_STR_PROPOSALS', 'Proposals');

@@ -117,6 +117,10 @@ $form->start('definitionform');
 		</td>
 	</tr>
 	<tr>
+		<th><?php echo KU_STR_PRONUNCIATION; ?></th>
+		<td><?php $form->textField('pronunciation'); ?> <?php $form->errors('pronunciation'); ?></td>
+	</tr>
+	<tr>
 		<th><?php echo KU_STR_MODIFIER; ?></th>
 		<td><?php $form->textField('modifier'); ?> <?php $form->errors('modifier'); ?></td>
 	</tr>

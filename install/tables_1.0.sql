@@ -39,6 +39,7 @@ CREATE TABLE `{DBPREFIX}definition` (
   `prefix` varchar(10) DEFAULT NULL,
   `lemma` varchar(255) NOT NULL,
   `modifier` varchar(50) DEFAULT NULL,
+  `pronunciation` varchar(255) DEFAULT NULL,
   `comment` varchar(255) DEFAULT NULL,
   `unverified` tinyint(1) NOT NULL,
   PRIMARY KEY (`definition_id`),
