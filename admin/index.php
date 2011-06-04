@@ -49,9 +49,12 @@ include_once 'tpl/header.php';
 				Dictionary contains:
 				<ul>
 					<li><strong><?php echo $contentStats['entries']; ?></strong> entries</li>
-					<li><strong><a href="entries.php?q=verified:no"><?php echo $contentStats['entries_unverified']; ?></a></strong> unverified entries</li>
-					<li><strong><?php echo $mediaStats['audio']; ?></strong> entries with audio</li>
-					<li><strong><?php echo $mediaStats['image']; ?></strong> entries with images</li>
+					<li><strong><a href="entries.php?q=verified:no"><?php echo $contentStats['entries_unverified']; ?></a></strong> 
+					unverified entries</li>
+					<li><strong><a href="entries.php?q=has:audio"><?php echo $mediaStats['audio']; ?></a></strong> 
+					entries with audio</li>
+					<li><strong><a href="entries.php?q=has:image"><?php echo $mediaStats['image']; ?></a></strong> 
+					entries with images</li>
 				</ul>
 			</div>
 		</td>

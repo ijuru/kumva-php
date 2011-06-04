@@ -41,6 +41,7 @@ class Query {
 	private $partialMatch;
 	private $wordClass;
 	private $verified;
+	private $hasMedia;
 	private $orderBy;
 	private $rawQuery;
 	
@@ -50,13 +51,14 @@ class Query {
 	 * Creates a query based on match criteria and search pattern
 	 * @param int orderBy how to order the results
 	 */
-	private function __construct($pattern, $lang, $relationship, $partialMatch, $wordClass, $verified, $orderBy, $rawQuery) {
+	private function __construct($pattern, $lang, $relationship, $partialMatch, $wordClass, $verified, $hasMedia, $orderBy, $rawQuery) {
 		$this->pattern = $pattern;
 		$this->lang = $lang;
 		$this->relationship = $relationship;
 		$this->partialMatch = $partialMatch;
 		$this->wordClass = $wordClass;
 		$this->verified = $verified;
+		$this->hasMedia = $hasMedia;
 		$this->orderBy = $orderBy;
 		$this->rawQuery = $rawQuery;
 	}
@@ -79,6 +81,11 @@ class Query {
 		$wordClass = self::readParameter('wclass');
 		$verified = aka_parsebool(self::readParameter('verified'));
 		
+		$has = self::readParameter('has');
+		$hasMedia = $has ? Media::parseString($has) : NULL;
+		if ($hasMedia === FALSE)
+			$hasMedia = NULL;
+		
 		$order = self::readParameter('order');
 		$orderBy = $order ? OrderBy::parseString($order) : NULL;
 		if ($orderBy === FALSE)
@@ -87,7 +94,7 @@ class Query {
 		$match = self::readParameter('match');
 		$relationship = $match ? Dictionary::getTagService()->getRelationshipByName($match) : NULL;
 		
-		return new Query($pattern, $lang, $relationship, $partialMatch, $wordClass, $verified, $orderBy, $string);		
+		return new Query($pattern, $lang, $relationship, $partialMatch, $wordClass, $verified, $hasMedia, $orderBy, $string);		
 	}
 	
 	/**
@@ -160,6 +167,14 @@ class Query {
 	 */
 	public function getVerified() {
 		return $this->verified;
+	}
+	
+	/**
+	 * Gets the media requirement
+	 * @return int the media type
+	 */
+	public function getHasMedia() {
+		return $this->hasMedia;
 	}
 	
 	/**

@@ -98,7 +98,7 @@ class SearchService extends Service {
 		$sql .= "  GROUP BY dt.definition_id ";			
 		$sql .= ") m ON m.definition_id = d.definition_id ";
 		
-		/////////////////// Definition criteria //////////////////
+		/////////////////// Definition/entry criteria //////////////////
 		
 		$defCriteria = array();
 			
@@ -111,8 +111,13 @@ class SearchService extends Service {
 		if ($verified !== null)
 			$defCriteria[] = 'd.unverified = '.(int)(!$verified);
 			
+		// Filter by media
+		$hasMedia = $query->getHasMedia();
+		if ($hasMedia !== null)
+			$defCriteria[] = 'e.media & '.pow(2, $hasMedia);
+			
 		if (count($defCriteria) > 0)
-			$sql .= ' WHERE '.implode(' AND ', $defCriteria).' ';
+			$sql .= 'WHERE '.implode(' AND ', $defCriteria).' ';
 			
 		// If we matched against proposals then we might have 2 copies of one entry
 		if ($proposals)

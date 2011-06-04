@@ -63,6 +63,7 @@ class Templates {
 	
 		// Display prefix+lemma
 		self::definition($definition);
+		echo ' ';
 	
 		// Display modifier
 		if ($definition->getModifier())
@@ -75,7 +76,7 @@ class Templates {
 		// Display sound widget
 		if ($entry->hasMedia(Media::AUDIO)) {
 			Widgets::sound($entry->getId());
-			echo '&nbsp;';
+			echo ' ';
 		}
 			
 		// Display word class
