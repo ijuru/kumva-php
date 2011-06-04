@@ -108,25 +108,27 @@ $curUser = Session::getCurrent()->getUser();
            
             
             <?php if ($curUser) { ?>
-            <ul id="submenu">
-                <?php
-                if ($curUser && $currentTopItem) {
-                    foreach ($currentTopItem[4] as $subItem) {
-                        if (!$subItem[3] || Session::getCurrent()->hasRole($subItem[3])) {
-                            $active = $currentSubItem ? ($currentSubItem[0] == $subItem[0]) : FALSE;
-                            kumva_menulink($subItem[0], $subItem[1], $subItem[2], $active);
-                        }
-                    }
-                    if ($currentSubItem && $currentSubItem[0] != 'entries.php') {
-                    ?>
-                    <div style="float: right; margin: 6px">
-                        <?php Widgets::searchForm('entries.php', 'q', 'start', TRUE); ?>
-                    </div>
-                    <?php
-                    }
-                }
-                ?>
-            </ul>
+	            <div id="submenu">
+					<?php
+	                if ($curUser && $currentTopItem) {
+	                	echo '<ul style="float: left">';
+	                    foreach ($currentTopItem[4] as $subItem) {
+	                        if (!$subItem[3] || Session::getCurrent()->hasRole($subItem[3])) {
+	                            $active = $currentSubItem ? ($currentSubItem[0] == $subItem[0]) : FALSE;
+	                            kumva_menulink($subItem[0], $subItem[1], $subItem[2], $active);
+	                        }
+	                    }
+	                    echo '</ul>';
+	                }
+	            	if ($currentSubItem && $currentSubItem[0] != 'entries.php') {
+	                    ?>
+	                    <div style="float: right; margin: 6px">
+	                        <?php Widgets::searchForm('entries.php', 'q', 'start', TRUE); ?>
+	                    </div>
+	                    <?php
+					} 
+					?>
+	            </div>
             <?php } ?>
             
         </div>

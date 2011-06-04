@@ -72,7 +72,7 @@ class Widgets {
 		<link rel="stylesheet" type="text/css" href="js/sm2/mp3-player-button.css" />
 		<script type="text/javascript" src="js/sm2/soundmanager2-nodebug-jsmin.js"></script>
 		<script type="text/javascript" src="js/sm2/mp3-player-button.js"></script>
-		<script>
+		<script type="text/javascript">
 			soundManager.url = 'js/sm2/'; // required: path to directory containing SM2 SWF files
 		</script>
 		

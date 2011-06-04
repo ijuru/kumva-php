@@ -124,6 +124,9 @@ body:before { /*Opera Fix*/
 #submenu {
 	background-image: url(submenu_bk.png);
 	height: 40px;
+}
+
+#submenu ul {
 	list-style: none;
 	padding: 0;	
 	margin: 0;

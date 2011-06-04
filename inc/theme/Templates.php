@@ -186,7 +186,7 @@ class Templates {
 		if ($language) {
 			if ($language->getQueryUrl()) {
 				$url = str_replace('{QUERY}', urlencode($reference), $language->getQueryUrl());
-				return '<span class=link" title="'.$language->getName().'">'.ucfirst($lang).'.</span> <a class="query link reference" href="'.$url.'">'.$reference.'</a>';
+				return '<span class="link" title="'.$language->getName().'">'.ucfirst($lang).'.</span> <a class="query link reference" href="'.$url.'">'.$reference.'</a>';
 			}
 			
 			return '<span class="link" title="'.$language->getName().'">'.ucfirst($lang).'.</span> <span class="reference">'.$reference.'</span>';
