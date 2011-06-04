@@ -232,6 +232,7 @@ class DefinitionService extends Service {
 				.aka_prepsqlval($definition->getModifier()).','
 				.aka_prepsqlval($definition->getPronunciation()).','
 				.aka_prepsqlval($definition->getComment()).','
+				.aka_prepsqlval($definition->getMedia()).','
 				.aka_prepsqlval($definition->isUnverified()).')';
 			
 			$res = $this->database->insert($sql);
@@ -251,6 +252,7 @@ class DefinitionService extends Service {
 				.'modifier = '.aka_prepsqlval($definition->getModifier()).','
 				.'pronunciation = '.aka_prepsqlval($definition->getPronunciation()).','
 				.'comment = '.aka_prepsqlval($definition->getComment()).','
+				.'media = '.aka_prepsqlval($definition->getMedia()).','
 				.'unverified = '.aka_prepsqlval($definition->isUnverified()).' '
 				.'WHERE definition_id = '.$definition->getId();
 			

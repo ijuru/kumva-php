@@ -62,14 +62,7 @@ include_once 'tpl/header.php';
 					(<?php echo $searchTotal ? round(100 * $searchMisses / $searchTotal) : 0; ?>%)</li> 
 					<li><strong><a href="searches.php"><?php echo $searchSuggestions; ?></a></strong> returned a suggestion instead
 					(<?php echo $searchTotal ? round(100 * $searchSuggestions / $searchTotal) : 0; ?>%)</li>
-				</ul>
-				The most popular search terms were: <?php 
-				$results = array();
-				foreach ($searchStats['terms'] as $result)
-					$results[] = '<i>'.htmlentities($result['query']).'</i> ('.$result['count'].')';
-				echo implode(', ', $results);
-				?>
-				<br/>
+				</ul>			
 				The most popular sources were: <?php 
 				$results = array();
 				foreach ($searchStats['sources'] as $result)

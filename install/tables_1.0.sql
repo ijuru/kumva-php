@@ -1,29 +1,6 @@
 
 USE `{DBNAME}`;
 
-SET FOREIGN_KEY_CHECKS=0;
-
-DROP TABLE IF EXISTS `{DBPREFIX}searchrecord`;
-DROP TABLE IF EXISTS `{DBPREFIX}comment`;
-DROP TABLE IF EXISTS `{DBPREFIX}change_watch`;
-DROP TABLE IF EXISTS `{DBPREFIX}change`;
-DROP TABLE IF EXISTS `{DBPREFIX}user_role`;
-DROP TABLE IF EXISTS `{DBPREFIX}role`;
-DROP TABLE IF EXISTS `{DBPREFIX}user_subscription`;
-DROP TABLE IF EXISTS `{DBPREFIX}subscription`;
-DROP TABLE IF EXISTS `{DBPREFIX}rank`;
-DROP TABLE IF EXISTS `{DBPREFIX}user`;
-DROP TABLE IF EXISTS `{DBPREFIX}definition_tag`;
-DROP TABLE IF EXISTS `{DBPREFIX}relationship`;
-DROP TABLE IF EXISTS `{DBPREFIX}tag`;
-DROP TABLE IF EXISTS `{DBPREFIX}language`;
-DROP TABLE IF EXISTS `{DBPREFIX}example`;
-DROP TABLE IF EXISTS `{DBPREFIX}definition_nounclass`;
-DROP TABLE IF EXISTS `{DBPREFIX}definition`;
-DROP TABLE IF EXISTS `{DBPREFIX}entry`;
-
-SET FOREIGN_KEY_CHECKS=1;
-
 CREATE TABLE `{DBPREFIX}entry` (
   `entry_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`entry_id`)
@@ -41,6 +18,7 @@ CREATE TABLE `{DBPREFIX}definition` (
   `modifier` varchar(50) DEFAULT NULL,
   `pronunciation` varchar(255) DEFAULT NULL,
   `comment` varchar(255) DEFAULT NULL,
+  `media` int(10) unsigned NOT NULL,
   `unverified` tinyint(1) NOT NULL,
   PRIMARY KEY (`definition_id`),
   UNIQUE KEY `UQ_{DBPREFIX}definition_change` (`change_id`),

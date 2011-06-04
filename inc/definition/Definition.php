@@ -56,6 +56,7 @@ class Definition extends Entity {
 	private $modifier;
 	private $pronunciation;
 	private $comment;
+	private $media;
 	private $unverified;
 	
 	// Lazy loaded properties
@@ -77,12 +78,14 @@ class Definition extends Entity {
 	 * @param string prefix the prefix, e.g 'umu'
 	 * @param string lemma the lemma, e.g. 'gabo'
 	 * @param string modifier the modifier, e.g. 'aba-'
+	 * @param string pronunciation the pronunciation, e.g. 'umugabo'
 	 * @param string comment the comment
+	 * @param int media the media flags
 	 * @param bool unverified TRUE if definition is unverified
 	 */
 	public function __construct(
 			$id = 0, $entryId = 0, $revision = 0, $revisionStatus = 0, $changeId = 0,
-			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $pronunciation = '', $comment = '', $unverified = FALSE) 
+			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $pronunciation = '', $comment = '', $media = 0, $unverified = FALSE) 
 	{
 		$this->id = (int)$id;
 		$this->entryId = (int)$entryId;
@@ -95,6 +98,7 @@ class Definition extends Entity {
 		$this->modifier = $modifier;
 		$this->pronunciation = $pronunciation;
 		$this->comment = $comment;
+		$this->media = (int)$media;
 		$this->unverified = (bool)$unverified;
 	}
 	
@@ -104,7 +108,7 @@ class Definition extends Entity {
 	 * @return Definition the definition
 	 */
 	public static function fromRow(&$row) {
-		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['revisionstatus'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['pronunciation'], $row['comment'], $row['unverified']);
+		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['revisionstatus'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['pronunciation'], $row['comment'], $row['media'], $row['unverified']);
 	}
 	
 	/**
@@ -196,6 +200,25 @@ class Definition extends Entity {
 	}
 	
 	/**
+	 * Gets noun classes using lazy loading
+	 * @return array the classes (integers)
+	 */
+	public function getNounClasses() {
+		if ($this->nounClasses === NULL)
+			$this->nounClasses = Dictionary::getDefinitionService()->getDefinitionNounClasses($this);
+		
+		return $this->nounClasses;
+	}
+	
+	/**
+	 * Sets noun classes
+	 * @param mixed the classes as array of integers or csv string
+	 */
+	public function setNounClasses($classes) {
+		$this->nounClasses = is_array($classes) ? $classes : aka_parsecsv($classes, TRUE);
+	}
+	
+	/**
 	 * Gets the prefix
 	 * @return string the prefix
 	 */
@@ -276,22 +299,19 @@ class Definition extends Entity {
 	}
 	
 	/**
-	 * Gets noun classes using lazy loading
-	 * @return array the classes (integers)
+	 * Gets the media flags
+	 * @return int the media flags
 	 */
-	public function getNounClasses() {
-		if ($this->nounClasses === NULL)
-			$this->nounClasses = Dictionary::getDefinitionService()->getDefinitionNounClasses($this);
-		
-		return $this->nounClasses;
+	public function getMedia() {
+		return $this->media;
 	}
 	
 	/**
-	 * Sets noun classes
-	 * @param mixed the classes as array of integers or csv string
+	 * Sets the media flags
+	 * @param int media the media flags
 	 */
-	public function setNounClasses($classes) {
-		$this->nounClasses = is_array($classes) ? $classes : aka_parsecsv($classes, TRUE);
+	public function setMedia($media) {
+		$this->media = $media;
 	}
 	
 	/**

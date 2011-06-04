@@ -177,30 +177,8 @@ class SearchService extends Service {
 		$stats['total'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'searchrecord` WHERE `timestamp` > FROM_UNIXTIME('.$since.')');
 		$stats['misses'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'searchrecord` WHERE `results` = 0 AND `timestamp` > FROM_UNIXTIME('.$since.')');
 		$stats['suggestions'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'searchrecord` WHERE `results` > 0 AND `suggest` IS NOT NULL AND `timestamp` > FROM_UNIXTIME('.$since.')');
-		$stats['terms'] = $this->getSearchTermsByCount($since, FALSE, FALSE, 10);
 		$stats['sources'] = $this->getSearchSourcesByCount($since, 10);
 		return $stats;
-	}
-	
-	/**
-	 * Gets the most popular search terms
-	 * @param int since the timestamp to start at
-	 * @param bool incSuggested TRUE to include searches which used suggestions
-	 * @param bool incUsers TRUE to include searches by users
-	 * @param int max the max number of terms to return
-	 * @return array the terms and their counts
-	 */
-	public function getSearchTermsByCount($since, $incSuggested = FALSE, $incUsers = FALSE, $max = 10) {
-		$sql = 'SELECT `query`, COUNT(`search_id`) as `count` FROM `'.KUMVA_DB_PREFIX.'searchrecord` 
-				WHERE `timestamp` > '.$since.' AND `results` > 0 ';
-		if (!$incSuggested)
-			$sql .= 'AND `suggest` IS NULL ';
-		if (!$incUsers)
-			$sql .= 'AND `user_id` IS NULL ';		
-				
-		$sql .=	'GROUP BY `query` ORDER BY `count` DESC LIMIT 0, '.$max;
-			
-		return $this->database->rows($sql);
 	}
 	
 	/**

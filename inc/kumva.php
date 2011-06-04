@@ -30,6 +30,7 @@ define('KUMVA_VER_RESOURCES', '20110527'); // Used to version/cachebust resource
 define('KUMVA_DIR_ROOT', realpath(dirname(__FILE__).'/../'));
 define('KUMVA_DIR_INC', KUMVA_DIR_ROOT.'/inc');
 define('KUMVA_DIR_LIB', KUMVA_DIR_ROOT.'/lib');
+define('KUMVA_DIR_MEDIA', KUMVA_DIR_ROOT.'/media');
 
 // Calculate root absolute URL from root directory
 $tempPath1 = explode('/', str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME'])));
