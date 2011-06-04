@@ -104,38 +104,6 @@ class DefinitionService extends Service {
 	}
 	
 	/**
-	 * Gets a random definition (ignores proposals, voided, unverified, flagged definitions)
-	 * @param bool wotd true for 'word of the day' mode
-	 * @return Definition the random definition
-	 */
-	public function getRandomDefinition($wotd = FALSE) {
-		// For word of the day mode, seed the random number generator based on the day
-		if ($wotd) {
-			$date = getdate(time()); 	// Get GMT date
-			$date['seconds'] = 0;		// Clear time fields
-			$date['minutes'] = 0;		
-			$date['hours'] = 0;		
-			$time = mktime($date['hours'], $date['minutes'], $date['seconds'], $date['mon'], $date['mday'], $date['year']);
-			mt_srand($time);
-		}
-		else
-			mt_srand();	
-		
-		$join = 'INNER JOIN `'.KUMVA_DB_PREFIX.'meaning` m ON m.definition_id = d.definition_id';
-		$where = 'WHERE d.revisionstatus = 1 AND d.unverified = 0 AND d.flags = 0';
-		
-		// Geta total number of suitable entries
-		$total = $this->database->scalar("SELECT COUNT(*) FROM `".KUMVA_DB_PREFIX."definition` d $join $where");
-		if ($total > 0) {
-			// Select a row with random offset
-			$offset = mt_rand(0, $total - 1);
-			$row = $this->database->row("SELECT * FROM `".KUMVA_DB_PREFIX."definition` d $join $where LIMIT $offset, 1");
-			return ($row != NULL) ? Definition::fromRow($row) : NULL;
-		}
-		return NULL;
-	}
-	
-	/**
 	 * Gets the noun classes for the given definition
 	 * @param Definition definition the definition
 	 * @return array the noun classes (integers)

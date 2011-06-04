@@ -33,33 +33,43 @@ if ($q != '') {
 
 Theme::header();
 
+// Did smart search use a suggested query?
 if (isset($search)) {
-	// Did smart search use a suggested query?
 	if ($search->hasResults() && $search->isBySuggestion()) {
 		$suggestion = $search->isBySoundSuggestion()
 		 	? 'similar sounding words'
 		 	: '<em><a href="?q='.$search->getSuggestionPattern().'">'.$search->getSuggestionPattern().'</a></em>';
-		?>
-		<div id="info">No matching words. Showing results for <?php echo $suggestion; ?> instead...</div>
-		<?php
-	}
 
-	// Show results if they exist
-	if ($search->hasResults()) {
-	?>
-		<div id="page">
-			<ul id="results">
-			<?php
-				foreach ($search->getResults() as $entry) {
-					echo '<li class="definition">';
-					Templates::entry($entry, Revision::ACCEPTED);
-					echo '</li>';
-				}
-			?>		
-			</ul>
-		</div>
-		<div id="pager">
-			<div style="float: left">
+		echo '<div id="info">No matching words. Showing results for '.$suggestion.' instead...</div>';
+	} elseif (!$search->hasResults()) {
+		echo '<div id="info">'.KU_MSG_NOMATCHINGWORDS.'</div>';
+	}
+}
+?>
+
+<div id="page">
+
+<?php 
+if (isset($search) && $search->hasResults()) { ?>	
+	<ul id="results">
+		<?php
+		foreach ($search->getResults() as $entry) {
+			echo '<li class="definition">';
+			Templates::entry($entry, Revision::ACCEPTED);
+			echo '</li>';
+		}
+		?>		
+	</ul>
+<?php 
+} else {
+
+} 
+?>
+</div>
+
+<?php if (isset($search) && $search->hasResults()) { ?>
+	<div id="pager">
+		<div style="float: left">
 			<?php
 			if ($paging->getTotalPages() > 1) {
 				Templates::pagerButtons($paging);
@@ -67,22 +77,11 @@ if (isset($search)) {
 			}
 			printf(KU_MSG_PAGER, $paging->getStart() + 1, $paging->getStart() + $search->getResultCount(), $paging->getTotal());
 			?>			
-			</div>
-			<div style="float: right">
-				<small><?php echo sprintf(KU_MSG_SEARCHTIME, $search->getTime()); ?></small>
-			</div>
 		</div>
-	<?php } else { ?>
-		<div id="info"><?php echo KU_MSG_NOMATCHINGWORDS; ?></div>
-	<?php
-	}	
-} else {
-?>
-<div id="page">
-	<div style="padding: 32px; text-align: center">
-		<?php Widgets::randomDefinition(); ?>
+		<div style="float: right">
+			<small><?php echo sprintf(KU_MSG_SEARCHTIME, $search->getTime()); ?></small>
+		</div>
 	</div>
-</div>
 <?php
 }
 
