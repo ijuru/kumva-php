@@ -53,6 +53,8 @@ if (!$definition)
 $canEdit = !$entry->isDeleted() && !$pendingChange && Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
 $canDelete = !$entry->isDeleted() && !$pendingChange && Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
 
+$definitions = Dictionary::getDefinitionService()->getEntryRevisions($entry);
+
 include_once 'tpl/header.php';
 
 ?>
@@ -70,33 +72,7 @@ function deleteEntry(id) {
 
 <div class="listcontrols">
 	<div style="float: left">
-		<form method="get">
-			<input type="hidden" name="id" value="<?php echo $entry->getId(); ?>" />
-			
-			<?php Templates::buttonLink('back', Request::getGetParam('ref', 'entries.php'), KU_STR_BACK); ?>
-			
-			<?php echo KU_STR_REVISION; ?>
-			<select name="rev">
-				<?php 
-				
-				$definitions = Dictionary::getDefinitionService()->getEntryRevisions($entry);
-				
-				foreach ($definitions as $def) { 
-					$isCurrent = $definition->getRevision() == $def->getRevision();
-					
-					if ($def->isAcceptedRevision())
-						$label = $def->getRevision().' ('.KU_STR_ACCEPTED.')';
-					elseif ($def->isProposedRevision())
-						$label = $def->getRevision().' ('.KU_STR_PROPOSED.')';
-					else
-						$label = $def->getRevision();
-					?>
-					<option value="<?php echo $def->getRevision(); ?>" <?php echo $isCurrent ? 'selected="selected"' : ''; ?>><?php echo $label; ?></option>
-				<?php } ?>
-			</select>
-			<input type="hidden" name="ref" value="<?php echo Request::getGetParam('ref'); ?>" />
-			<?php Templates::button('refresh', "aka_submit(this);", KU_STR_REFRESH); ?>
-		</form>
+		<?php Templates::buttonLink('back', Request::getGetParam('ref', 'entries.php'), KU_STR_BACK); ?>
 	</div>
 	<div style="float: right">
 		<form id="definitionForm" method="post">
@@ -110,6 +86,7 @@ function deleteEntry(id) {
 		</form>
 	</div>
 </div>
+
 <?php 
 if ($pendingChange && $pendingChange->getAction() == Action::DELETE)
 	$message = sprintf(KU_MSG_ENTRYDELETECHANGEPENDING, $pendingChangeUrl);
@@ -189,7 +166,9 @@ if (isset($message))
 		</td>
 	</tr>
 </table>
-<h3><?php echo KU_STR_REVISIONS; ?></h3>
+
+<h3><?php echo KU_STR_HISTORY; ?></h3>
+
 <table class="list" cellspacing="0" border="0">
 	<tr>
 		<th style="width: 30px">&nbsp;</th>
