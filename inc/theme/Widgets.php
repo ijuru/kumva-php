@@ -217,7 +217,7 @@ class Widgets {
 		if (is_int($sound))
 			$sound = KUMVA_URL_MEDIA.'/audio/'.$sound.'.mp3';
 		
-		echo '<a href="'.$sound.'" class="sm2_button">&gt;</a>';
+		echo '<a href="'.$sound.'" class="sm2_button" title="'.KU_STR_LISTEN.'">&gt;</a>';
 	}
 	
 	/**

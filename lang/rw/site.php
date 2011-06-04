@@ -102,6 +102,7 @@ ku_sitetrans('KU_STR_LASTLOGIN', 'Last login');
 ku_sitetrans('KU_STR_LASTPAGE', 'Last page');
 ku_sitetrans('KU_STR_LEXICALMODULE', 'Lexical module');
 ku_sitetrans('KU_STR_LEMMA', 'Lemma');
+ku_sitetrans('KU_STR_LISTEN', 'Mumve');
 ku_sitetrans('KU_STR_LOCALNAME', 'Local name');
 ku_sitetrans('KU_STR_LOGIN', 'Gufungura');
 ku_sitetrans('KU_STR_LOGOUT', 'Gufunga');
