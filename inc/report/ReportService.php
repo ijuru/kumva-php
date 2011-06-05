@@ -34,6 +34,7 @@ function kumva_registerreport($name, $title, $function) {
 }
 
 kumva_registerreport('no-wordclass', 'Entries with no wordclass', 'kumva_report_nowordclass');
+kumva_registerreport('no-pronunciation', 'Entries with no pronunciation', 'kumva_report_nopronunciation');
 kumva_registerreport('no-tags', 'Entries with no tags (i.e. never searchable)', 'kumva_report_notags');
 kumva_registerreport('no-examples', 'Entries with no examples', 'kumva_report_noexamples');
 kumva_registerreport('duplicate-entries', 'Possible duplicate entries', 'kumva_report_duplicateentries');
@@ -47,6 +48,18 @@ function kumva_report_nowordclass($paging) {
 	$sql = "SELECT SQL_CALC_FOUND_ROWS d.definition_id as `#Definition`
 			FROM `".KUMVA_DB_PREFIX."definition` d 
 			WHERE d.revisionstatus = 1 AND (d.wordclass IS NULL OR d.wordclass = '')";
+	
+	return Dictionary::getReportService()->getResultFromSQL($sql, $paging);
+}
+
+/**
+ * Gets entries without a pronunciation
+ * @param Paging paging the paging object
+ */
+function kumva_report_nopronunciation($paging) {
+	$sql = "SELECT SQL_CALC_FOUND_ROWS d.definition_id as `#Definition`
+			FROM `".KUMVA_DB_PREFIX."definition` d 
+			WHERE d.revisionstatus = 1 AND (d.pronunciation IS NULL OR d.pronunciation = '')";
 	
 	return Dictionary::getReportService()->getResultFromSQL($sql, $paging);
 }
