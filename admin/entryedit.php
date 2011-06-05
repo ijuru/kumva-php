@@ -61,7 +61,7 @@ function addNewMeaning() {
 
 function addNewExample() {
 	if ($('div.examplefield').size() < <?php echo KUMVA_MAX_EXAMPLES; ?>) {
-		$('#meanings').append('<div id="example_' + exampleId + '" class="examplefield">'
+		$('#examples').append('<div id="example_' + exampleId + '" class="examplefield">'
 			+ '<input name="exampleform_' + exampleId + '" class="text" /> '
 			+ '<input name="examplemeaning_' + exampleId + '" class="text" /> '
 			+ '<a href="javascript:deleteExample(' + exampleId +')"><?php Templates::icon('delete', KU_STR_REMOVE); ?></a>'
