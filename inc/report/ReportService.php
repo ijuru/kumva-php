@@ -100,10 +100,10 @@ function kumva_report_duplicateentries($paging) {
 	$sql = "SELECT SQL_CALC_FOUND_ROWS
 				CONCAT(COALESCE(d.prefix, ''), d.lemma) as `?Query`, 
 				COUNT(*) as `Count`,
-				CONCAT(COALESCE(d.prefix, ''), d.lemma, '|', COALESCE(d.wordclass, '')) as `_entry` 
+				CONCAT(COALESCE(d.prefix, ''), d.lemma, '|', COALESCE(d.wordclass, ''), '|', COALESCE(d.pronunciation, '')) as `_entry` 
 			FROM `".KUMVA_DB_PREFIX."definition` d
 			WHERE d.revisionstatus = 1 
-			GROUP BY `_entry`
+			GROUP BY `_entry` COLLATE utf8_bin
 			HAVING `Count` > 1";
 	
 	return Dictionary::getReportService()->getResultFromSQL($sql, $paging);
@@ -120,7 +120,7 @@ function kumva_report_topsearches($paging) {
 				COUNT(`search_id`) as `Count` 
 			FROM `'.KUMVA_DB_PREFIX.'searchrecord` 
 			WHERE `timestamp` > '.$since.' AND `results` > 0 AND `suggest` IS NULL		
-			GROUP BY `?Query` ORDER BY `Count` DESC ';
+			GROUP BY `?Query` ORDER BY `Count` DESC';
 	
 	return Dictionary::getReportService()->getResultFromSQL($sql, $paging);
 }

@@ -40,7 +40,9 @@ class Database {
 		mysql_select_db($dbName, $this->res) 
 			or die("Unable to select database");
 			
-		$this->query("SET NAMES 'utf8' COLLATE 'utf8_general_ci'");
+		//mysql_set_charset('utf8');
+	
+		$this->query("SET NAMES 'utf8' COLLATE 'utf8_bin'");
 		$this->query("SET time_zone = '+0:00'");
 	} 
 	
