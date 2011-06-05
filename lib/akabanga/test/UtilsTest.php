@@ -23,7 +23,7 @@
 require_once "../akabanga.php";
 
 /**
- * Test case for BeanUtils class
+ * Test case for utils functions
  */
 class UtilsTest extends PHPUnit_Framework_TestCase {
 	
@@ -42,6 +42,16 @@ class UtilsTest extends PHPUnit_Framework_TestCase {
 		
 		$this->assertEquals(3, aka_setbit($val1, 0, true));
 		$this->assertEquals(11, aka_setbit($val2, 2, false));
+	}
+	
+	public function test_strsplit() {
+		$val1 = 'abcdef';
+		$val2 = 'âbcdêf';
+		
+		$this->assertEquals(array('a', 'b', 'c', 'd', 'e', 'f'), aka_strsplit($val1, 1));
+		$this->assertEquals(array('ab', 'cd', 'ef'), aka_strsplit($val1, 2));
+		$this->assertEquals(array('â', 'b', 'c', 'd', 'ê', 'f'), aka_strsplit($val2, 1));
+		$this->assertEquals(array('âb', 'cd', 'êf'), aka_strsplit($val2, 2));
 	}
 }
 

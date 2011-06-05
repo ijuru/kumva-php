@@ -34,6 +34,7 @@ define('KUMVA_THEME_NAME', 'mytheme');
 define('KUMVA_LANG_DEFS', 'rw');		// Language of definitions
 define('KUMVA_LANG_MEANING', 'en');		// Language of meanings
 define('KUMVA_PAGE_SIZE', 10);
+define('KUMVA_PRONUNCIATION_CHARS', 'âêîôû');
 
 // Optional extras
 define('KUMVA_FACEBOOK_SITEADMIN', 'xxxxxxxxx');

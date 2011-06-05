@@ -56,7 +56,7 @@ body:before { /* Opera Fix */
 
 #banner h1 {
 	text-indent: -9999px;
-	margin: auto;
+	margin: 0 auto 0 auto;
 	width: 400px;
 	height: 100px;
 	background-image: url('banner.png');
@@ -78,10 +78,6 @@ body:before { /* Opera Fix */
 	padding: 5px;
 	background-image: url('vshadow.png');
 	background-repeat: repeat-x;
-}
-
-#searchbar input#searchbtn {
-	padding: 5px;
 }
 
 #info, #pager {

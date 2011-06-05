@@ -92,6 +92,7 @@ ku_sitetrans('KU_STR_HISTORY', 'History');
 ku_sitetrans('KU_STR_HOME', 'Home');
 ku_sitetrans('KU_STR_IMAGE', 'Image');
 ku_sitetrans('KU_STR_IMPORT', 'Import');
+ku_sitetrans('KU_STR_INSERT', 'Insert');
 ku_sitetrans('KU_STR_INSTALL', 'Install');
 ku_sitetrans('KU_STR_INTERJECTION', 'Interjection');
 ku_sitetrans('KU_STR_KUMVAVERSION', 'Kumva version');

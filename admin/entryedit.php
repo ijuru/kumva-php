@@ -25,6 +25,8 @@ include_once 'form/DefinitionForm.php';
 include_once 'validator/DefinitionValidator.php';
 
 Session::requireRole(Role::CONTRIBUTOR);
+
+$pronunChars = defined('KUMVA_PRONUNCIATION_CHARS') ? aka_strsplit(KUMVA_PRONUNCIATION_CHARS) : array();
  
 $returnUrl = Request::getGetParam('ref', 'entries.php');
 $form = new DefinitionForm($returnUrl, new DefinitionValidator(), new FormRenderer());
@@ -69,6 +71,10 @@ function addNewExample() {
 	} else {
 		alert("<?php printf(KU_MSG_MAXEXAMPLES, KUMVA_MAX_EXAMPLES); ?>");
 	}
+}
+
+function insertPronunciation(str) {
+	$('#_ctrl_pronunciation').insertAtCaret(str);
 }
 
 function deleteMeaning(index) {
@@ -118,7 +124,19 @@ $form->start('definitionform');
 	</tr>
 	<tr>
 		<th><?php echo KU_STR_PRONUNCIATION; ?></th>
-		<td><?php $form->textField('pronunciation'); ?> <?php $form->errors('pronunciation'); ?></td>
+		<td>
+			<?php 
+			$form->textField('pronunciation');
+			echo ' <span>'.KU_STR_INSERT.': ';
+			foreach ($pronunChars as $char) { 
+				?>
+				<a href="javascript:insertPronunciation('<?php echo $char; ?>')"><?php echo $char; ?></a>
+				<?php 
+			} 
+			echo '</span> ';
+			$form->errors('pronunciation'); 
+			?>
+		</td>
 	</tr>
 	<tr>
 		<th><?php echo KU_STR_MODIFIER; ?></th>

@@ -56,14 +56,14 @@ function aka_buildurl($script, $params) {
  * @param bool default the default value
  * @return bool the boolean value
  */
-function aka_parsebool($string, $default = NULL) {
-	if ($string === NULL)
+function aka_parsebool($string, $default = null) {
+	if ($string === null)
 		return $default;
 	$string = strtolower(trim($string));
 	if (in_array($string, array('1', 'yes', 'true')))
-		return TRUE;
+		return true;
 	if (in_array($string, array('0', 'no', 'false')))
-		return FALSE;
+		return false;
 	return $default;
 }
 
@@ -73,7 +73,7 @@ function aka_parsebool($string, $default = NULL) {
  * @param bool asInts TRUE if ecah value should be cast to an int
  * @return array the array of values
  */
-function aka_parsecsv($csv, $asInts = FALSE) {
+function aka_parsecsv($csv, $asInts = false) {
 	$values = array();
 	foreach (explode(',', $csv) as $value) {
 		$value = trim($value);
@@ -114,7 +114,7 @@ function aka_prepsqlval($val) {
  * @return int the UNIX timestamp
  */
 function aka_timefromsql($sqlDate) {
-	return $sqlDate ? strtotime($sqlDate.' GMT') : NULL;
+	return $sqlDate ? strtotime($sqlDate.' GMT') : null;
 }
 
 /**
@@ -153,7 +153,7 @@ function aka_prepcsvval($val) {
  * @param mixed val the value to prepare
  * @param bool newLines TRUE if newlines should be preserved as <br/> tags
  */
-function aka_prephtml($val, $newLines = FALSE) {
+function aka_prephtml($val, $newLines = false) {
 	$html = htmlspecialchars($val);
 	
 	return $newLines ? str_replace("\n", '<br/>', $val) : $html;
@@ -191,6 +191,19 @@ function aka_setbit($val, $bit, $state = true) {
 		return $val | $mask;
 	else
 		return $val & ~$mask;
+}
+
+/**
+ * Unicode capable version of str_split
+ * @param string val the string to split
+ * @param int length the length of each chunk
+ * @return array the array of characters
+ */
+function aka_strsplit($val, $length = 1) {
+    preg_match_all('`.`u', $val, $arr);
+    $arr = array_chunk($arr[0], $length);
+    $arr = array_map('implode', $arr);
+    return $arr;
 }
  
 ?>

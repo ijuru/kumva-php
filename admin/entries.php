@@ -63,6 +63,7 @@ $(function() {
 			<th><?php echo KU_STR_PREFIX; ?></th>
 			<th><?php echo KU_STR_LEMMA; ?></th>
 			<th><?php echo KU_STR_MODIFIER; ?></th>
+			<th><?php echo KU_STR_PRONUNCIATION; ?></th>
 			<th><?php echo KU_STR_WORDCLASS; ?></th>
 			<th><?php echo KU_STR_NOUNCLASSES; ?></th>
 			<th><?php echo KU_STR_MEANINGS; ?></th>
@@ -92,6 +93,7 @@ $(function() {
 					<td class="prefix" style="padding-right: 0; text-align: right"><?php echo $definition->getPrefix(); ?></td>
 					<td class="lemma primarycol" style="padding-left: 0; text-align: left"><?php echo $definition->getLemma(); ?></td>
 					<td><?php echo $definition->getModifier(); ?></td>
+					<td style="text-align: center"><?php echo $definition->getPronunciation(); ?></td>
 					<td style="text-align: center"><?php echo $definition->getWordClass(); ?></td>
 					<td style="text-align: center"><?php echo aka_makecsv($definition->getNounClasses()); ?></td>
 					<td><?php echo implode('<br/>', $meanings); ?></td>
