@@ -218,12 +218,8 @@ CREATE TABLE `{DBPREFIX}searchrecord` (
   `timetaken` int(11) NOT NULL,
   `remoteaddr` varchar(50) DEFAULT NULL,
   `source` varchar(10) DEFAULT NULL,
-  `user_id` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`search_id`),
-  KEY `FK_{DBPREFIX}searchrecord_user` (`user_id`),
-  CONSTRAINT `FK_{DBPREFIX}searchrecord_user` FOREIGN KEY (`user_id`) REFERENCES `{DBPREFIX}user` (`user_id`)
+  PRIMARY KEY (`search_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 ALTER TABLE `{DBPREFIX}definition`
   ADD CONSTRAINT `FK_{DBPREFIX}definition_change` FOREIGN KEY (`change_id`) REFERENCES `{DBPREFIX}change` (`change_id`);

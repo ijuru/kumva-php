@@ -106,7 +106,7 @@ function kumva_report_topsearches($paging) {
 				`query` as `?Query`, 
 				COUNT(`search_id`) as `Count` 
 			FROM `'.KUMVA_DB_PREFIX.'searchrecord` 
-			WHERE `timestamp` > '.$since.' AND `results` > 0 AND `suggest` IS NULL AND `user_id` IS NULL 		
+			WHERE `timestamp` > '.$since.' AND `results` > 0 AND `suggest` IS NULL		
 			GROUP BY `?Query` ORDER BY `Count` DESC ';
 	
 	return Dictionary::getReportService()->getResultFromSQL($sql, $paging);

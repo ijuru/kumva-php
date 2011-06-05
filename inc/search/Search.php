@@ -109,7 +109,8 @@ class Search {
 		
 		$this->time = (int)((microtime(true) - $start) * 1000);
 		
-		if (!Request::isRobot() && $source != NULL)
+		// Only log the search if its not a robot or an authenticated user
+		if (!Request::isRobot() && !Session::getCurrent()->isAuthenticated() && $source != NULL)
 			Dictionary::getSearchService()->logSearch($this->query->getRawQuery(), $this->getSuggestionPattern(), $this->iteration, $this->getTotalCount(), $this->time, $source);
 	}
 	

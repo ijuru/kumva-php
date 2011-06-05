@@ -147,24 +147,17 @@ class SearchService extends Service {
 	 * Gets searches from the history
 	 * @param string remoteAddr the remote address (may be NULL)
 	 * @apram string source the search source (may be NULL)
-	 * @param bool showCurrentUser whether to include searches by the current user
 	 * @param bool showOnlyMisses whether to only return searches that gave no results
 	 * @return array the searches
 	 */
-	public function getSearchHistory($remoteAddr, $source, $showCurrentUser, $showOnlyMisses, $paging) {
-		$sql = 'SELECT SQL_CALC_FOUND_ROWS h.*, u.login FROM `'.KUMVA_DB_PREFIX.'searchrecord` h
-				LEFT OUTER JOIN `'.KUMVA_DB_PREFIX.'user` u ON u.user_id = h.user_id 
+	public function getSearchHistory($remoteAddr, $source, $showOnlyMisses, $paging) {
+		$sql = 'SELECT SQL_CALC_FOUND_ROWS h.* FROM `'.KUMVA_DB_PREFIX.'searchrecord` h
 				WHERE 1=1 ';
 				
 		if ($remoteAddr)
 			$sql .= 'AND h.remoteaddr = '.aka_prepsqlval($remoteAddr).' ';
 		if ($source)
 			$sql .= 'AND h.source = '.aka_prepsqlval($source).' ';		
-		if (!$showCurrentUser) {
-			$user = Session::getCurrent()->getUser();
-			$userId = $user != null ? $user->getId() : null;
-			$sql .= 'AND (h.user_id IS NULL OR h.user_id != '.$userId.') ';	
-		}
 		if ($showOnlyMisses)
 			$sql .= 'AND h.results = 0 ';
 				
@@ -216,8 +209,6 @@ class SearchService extends Service {
 	public function logSearch($pattern, $suggest, $iterations, $resultCount, $timeTaken, $source = null) {		
 		
 		$remoteAddr = $_SERVER['REMOTE_ADDR'];
-		$user = Session::getCurrent()->getUser();
-		$user_id = $user != null ? $user->getId() : null;
 		
 		$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'searchrecord` VALUES(
 			NULL,'
@@ -228,8 +219,7 @@ class SearchService extends Service {
 			NOW(),'
 			.aka_prepsqlval($timeTaken).','
 			.aka_prepsqlval($remoteAddr).','
-			.aka_prepsqlval($source).','
-			.aka_prepsqlval($user_id).')';
+			.aka_prepsqlval($source).')';
 
 				
 		return $this->database->query($sql) !== false;
