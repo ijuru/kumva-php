@@ -1,6 +1,6 @@
 <?php header('Content-type: text/html; charset=utf-8'); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
 	<title><?php echo KUMVA_TITLE_LONG; ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -44,11 +44,8 @@ function kumva_pagelink($name) {
 		<div id="header">
 			<div id="gutter">
 				<div style="float: left">
-					<span style="padding-top: 10px">
-						<fb:like href="http://kinyarwanda.net" send="false" layout="button_count" show_faces="false"></fb:like>
-						
-						<g:plusone size="small"></g:plusone>
-					</span>
+					<fb:like href="<?php echo KUMVA_URL_ROOT; ?>" send="false" layout="button_count" show_faces="false"></fb:like>
+					<g:plusone size="small" href="<?php echo KUMVA_URL_ROOT; ?>"></g:plusone>
 				</div>
 				
 				<div style="float: right">
