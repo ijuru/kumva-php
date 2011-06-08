@@ -37,7 +37,6 @@ define('KUMVA_PAGE_SIZE', 10);
 define('KUMVA_PRONUNCIATION_CHARS', 'âêîôû');
 
 // Optional extras
-define('KUMVA_FACEBOOK_SITEADMIN', 'xxxxxxxxx');
 define('KUMVA_GOOGLE_SITEVERIFICATION', 'xxxxxxxxxxxxxxxxxxxxx');
 
 ?>

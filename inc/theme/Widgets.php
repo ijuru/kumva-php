@@ -62,8 +62,6 @@ class Widgets {
 		
 		<?php if ($ogSiteName != NULL) { ?>
 		<meta property="og:site_name" content="<?php echo $ogSiteName; ?>" />
-		<?php } if (defined('KUMVA_FACEBOOK_SITEADMIN')) { ?>
-		<meta property="fb:admins" content="<?php echo KUMVA_FACEBOOK_SITEADMIN; ?>" />
 		<?php } if (defined('KUMVA_GOOGLE_SITEVERIFICATION')) { ?>
 		<meta name="google-site-verification" content="<?php echo KUMVA_GOOGLE_SITEVERIFICATION; ?>" />
 		<?php } ?>
@@ -183,30 +181,6 @@ class Widgets {
 			}
 		} 
 		echo '</table>';
-	}
-	
-	/**
-	 * Displays a random definition that links to a query
-	 */
-	public static function randomDefinition() {
-		$def = Dictionary::getDefinitionService()->getRandomDefinition();
-		echo KU_STR_RANDOMENTRY;
-		if ($def) {
-			echo ': <a class="query link" style="color: black" href="'.KUMVA_URL_ROOT.'/index.php?q='.$def->getPrefix().$def->getLemma().'&amp;ref=rand">';
-			Templates::definition($def, FALSE);
-			echo '</a>';
-		}
-	}
-	
-	/**
-	 * Creates a table of tag statistics
-	 */
-	public static function facebookLikeButton() {
-		$url = urlencode(KUMVA_URL_ROOT);
-		?>
-        <iframe src="http://www.facebook.com/plugins/like.php?href=<?php echo $url; ?>&amp;layout=button_count&amp;show_faces=true&amp;width=90&amp;action=like&amp;colorscheme=light&amp;height=20" 
-        scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:90px; height:20px;" allowTransparency="true"></iframe>
-        <?php
 	}
 	
 	/**

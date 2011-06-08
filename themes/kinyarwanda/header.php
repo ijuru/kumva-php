@@ -38,12 +38,17 @@ function kumva_pagelink($name) {
 
 ?>
 <body>
+	<div id="fb-root"></div>
 	<div id="wrap">
 	
 		<div id="header">
 			<div id="gutter">
-				<div style="float: left; padding-top: 10px">
-					<?php Widgets::facebookLikeButton(); ?>
+				<div style="float: left">
+					<span style="padding-top: 10px">
+						<fb:like href="http://kinyarwanda.net" send="false" layout="button_count" show_faces="false"></fb:like>
+						
+						<g:plusone size="small"></g:plusone>
+					</span>
 				</div>
 				
 				<div style="float: right">

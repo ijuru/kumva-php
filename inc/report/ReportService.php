@@ -39,6 +39,7 @@ kumva_registerreport('no-tags', 'Entries with no tags (i.e. never searchable)', 
 kumva_registerreport('no-examples', 'Entries with no examples', 'kumva_report_noexamples');
 kumva_registerreport('duplicate-entries', 'Possible duplicate entries', 'kumva_report_duplicateentries');
 kumva_registerreport('top-searches', 'Most common search terms (last month)', 'kumva_report_topsearches');
+kumva_registerreport('top-searchmisses', 'Most common missed search terms (last month)', 'kumva_report_topsearchmisses');
 
 /**
  * Gets entries without a wordclass
@@ -120,6 +121,22 @@ function kumva_report_topsearches($paging) {
 				COUNT(`search_id`) as `Count` 
 			FROM `'.KUMVA_DB_PREFIX.'searchrecord` 
 			WHERE `timestamp` > '.$since.' AND `results` > 0 AND `suggest` IS NULL		
+			GROUP BY `?Query` ORDER BY `Count` DESC';
+	
+	return Dictionary::getReportService()->getResultFromSQL($sql, $paging);
+}
+
+/**
+ * Gets possible duplicate entries
+ * @param Paging paging the paging object
+ */
+function kumva_report_topsearchmisses($paging) {
+	$since = time() - 60 * 60 * 24 * 30;
+	$sql = 'SELECT SQL_CALC_FOUND_ROWS
+				`query` as `?Query`, 
+				COUNT(`search_id`) as `Count` 
+			FROM `'.KUMVA_DB_PREFIX.'searchrecord`
+			WHERE `timestamp` > '.$since.' AND `results` = 0		
 			GROUP BY `?Query` ORDER BY `Count` DESC';
 	
 	return Dictionary::getReportService()->getResultFromSQL($sql, $paging);
