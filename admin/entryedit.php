@@ -151,7 +151,7 @@ $form->start('definitionform');
 			foreach ($form->getEntity()->getMeanings() as $meaning) { 
 				?>
 				<div id="meaning_<?php echo $meanCount; ?>" class="meaningfield">
-					<input name="meaningtext_<?php echo $meanCount; ?>" value="<?php echo $meaning->getMeaning(); ?>" class="text" />
+					<input name="meaningtext_<?php echo $meanCount; ?>" value="<?php echo aka_prephtml($meaning->getMeaning()); ?>" class="text" />
 					<?php
 					foreach (Flags::values() as $flag) {
 						$flagState = $meaning->getFlag($flag);
@@ -176,14 +176,6 @@ $form->start('definitionform');
 	<tr>
 		<th><?php echo KU_STR_COMMENT; ?></th>
 		<td><?php $form->textArea('comment'); ?> <?php $form->errors('comment'); ?></td>
-	</tr>
-	<tr>
-		<th><?php echo KU_STR_FLAGS; ?></th>
-		<td>
-		<?php
-			
-		?>
-		</td>
 	</tr>
 	<tr>
 		<td colspan="2" class="sectionheader"><?php echo KU_STR_TAGS; ?></td>
@@ -218,8 +210,8 @@ $form->start('definitionform');
 			$exCount = 0;
 			foreach ($form->getEntity()->getExamples() as $example) { ?>
 				<div id="example_<?php echo $exCount; ?>" class="examplefield">
-					<input name="exampleform_<?php echo $exCount; ?>" value="<?php echo $example->getForm(); ?>" class="text" />
-					<input name="examplemeaning_<?php echo $exCount; ?>" value="<?php echo $example->getMeaning(); ?>" class="text" />
+					<input name="exampleform_<?php echo $exCount; ?>" value="<?php echo aka_prephtml($example->getForm()); ?>" class="text" />
+					<input name="examplemeaning_<?php echo $exCount; ?>" value="<?php echo aka_prephtml($example->getMeaning()); ?>" class="text" />
 					<?php Templates::iconLink('delete', "javascript:deleteExample($exCount)", KU_STR_REMOVE); ?>
 				</div>
 				<?php 
