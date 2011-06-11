@@ -21,13 +21,20 @@
  */
 
 Theme::createPage('reference', KU_STR_REFERENCE, 'reference.php', NULL);
+
 Theme::createPage('pronunciation', 'Pronunciation', 'pronunciation.php', 'reference');
+Theme::createPage('pronunciation-letters', 'Letters', 'pronunciation_letters.php', 'pronunciation');
+Theme::createPage('pronunciation-tones', 'Tones', 'pronunciation_tones.php', 'pronunciation');
+Theme::createPage('pronunciation-sentences', 'Sentences', 'pronunciation_sentences.php', 'pronunciation');
+
 Theme::createPage('spelling', 'Spelling', 'spelling.php', 'reference');
 Theme::createPage('nouns', 'Nouns', 'nouns.php', 'reference');
 Theme::createPage('adjectives', 'Adjectives', 'adjectives.php', 'reference');
 Theme::createPage('possessives', 'Possessives', 'possessives.php', 'reference');
+
 Theme::createPage('verbs', 'Verbs', 'verbs.php', 'reference');
-Theme::createPage('pasttensestems', 'Past tense stems', 'pasttensestems.php', 'verbs');
+Theme::createPage('verbs-pasttensestems', 'Past tense stems', 'verbs_pasttensestems.php', 'verbs');
+
 Theme::createPage('adverbs', 'Adverbs', 'adverbs.php', 'reference');
 Theme::createPage('demonstratives', 'Demonstratives', 'demonstratives.php', 'reference');
 
