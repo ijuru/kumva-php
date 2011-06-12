@@ -21,6 +21,7 @@
  */
 
 $contentStats = Dictionary::getDefinitionService()->getContentStatistics();
+$mediaStats = Dictionary::getDefinitionService()->getMediaCounts();
 ?>
 <table border="0" width="100%">
 	<tr>
@@ -29,6 +30,7 @@ $contentStats = Dictionary::getDefinitionService()->getContentStatistics();
 
 			<ul>
 				<li><?php echo KU_STR_TOTALENTRIES.': '.$contentStats['entries']; ?></li>
+				<li>Entries with audio: <a href="index.php?q=has:audio"><?php echo $mediaStats['audio']; ?></a></li>
 			</ul>
 			
 			<h3>Searchable tags</h3>
