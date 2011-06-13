@@ -22,6 +22,8 @@
 
 Theme::createPage('reference', KU_STR_REFERENCE, 'reference.php', NULL);
 
+Theme::createPage('howtouse', 'Using the dictionary', 'howtouse.php', 'reference');
+
 Theme::createPage('pronunciation', 'Pronunciation', 'pronunciation.php', 'reference');
 Theme::createPage('pronunciation-letters', 'Letters', 'pronunciation_letters.php', 'pronunciation');
 Theme::createPage('pronunciation-tones', 'Tones', 'pronunciation_tones.php', 'pronunciation');
