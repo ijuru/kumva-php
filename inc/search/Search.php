@@ -38,7 +38,6 @@ class Search {
 	private $dictionary;
 	private $query;
 	private $paging;
-	private $incProposals;
 	private $defaultOrderBy = OrderBy::ENTRY;
 	private $results = NULL;
 	private $iteration;
@@ -54,9 +53,8 @@ class Search {
 	 * @param bool incProposals TRUE if proposal definitions should be included, else FALSE
 	 * @param Paging paging the paging object
 	 */
-	public function __construct($string, $incProposals, $paging) {
+	public function __construct($string, $paging) {
 		$this->query = Query::parse($string);
-		$this->incProposals = (bool)$incProposals;
 		$this->paging = $paging;
 		
 		$this->defaultOrderBy = $this->query->getPattern() ? OrderBy::RELEVANCE : OrderBy::ENTRY;
@@ -73,7 +71,7 @@ class Search {
 		$initSearchType = $this->query->isPartialMatch() ? SearchType::FORM : SearchType::STEM;
 		$orderBy = ($this->query->getOrderBy() !== NULL) ? $this->query->getOrderBy() : $this->defaultOrderBy;
 		
-		$this->results = Dictionary::getSearchService()->search($this->query, $initSearchType, $this->incProposals, $orderBy, $this->paging);
+		$this->results = Dictionary::getSearchService()->search($this->query, $initSearchType, $orderBy, $this->paging);
 		$this->iteration = 1;
 		
 		// Only do smart search if this is not a partial match, we didn't find anything yet, and the pattern is long enough
@@ -81,7 +79,7 @@ class Search {
 		
 		if ($doSmartSearch && !$this->hasResults()) {
 			// Do sounds-like search
-			$this->results = Dictionary::getSearchService()->search($this->query, SearchType::SOUND, $this->incProposals, $orderBy, $this->paging);
+			$this->results = Dictionary::getSearchService()->search($this->query, SearchType::SOUND, $orderBy, $this->paging);
 			$this->iteration = 2;
 			
 			// If that fails to find results then perform suggestions search
@@ -97,7 +95,7 @@ class Search {
 				foreach ($suggestions as $suggestion) {
 					$this->suggestion->setPattern($suggestion);
 						
-					$this->results = Dictionary::getSearchService()->search($this->suggestion, SearchType::STEM, $this->incProposals, $orderBy, $this->paging);
+					$this->results = Dictionary::getSearchService()->search($this->suggestion, SearchType::STEM, $orderBy, $this->paging);
 					$this->iteration = 3;
 					
 					// If results found quit searching

@@ -27,7 +27,7 @@ $source = Request::getGetParam('ref', 'home');
 
 if ($q != '') {	
 	$paging = new Paging('start', KUMVA_PAGE_SIZE);			
-	$search = new Search($q, FALSE, $paging);
+	$search = new Search($q, $paging);
 	$search->run($source);
 }
 
@@ -55,7 +55,7 @@ if (isset($search) && $search->hasResults()) { ?>
 		<?php
 		foreach ($search->getResults() as $entry) {
 			echo '<li class="definition">';
-			Templates::entry($entry, Revision::ACCEPTED);
+			Templates::entry($entry);
 			echo '</li>';
 		}
 		?>		

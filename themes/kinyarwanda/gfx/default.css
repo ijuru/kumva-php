@@ -210,7 +210,7 @@ li.definition {
 	font-weight: bold;
 }
 
-.wordclass, .nounclass, .flag {
+.wordclass, .nounclass, .flag, .proposalwarning {
 	color: black;
 	padding: 0 3px 0 3px;
 	text-decoration: none;
@@ -254,6 +254,10 @@ li.definition {
 
 .reference {
 	color: #262;
+}
+
+.proposalwarning {
+	background-color: #ffa;
 }
 
 .examplelist {

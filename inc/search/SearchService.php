@@ -29,14 +29,14 @@ class SearchService extends Service {
 	 * @param Query the query
 	 * @param int type the search type
 	 * @param Paging paging the paging object
-	 * @param bool proposals TRUE if entries with proposal definitions should be included, else FALSE
 	 * @return array the matching definitions
 	 */
-	public function search($query, $type, $proposals = false, $orderBy = OrderBy::ENTRY, $paging = null) {
+	public function search($query, $type, $orderBy = OrderBy::ENTRY, $paging = null) {
+		$proposals = Session::getCurrent()->isAuthenticated();
 		$pattern = $query->getPattern();
 		
 		// Search specific relationships or default to [meaning, form, or variant]
-		$relationships = $query->getRelationship() ? array($query->getRelationship()) : Dictionary::getTagService()->getRelationships(TRUE);
+		$relationships = $query->getRelationship() ? array($query->getRelationship()) : Dictionary::getTagService()->getRelationships(true);
 		
 		// Search specific tag language or all configured tag languages?
 		$langs = $query->getLang() ? array($query->getLang()) : Dictionary::getLanguageService()->getLexicalLanguages(true);
@@ -44,6 +44,8 @@ class SearchService extends Service {
 		$sql = "SELECT SQL_CALC_FOUND_ROWS e.*, CONCAT(COALESCE(d.prefix, ''), d.lemma) as `entry`
 				FROM `".KUMVA_DB_PREFIX."entry` e 
 				INNER JOIN `".KUMVA_DB_PREFIX."definition` d ON d.entry_id = e.entry_id AND ";
+		
+		// Check revision status		
 		if ($proposals)
 			$sql .= '(d.revisionstatus = 1 OR d.revisionstatus = 2) ';
 		else

@@ -28,7 +28,7 @@ $q = Request::getGetParam('q');
 
 if ($q != '') {	
 	$paging = new Paging('start', 20);		
-	$search = new Search($q, TRUE, $paging);
+	$search = new Search($q, $paging);
 	$search->setDefaultOrderBy(OrderBy::STEM);
 	$search->run(NULL);
 }

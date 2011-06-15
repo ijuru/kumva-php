@@ -55,10 +55,12 @@ class Templates {
 	
 	/**
 	 * Displays an entry as full dictionary entry with examples etc
-	 * @param Entry entry the entry 
-	 * @param int revision the revision
+	 * @param Entry entry the entry
 	 */
-	public static function entry($entry, $revision) {
+	public static function entry($entry) {
+		// Authenticated users get to see proposals, everyone else only accepted revisions
+		$revision = Session::getCurrent()->isAuthenticated() ? Revision::HEAD : Revision::ACCEPTED;
+
 		$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, $revision);
 	
 		// Display prefix+lemma
@@ -123,14 +125,14 @@ class Templates {
 			// Display meaning flags
 			foreach (Flags::values() as $flag) {
 				if ($meaning->getFlag($flag))
-					echo ' <span class="flag">'.Flags::toString($flag).'</span>';
+					echo '&nbsp;<span class="flag">'.Flags::toString($flag).'</span>';
 			}
 		}
 	
 		// Display comment with parsed references
 		if ($definition->getComment()) {
 			$comment = self::parseReferences(htmlspecialchars($definition->getComment()), 'index.php');
-			echo ' <span class="comment">('.$comment.')</span>';
+			echo '&nbsp;<span class="comment">('.$comment.')</span>';
 		}
 
 		// Display root tags
@@ -144,8 +146,14 @@ class Templates {
 		}
 		
 		// Display edit link
-		if (Session::getCurrent()->hasRole(Role::CONTRIBUTOR)) 
+		if (Session::getCurrent()->hasRole(Role::CONTRIBUTOR)) {
+			echo '&nbsp;';
 			Templates::iconLink('edit', KUMVA_URL_ROOT.'/admin/entry.php?id='.$definition->getEntry()->getId(), KU_STR_EDITENTRY);
+		}
+			
+		// Display proposal warning
+		if ($definition->getRevisionStatus() == RevisionStatus::PROPOSED)
+			echo '&nbsp;<span class="proposalwarning">'.KU_STR_PROPOSAL.'</span>'; 
 
 		// Display usage examples
 		self::exampleList($definition->getExamples());	
