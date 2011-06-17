@@ -85,10 +85,11 @@ function kumva_install_insertdata($db) {
 	global $adminuser, $adminpass, $adminname, $adminemail;
 
 	// Create standard relationships
-	if ($db->query("INSERT INTO `".KUMVA_DB_PREFIX."relationship` VALUES(NULL, 'form', 'Form', 'Possible surface form of the definition', 1, 1, '@D')")
-	 && $db->query("INSERT INTO `".KUMVA_DB_PREFIX."relationship` VALUES(NULL, 'variant', 'Variant', 'Valid variant spelling of the definition', 1, 1, '@D')")
-	 && $db->query("INSERT INTO `".KUMVA_DB_PREFIX."relationship` VALUES(NULL, 'meaning', 'Meaning', 'Possible simple translation of the definition', 1, 1, '@M')")
-	 && $db->query("INSERT INTO `".KUMVA_DB_PREFIX."relationship` VALUES(NULL, 'root', 'Root', 'Word from which definition is derived', 1, 0, '@D')"))
+	if ($db->query("INSERT INTO `".KUMVA_DB_PREFIX."relationship` VALUES(NULL, 'form', 'Form', 'Possible surface forms of the definition', 1, 1, '@D')")
+	 && $db->query("INSERT INTO `".KUMVA_DB_PREFIX."relationship` VALUES(NULL, 'variant', 'Variant', 'Valid alternative spellings of the definition', 1, 1, '@D')")
+	 && $db->query("INSERT INTO `".KUMVA_DB_PREFIX."relationship` VALUES(NULL, 'meaning', 'Meaning', 'Translations of the definition', 1, 1, '@M')")
+	 && $db->query("INSERT INTO `".KUMVA_DB_PREFIX."relationship` VALUES(NULL, 'root', 'Root', 'Words from which definition is derived', 1, 0, '@D')")
+	 && $db->query("INSERT INTO `".KUMVA_DB_PREFIX."relationship` VALUES(NULL, 'category', 'Category', 'Categories which describe the domains of the word', 1, 0, '@M')"))
 		kumva_info("Created standard relationships");
 	else
 		return kumva_error("Unable to create standard relationships");

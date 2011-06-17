@@ -98,7 +98,7 @@ class TagService extends Service {
 		if ($matchDefault)
 			$sql .= 'WHERE matchdefault = 1 ';
 			
-		$sql .= 'ORDER BY `name`';
+		$sql .= 'ORDER BY `relationship_id`';
 	
 		return Relationship::fromQuery($this->database->query($sql));
 	}
