@@ -31,6 +31,7 @@ $kumva_rw_soundmaps = array('SHY' => 'SH', 'JY' => 'J', 'CY' => 'C',							// Su
 							'RGW' => 'GW', 'RW' => 'GW', 'RY' => 'DY',
 							'BW' => 'BG',														// bw sometimes written bg
 							'KWU' => 'KU', 'KWO' => 'KO',										// ku+u and ku+o in different orthographies
+							'NY' => 'N',														// -nyije = -nije
 							'AA' => 'A', 'EE' => 'E', 'II' => 'I', 'OO' => 'O', 'UU' => 'U',	// Double vowels sometimes used to show accentation
 							'PH' => 'F',														// Loan words
 							'SIT' => 'ST',														// e.g. sitade = stade
