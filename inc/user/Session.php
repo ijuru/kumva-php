@@ -19,6 +19,9 @@
  * 
  * Purpose: Session class
  */
+ 
+define('KUMVA_MAXFAILEDLOGINS', 3);
+define('KUMVA_ACCOUNTLOCKOUTSECONDS', 60 * 60);
 
 // Start the PHP session engine
 session_start();
@@ -67,44 +70,62 @@ class Session {
 	public function login($login, $password, $remember = TRUE) {
 		session_regenerate_id();
 		
-		// Authenticate with specified credentials
-		$this->user = self::authenticate($login, $password);
+		$user = Dictionary::getUserService()->getUserByLogin($login);
 
-		if ($this->isAuthenticated()) {
-			// Update user login record
-			$this->user->setLastLogin(time());
-			Dictionary::getUserService()->saveUser($this->user, NULL, FALSE);
+		if ($user) {
+			$timeSinceAttempt = time() - $user->getLastLoginAttempt();
 		
-			// Store credentials in cookies
-			if ($remember) {
-				Request::setCookie('login', $login, 60*60*24*7);
-				Request::setCookie('password', $password, 60*60*24*7);
+			// Check if user should be considered locked out
+			if ($user->getFailedLoginAttempts() >= KUMVA_MAXFAILEDLOGINS && $timeSinceAttempt < KUMVA_ACCOUNTLOCKOUTSECONDS) {
+					
+				$this->setAttribute('login_message', KU_MSG_ACCOUNTLOCKED);
+				
+				// Clear cookies to prevent further auto-logins with these credentials
+				$this->logout();
+				return false;
 			}
-			return TRUE;
+			
+			if ($user->checkPassword($password)) {
+				// Update user login record
+				$now = time();
+				$user->setLastLogin($now);
+				$user->setLastLoginAttempt($now);
+				$user->setFailedLoginAttempts(0);
+				Dictionary::getUserService()->saveUser($user, null, false);
+			
+				// Store credentials in cookies
+				if ($remember) {
+					Request::setCookie('login', $login, 60*60*24*7);
+					Request::setCookie('password', $password, 60*60*24*7);
+				}
+				
+				$this->user = $user;
+				return true;
+			}
+			else {	
+				// If lockout time has expired then reset failed attempts count	
+				$failedAttempts = $timeSinceAttempt < KUMVA_ACCOUNTLOCKOUTSECONDS ? $user->getFailedLoginAttempts() + 1 : 1;
+				
+				// Update user failed login record
+				$user->setFailedLoginAttempts($failedAttempts);
+				$user->setLastLoginAttempt(time());
+				Dictionary::getUserService()->saveUser($user, null, false);	
+			}
 		}
 
-		return FALSE;
+		$this->setAttribute('login_message', KU_MSG_INVALIDLOGIN);
+		return false;
 	}
 	
 	/**
 	 * Logout the current user
 	 */
 	public function logout() {
-		$this->user = NULL;
+		$this->user = null;
 		
 		// Clear the username/password cookies
 		Request::clearCookie('login');
 		Request::clearCookie('password');
-	}
-
-	/**
-	 * Gets the user with the matching login and password, or NULL
-	 * @param string login the login
-	 * @param string password the MD5 encrypted password 
-	 * @return User the user or NULL
-	 */
-	private static function authenticate($login, $password) {		
-		return Dictionary::getUserService()->getUserByCredentials($login, $password);
 	}
 	
 	/**
@@ -112,7 +133,7 @@ class Session {
 	 * @return bool TRUE if session is authenticated, else FALSE
 	 */
 	public function isAuthenticated() {
-		return $this->user != NULL;
+		return $this->user != null;
 	}
 
 	/**

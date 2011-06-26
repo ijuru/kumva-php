@@ -30,8 +30,6 @@ if ($login != '' && $password != '') {
 		$ref = Request::getGetParam('ref');
 		Request::redirect(($ref != '') ? $ref : KUMVA_URL_ROOT.'/admin/index.php');
 	}
-	else
-		Session::getCurrent()->setAttribute('login_message', 'Invalid username or password');
 }
 elseif (isset($_GET['logout']))
 	Session::getCurrent()->logout();

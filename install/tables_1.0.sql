@@ -120,6 +120,8 @@ CREATE TABLE `{DBPREFIX}user` (
   `website` varchar(255) DEFAULT NULL,
   `timezone` varchar(50) DEFAULT NULL,
   `lastlogin` timestamp NULL DEFAULT NULL,
+  `lastloginattempt` timestamp NULL DEFAULT NULL,
+  `failedloginattempts` int(10) NOT NULL DEFAULT 0,
   `voided` tinyint(1) NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `UQ_{DBPREFIX}user_login` (`login`),

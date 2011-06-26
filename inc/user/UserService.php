@@ -45,22 +45,6 @@ class UserService extends Service {
 	}
 	
 	/**
-	 * Gets the user with the given login and password
-	 * @param string login the user login
-	 * @param string password the user password
-	 * @return User the user
-	 */
-	public function getUserByCredentials($login, $password) {
-		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'user`
-				WHERE login = '.aka_prepsqlval($login).' 
-				  AND password = SHA1(CONCAT(salt, '.aka_prepsqlval($password).')) 
-				  AND voided = 0';
-		$row = $this->database->row($sql);
-		
-		return ($row != NULL) ? User::fromRow($row) : NULL;
-	}
-	
-	/**
 	 * Gets all the users
 	 * @param bool incVoided TRUE to included voided users
 	 * @return array the users
@@ -96,6 +80,21 @@ class UserService extends Service {
 				INNER JOIN `'.KUMVA_DB_PREFIX.'user_subscription` us ON us.user_id = u.user_id
 				WHERE us.subscription_id = '.$subscription->getId();							   
 		return User::fromQuery($this->database->query($sql));
+	}
+	
+	/**
+	 * Checks the given users password
+	 * @param User user the user
+	 * @param string password the password
+	 * @return bool true is password matches password in the database
+	 */
+	public function checkUserPassword($user, $password) {
+		$sql = 'SELECT password, salt FROM `'.KUMVA_DB_PREFIX.'user` WHERE user_id = '.$user->getId();
+		$row = $this->database->row($sql);
+		$dbpass = $row['password'];
+		$dbsalt = $row['salt'];
+		
+		return $this->hashPassword($dbsalt, $password) == $dbpass;
 	}
 	
 	/**
@@ -208,16 +207,20 @@ class UserService extends Service {
 	public function saveUser($user, $password = NULL, $updateExtras = TRUE) {
 		if ($user->isNew()) {
 			$salt = sha1(uniqid()); // Random salt
+			$encPassword = $this->hashPassword($salt, $password);
+			
 			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'user` VALUES('
 				.'NULL,'
 				.aka_prepsqlval($user->getLogin()).','
-				."SHA1(CONCAT('$salt', ".aka_prepsqlval($password).')),'
-				."'$salt'," 
+				.aka_prepsqlval($password).','
+				.aka_prepsqlval($salt).','
 				.aka_prepsqlval($user->getName()).','
 				.aka_prepsqlval($user->getEmail()).','
 				.aka_prepsqlval($user->getWebsite()).','
 				.aka_prepsqlval($user->getTimezone()).','
 				.'NULL,'
+				.'NULL,'
+				.aka_prepsqlval($user->getFailedLoginAttempts()).','
 				.aka_prepsqlval($user->isVoided()).')';
 			
 			$res = $this->database->insert($sql);
@@ -229,14 +232,19 @@ class UserService extends Service {
 			$sql = 'UPDATE `'.KUMVA_DB_PREFIX.'user` SET '
 				.'login = '.aka_prepsqlval($user->getLogin()).',';
 			
-			if ($password != NULL)	
-				$sql .= 'password = SHA1(CONCAT(salt, '.aka_prepsqlval($password).')),';
+			if ($password != NULL) {
+				$salt = $this->database->scalar('SELECT salt FROM `'.KUMVA_DB_PREFIX.'user` WHERE user_id = '.$user->getId());
+				$encPassword = $this->hashPassword($salt, $password);
+				$sql .= 'password = '.aka_prepsqlval($encPassword).',';
+			}
 			
 			$sql .= 'name = '.aka_prepsqlval($user->getName()).','
 				.'email = '.aka_prepsqlval($user->getEmail()).','
 				.'website = '.aka_prepsqlval($user->getWebsite()).','
 				.'timezone = '.aka_prepsqlval($user->getTimezone()).','
 				.'lastlogin = '.aka_timetosql($user->getLastLogin()).', '
+				.'lastloginattempt = '.aka_timetosql($user->getLastLoginAttempt()).', '
+				.'failedloginattempts = '.aka_prepsqlval($user->getFailedLoginAttempts()).', '
 				.'voided = '.aka_prepsqlval($user->isVoided()).' '
 				.'WHERE user_id = '.$user->getId();
 
@@ -263,6 +271,16 @@ class UserService extends Service {
 		}
 		
 		return TRUE;
+	}
+	
+	/**
+	 * Hashes the given password with a salt
+	 * @param string salt the salt
+	 * @param string password the password
+	 * @return string the hashed password
+	 */
+	private function hashPassword($salt, $password) {
+		return sha1($salt.$password);
 	}
 	
 	/**

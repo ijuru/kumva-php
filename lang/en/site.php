@@ -234,6 +234,7 @@ ku_sitetrans('KU_STR_WORDCLASSES', 'Word classes');
 ku_sitetrans('KU_STR_YES', 'Yes');
 
 // Messages
+ku_sitetrans('KU_MSG_ACCOUNTLOCKED', 'Account is locked because of repeated failed logins');
 ku_sitetrans('KU_MSG_COMMENTINSTRUCTIONS', 'Use {...} to create query links, e.g. {gukora}');
 ku_sitetrans('KU_MSG_CONFIRMDELETECOMMENT', 'Delete this comment?');
 ku_sitetrans('KU_MSG_CONFIRMDELETEENTRY', 'Delete this entry?');
@@ -258,6 +259,7 @@ ku_sitetrans('KU_MSG_ERRORTOOSHORT', 'Too short');
 ku_sitetrans('KU_MSG_EXPORTINSTRUCTIONS', 'Downloads all definitions as a CSV file');
 ku_sitetrans('KU_MSG_FINDWORDS', 'Find words where');
 ku_sitetrans('KU_MSG_IMPORTINSTRUCTIONS', 'Definitions can be imported from a CSV file provided it uses the correct format (described <a href="%s">here</a>).');
+ku_sitetrans('KU_MSG_INVALIDLOGIN', 'Invalid username or password');
 ku_sitetrans('KU_MSG_MAXEXAMPLES', 'Only %d examples allowed per definition');
 ku_sitetrans('KU_MSG_NOMATCHINGCHANGES', 'No matching changes');
 ku_sitetrans('KU_MSG_NOMATCHINGWORDS', 'No matching words. Try removing prefixes, suffixes and pluralizations, e.g. <em>nagiyeyo</em> becomes <em>giye</em>, <em>mwiza</em> becomes <em>iza</em>, <em>children</em> becomes <em>child</em>');

@@ -30,6 +30,8 @@ class User extends Entity {
 	private $website;
 	private $timezone;
 	private $lastLogin;
+	private $lastLoginAttempt;
+	private $failedLoginAttempts;
 	
 	// Lazy loaded properties
 	private $roles;
@@ -44,9 +46,11 @@ class User extends Entity {
 	 * @param string website the user's website
 	 * @param string timezone the user's timezone identifier
 	 * @param int lastLogin the last login timestamp
+	 * @param int lastLoginAttempt the last login attempt timestamp
+	 * @param int failedLoginAttempts number of failed login attempts
 	 * @param bool voided TRUE if user is voided
 	 */
-	public function __construct($id = 0, $login = '', $name = '', $email = NULL, $website = NULL, $timezone = NULL, $lastLogin = NULL, $voided = FALSE) {
+	public function __construct($id = 0, $login = '', $name = '', $email = null, $website = null, $timezone = null, $lastLogin = null, $lastLoginAttempt = null, $failedLoginAttempts = 0, $voided = false) {
 		$this->id = (int)$id;
 		$this->login = $login;
 		$this->name = $name;
@@ -54,6 +58,8 @@ class User extends Entity {
 		$this->website = $website;
 		$this->timezone = $timezone;
 		$this->lastLogin = (int)$lastLogin;
+		$this->lastLoginAttempt = (int)$lastLoginAttempt;
+		$this->failedLoginAttempts = (int)$failedLoginAttempts;
 		$this->voided = (bool)$voided;
 	}
 	
@@ -63,7 +69,7 @@ class User extends Entity {
 	 * @return User the user
 	 */
 	public static function fromRow(&$row) {
-		return new User($row['user_id'], $row['login'], $row['name'], $row['email'], $row['website'], $row['timezone'], aka_timefromsql($row['lastlogin']), $row['voided']);
+		return new User($row['user_id'], $row['login'], $row['name'], $row['email'], $row['website'], $row['timezone'], aka_timefromsql($row['lastlogin']), aka_timefromsql($row['lastloginattempt']), $row['failedloginattempts'], $row['voided']);
 	}
 	
 	/**
@@ -163,6 +169,47 @@ class User extends Entity {
 	}
 	
 	/**
+	 * Gets the last login attempt time
+	 * @return int the last login attempt timestamp
+	 */
+	public function getLastLoginAttempt() {
+		return $this->lastLoginAttempt;
+	}
+	
+	/**
+	 * Sets the last login attempt time
+	 * @param int lastLogin the last login attempt timestamp
+	 */
+	public function setLastLoginAttempt($lastLoginAttempt) {
+		$this->lastLoginAttempt = (int)$lastLoginAttempt;
+	}
+	
+	/**
+	 * Gets the number of failed login attempts
+	 * @return int the number of failed login attempts
+	 */
+	public function getFailedLoginAttempts() {
+		return $this->failedLoginAttempts;
+	}
+	
+	/**
+	 * Sets the number of failed login attempts
+	 * @param int failedLoginAttempts number of failed login attempts
+	 */
+	public function setFailedLoginAttempts($failedLoginAttempts) {
+		$this->failedLoginAttempts = (int)$failedLoginAttempts;
+	}
+	
+	/**
+	 * Checks the given password against the stored password for this user
+	 * @param string password the password to check
+	 * @return bool true if password matches
+	 */
+	public function checkPassword($password) {
+		return Dictionary::getUserService()->checkUserPassword($this, $password);
+	}
+	
+	/**
 	 * Gets whether user has the given role
 	 * @param int roleId the role id
 	 * @return bool TRUE if user has role, else FALSE
@@ -170,9 +217,9 @@ class User extends Entity {
 	public function hasRole($roleId) {
 		foreach ($this->getRoles() as $r) {
 			if ($roleId == $r->getId() || $r->isSuperRole())
-				return TRUE;
+				return true;
 		}
-		return FALSE;
+		return false;
 	}
 	
 	/**
@@ -180,7 +227,7 @@ class User extends Entity {
 	 * @return array the roles
 	 */
 	public function getRoles() {
-		if ($this->roles === NULL)
+		if ($this->roles === null)
 			$this->roles = Dictionary::getUserService()->getUserRoles($this);
 		
 		return $this->roles;
@@ -199,7 +246,7 @@ class User extends Entity {
 	 * @return array the subscriptions
 	 */
 	public function getSubscriptions() {
-		if ($this->subscriptions === NULL)
+		if ($this->subscriptions === null)
 			$this->subscriptions = Dictionary::getUserService()->getUserSubscriptions($this);
 		
 		return $this->subscriptions;
