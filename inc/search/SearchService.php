@@ -135,7 +135,7 @@ class SearchService extends Service {
 			$sql .= "ORDER BY d.lemma ASC, d.prefix ASC ";
 			break;
 		case OrderBy::RELEVANCE:
-			$sql .= "ORDER BY `maxtagweight` DESC ";
+			$sql .= "ORDER BY `maxtagweight` DESC, `entry` ASC ";
 			break;
 		}
 		
