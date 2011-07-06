@@ -38,4 +38,8 @@ dictionaries is that the software has been designed for a Bantu language. Words 
 	<li><a href="http://uir.unisa.ac.za/handle/10500/3646">Loanword allocation in Kinyarwanda</a>, L.J. Kayigema, PhD Thesis, University of South Africa</li>
 </ul>
 
-<p>Thanks also to <i>Barakagira Leonard</i> and <i>Nshimyimana Eugene</i> for the audio recordings.</p>
+<h2>Special thanks</h2>
+<ul>
+	<li>To the <a href="http://www.kamusi.org">Kamusi</a> project for the provision of internet modems for volunteers contributing to the dictionary.</li>
+	<li>To <i>Barakagira Leonard</i> and <i>Nshimyimana Eugene</i> for the audio recordings.</li>
+</ul>
