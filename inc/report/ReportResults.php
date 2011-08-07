@@ -44,7 +44,7 @@ class ReportResults {
 		$this->fields = array();
 		foreach ($this->fieldsRaw as $field) {
 			if ($field[0] != '_') {
-				if ($field[0] == '?' || $field[0] == '#')
+				if ($field[0] == '?' || $field[0] == '#' || $field[0] == '>')
 					$field = substr($field, 1);
 				$this->fields[] = $field;	
 			}

@@ -140,6 +140,7 @@ require_once KUMVA_DIR_INC.'/search/SearchService.php';
 require_once KUMVA_DIR_INC.'/report/Report.php';
 require_once KUMVA_DIR_INC.'/report/ReportResults.php';
 require_once KUMVA_DIR_INC.'/report/ReportService.php';
+require_once KUMVA_DIR_INC.'/report/standardreports.php';
 
 require_once KUMVA_DIR_INC.'/page/Page.php';
 require_once KUMVA_DIR_INC.'/page/PageService.php';

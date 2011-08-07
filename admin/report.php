@@ -71,12 +71,20 @@ include_once 'tpl/header.php';
             <tr>
                 <td>&nbsp;</td>
                 <?php 
-                foreach ($results->getFields(TRUE) as $field) { 
-                    if ($field[0] != '_') {
+                $fields = $results->getFields(TRUE);
+                foreach ($fields as $field) {
+                	$char1 = $field[0]; 
+                    if ($char1 != '_') {
                         echo '<td>';
-                        if ($field[0] == '?')
-                            echo '<a href="entries.php?q='.urlencode($row[$field]).'">'.$row[$field].'</a>';
-						elseif ($field[0] == '#') {
+                        if ($char1 == '?') {
+                        	$query =  $row[$field];
+                            echo '<a href="entries.php?q='.urlencode($query).'">'.$query.'</a>';
+                        }
+                        elseif ($char1 == '>') {
+                        	$query =  $row['_'.substr($field, 1)];
+                        	echo '<a href="entries.php?q='.urlencode($query).'">'.$row[$field].'</a>';
+                        }
+						elseif ($char1 == '#') {
 							$definition = Dictionary::getDefinitionService()->getDefinition((int)$row[$field]);
                             Templates::definitionLink($definition);
 						} else

@@ -29,6 +29,7 @@ class Relationship extends Entity {
 	const VARIANT = 2;
 	const MEANING = 3;
 	const ROOT = 4;
+	const CATEGORY = 5;
 
 	private $name;
 	private $title;
