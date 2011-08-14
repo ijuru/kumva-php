@@ -26,6 +26,7 @@ body, html { /* Sticky footer from http://www.cssstickyfooter.com */
 #content {
 	overflow: auto; 
 	padding-bottom: 40px;  /* must be same height as the footer */
+	width: 100%; /* Firefox recently decided it needs this... */
 }
 
 #footer {

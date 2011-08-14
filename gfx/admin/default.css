@@ -38,7 +38,9 @@ body, html {
 #content {
 	overflow: auto; 
 	padding-bottom: 40px;  /* must be same height as the footer */
+	width: 100%; /* Firefox recently decided it needs this... */
 }
+
 #footer {
 	position: relative;
 	margin-top: -40px; /* negative value of footer height */
