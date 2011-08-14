@@ -57,7 +57,9 @@ class Search {
 		$this->query = Query::parse($string);
 		$this->paging = $paging;
 		
-		$this->defaultOrderBy = $this->query->getPattern() ? OrderBy::RELEVANCE : OrderBy::ENTRY;
+		// If the user has specified a pattern and not a match relationship then default to relevance ordering
+		$this->defaultOrderBy = $this->query->getPattern() && $this->query->getRelationship() == NULL
+		 ? OrderBy::RELEVANCE : OrderBy::ENTRY;
 	}
 	
 	/**
