@@ -45,7 +45,12 @@ function kumva_pagelink($name) {
 			<div id="gutter">
 				<div style="float: left">
 					<fb:like href="<?php echo KUMVA_URL_ROOT; ?>" send="false" layout="button_count" show_faces="false"></fb:like>
+					
 					<g:plusone size="small" href="<?php echo KUMVA_URL_ROOT; ?>"></g:plusone>
+					
+					<a href="http://twitter.com/kinyarwandanet" class="twitter-follow-button" data-show-count="false"> @kinyarwandanet</a>
+					<script src="https://platform.twitter.com/widgets.js" type="text/javascript"></script>
+					</span>
 				</div>
 				
 				<div style="float: right">
