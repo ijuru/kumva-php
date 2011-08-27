@@ -212,7 +212,7 @@ class UserService extends Service {
 			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'user` VALUES('
 				.'NULL,'
 				.aka_prepsqlval($user->getLogin()).','
-				.aka_prepsqlval($password).','
+				.aka_prepsqlval($encPassword).','
 				.aka_prepsqlval($salt).','
 				.aka_prepsqlval($user->getName()).','
 				.aka_prepsqlval($user->getEmail()).','
