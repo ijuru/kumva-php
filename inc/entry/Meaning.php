@@ -34,7 +34,7 @@ class Flags extends Enum {
 }
 
 /**
- * Class for a meaning of a definition
+ * Class for a meaning of a word
  */
 class Meaning extends Entity {
 	private $meaning;

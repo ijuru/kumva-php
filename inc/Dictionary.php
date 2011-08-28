@@ -25,7 +25,7 @@
  */
 class Dictionary {
 	private static $userService;
-	private static $definitionService;
+	private static $entryService;
 	private static $tagService;
 	private static $pageService;
 	private static $languageService;
@@ -45,14 +45,14 @@ class Dictionary {
 	}
 	
 	/**
-	 * Gets the definition service
-	 * @return DefinitionService the singleton instance of the service
+	 * Gets the entry service
+	 * @return EntryService the singleton instance of the service
 	 */
-	public static function getDefinitionService() {
-		if (self::$definitionService == NULL)
-			self::$definitionService = new DefinitionService(Database::getCurrent());
+	public static function getEntryService() {
+		if (self::$entryService == NULL)
+			self::$entryService = new EntryService(Database::getCurrent());
 			
-		return self::$definitionService;
+		return self::$entryService;
 	}
 	
 	/**

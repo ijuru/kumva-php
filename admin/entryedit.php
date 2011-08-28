@@ -21,16 +21,16 @@
  */
 
 include_once '../inc/kumva.php';
-include_once 'form/DefinitionForm.php';
-include_once 'validator/DefinitionValidator.php';
+include_once 'form/RevisionForm.php';
+include_once 'validator/RevisionValidator.php';
 
 Session::requireRole(Role::CONTRIBUTOR);
 
 $pronunChars = defined('KUMVA_PRONUNCIATION_CHARS') ? aka_strsplit(KUMVA_PRONUNCIATION_CHARS) : array();
  
 $returnUrl = Request::getGetParam('ref', 'entries.php');
-$form = new DefinitionForm($returnUrl, new DefinitionValidator(), new FormRenderer());
-$definition = $form->getEntity();
+$form = new RevisionForm($returnUrl, new RevisionValidator(), new FormRenderer());
+$revision = $form->getEntity();
 
 include_once 'tpl/header.php';
 
@@ -39,7 +39,7 @@ include_once 'tpl/header.php';
 /* <![CDATA[ */
 function autoTag(relationshipId) {
 	$('#autotag').val(relationshipId);
-	$('#definitionform').submit();
+	$('#revisionForm').submit();
 }
 
 function addNewMeaning() {
@@ -97,13 +97,13 @@ var exampleId = 1000000;
 <?php
 if ($form->entry && $form->entry->isDeleted())
 	echo '<div class="info">'.KU_MSG_ENTRYDELETED.'</div>'; 
-elseif ($definition->isProposedRevision())
-	printf('<div class="info">'.KU_MSG_DEFINITIONPROPOSAL.'</div>', 'change.php?id='.$form->change->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT)); 
+elseif ($revision->isProposed())
+	printf('<div class="info">'.KU_MSG_REVISIONPROPOSAL.'</div>', 'change.php?id='.$form->change->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT)); 
 	
 if (count($form->getErrors()->get()) > 0)
 	echo '<div class="error">'.implode('<br />', $form->getErrors()->get()).'</div>';
 	
-$form->start('definitionform');
+$form->start('revisionForm');
 ?>	
 <input type="hidden" id="autotag" name="autotag" value="" />
 <input type="hidden" id="saveType" name="saveType" value="propose" />

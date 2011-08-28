@@ -27,7 +27,7 @@ Session::requireUser();
 include_once 'tpl/header.php';
 ?>
 <h3><?php echo KU_STR_EXPORT ?></h3>
-<div class="description">Entries and definitions can be downloaded as XML files.</div>
+<div class="description">Dictionary entries can be downloaded as XML files.</div>
 <ul>
 	<li><?php echo KU_STR_ACCEPTEDREVISIONS; ?>: <a href="../meta/export.xml.php">link</a></li>
 	<li><?php echo KU_STR_COMPLETEENTRIES; ?>: <a href="../meta/export.xml.php?changes=1">link</a></li>

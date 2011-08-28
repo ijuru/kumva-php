@@ -242,7 +242,7 @@ ku_sitetrans('KU_MSG_CONFIRMREJECTCHANGE', 'Reject this change?');
 ku_sitetrans('KU_MSG_CONFIRMREMOVEEXAMPLE', 'Remove this example?');
 ku_sitetrans('KU_MSG_CONFIRMREMOVEMEANING', 'Remove this meaning?');
 ku_sitetrans('KU_MSG_CONFIRMVOIDUSER', 'Void this user? This will prevent them from logging in');
-ku_sitetrans('KU_MSG_DEFINITIONPROPOSAL', 'This definition is a proposal for <a href="%s">this change</a> and can only be edited by an editor or the submitter');
+ku_sitetrans('KU_MSG_REVISIONPROPOSAL', 'This definition is a proposal for <a href="%s">this change</a> and can only be edited by an editor or the submitter');
 ku_sitetrans('KU_MSG_ENTRYCHANGEPENDING', 'This definition cannot be edited because of <a href="%s">this pending change</a>');
 ku_sitetrans('KU_MSG_ENTRYDELETECHANGEPENDING', 'This definition is pending deletion by <a href="%s">this change</a>');
 ku_sitetrans('KU_MSG_ENTRYDELETED', 'This entry has been deleted');

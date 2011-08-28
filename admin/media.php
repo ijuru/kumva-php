@@ -24,7 +24,7 @@ include_once '../inc/kumva.php';
 
 $function = Request::getPostParam('function', NULL);
 if ($function == 'scan' && Session::getCurrent()->hasRole(Role::ADMINISTRATOR)) {
-	$entries = Dictionary::getDefinitionService()->getEntries();
+	$entries = Dictionary::getEntryService()->getEntries();
 	
 	foreach ($entries as $entry) {
 		// Check for matching audio and image file
@@ -39,12 +39,12 @@ if ($function == 'scan' && Session::getCurrent()->hasRole(Role::ADMINISTRATOR)) 
 		// Update entry if flags have changed
 		if ($entry->getMedia() != $flags) {
 			$entry->setMedia($flags);
-			Dictionary::getDefinitionService()->saveEntry($entry);
+			Dictionary::getEntryService()->saveEntry($entry);
 		}
 	}
 }
 
-$mediaCounts = Dictionary::getDefinitionService()->getMediaCounts();
+$mediaCounts = Dictionary::getEntryService()->getMediaCounts();
 
 include_once 'tpl/header.php';
 ?>	

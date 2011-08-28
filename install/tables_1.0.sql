@@ -6,11 +6,11 @@ CREATE TABLE `{DBPREFIX}entry` (
   PRIMARY KEY (`entry_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `{DBPREFIX}definition` (
+CREATE TABLE `{DBPREFIX}revision` (
   `definition_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `entry_id` int(10) unsigned NOT NULL,
-  `revision` int(10) unsigned NOT NULL,
-  `revisionstatus` int(2) unsigned NOT NULL,
+  `number` int(10) unsigned NOT NULL,
+  `status` int(2) unsigned NOT NULL,
   `change_id` int(10) unsigned DEFAULT NULL,
   `wordclass` varchar(5) DEFAULT NULL,
   `prefix` varchar(10) DEFAULT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE `{DBPREFIX}definition` (
   CONSTRAINT `FK_{DBPREFIX}definition_entry` FOREIGN KEY (`entry_id`) REFERENCES `{DBPREFIX}entry` (`entry_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `{DBPREFIX}definition_nounclass` (
+CREATE TABLE `{DBPREFIX}revision_nounclass` (
   `definition_id` int(10) unsigned NOT NULL,
   `order` int(10) unsigned NOT NULL,
   `nounclass` tinyint(3) unsigned NOT NULL,
@@ -95,7 +95,7 @@ CREATE TABLE `{DBPREFIX}relationship` (
   KEY `IN_{DBPREFIX}relationship_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `{DBPREFIX}definition_tag` (
+CREATE TABLE `{DBPREFIX}revision_tag` (
   `definition_id` int(10) unsigned NOT NULL,
   `relationship_id` int(10) unsigned NOT NULL,
   `order` int(10) unsigned NOT NULL,

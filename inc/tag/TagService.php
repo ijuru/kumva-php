@@ -33,7 +33,7 @@ class TagService extends Service {
 	 */
 	public function getTags($relationshipId = NULL, $textLike = NULL, $limit = 0) {
 		$sql = 'SELECT DISTINCT t.* FROM `'.KUMVA_DB_PREFIX.'tag` t 
-				INNER JOIN `'.KUMVA_DB_PREFIX.'definition_tag` dt ON dt.tag_id = t.tag_id
+				INNER JOIN `'.KUMVA_DB_PREFIX.'revision_tag` dt ON dt.tag_id = t.tag_id
 				WHERE dt.active = 1 ';
 		
 		if ($relationshipId != NULL && is_array($relationshipId))
@@ -51,20 +51,20 @@ class TagService extends Service {
 	}
 	
 	/**
-	 * Gets tags that aren't related to any definitions
+	 * Gets tags that aren't related to any revisions
 	 * @return array the tags
 	 */
 	public function getOrphanTags() {
-		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'tag` WHERE tag_id NOT IN (SELECT DISTINCT tag_id FROM `'.KUMVA_DB_PREFIX.'definition_tag`)';
+		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'tag` WHERE tag_id NOT IN (SELECT DISTINCT tag_id FROM `'.KUMVA_DB_PREFIX.'revision_tag`)';
 		return Tag::fromQuery($this->database->query($sql));
 	}
 	
 	/**
-	 * Deletes tags that aren't related to any definitions
+	 * Deletes tags that aren't related to any revisions
 	 * @return bool TRUE if successful, else FALSE
 	 */
 	public function deleteOrphanTags() {
-		$sql = 'DELETE FROM `'.KUMVA_DB_PREFIX.'tag` WHERE tag_id NOT IN (SELECT DISTINCT tag_id FROM `'.KUMVA_DB_PREFIX.'definition_tag`)';
+		$sql = 'DELETE FROM `'.KUMVA_DB_PREFIX.'tag` WHERE tag_id NOT IN (SELECT DISTINCT tag_id FROM `'.KUMVA_DB_PREFIX.'revision_tag`)';
 		return $this->database->query($sql);
 	}
 	
@@ -137,15 +137,15 @@ class TagService extends Service {
 	}
 	
 	/**
-	 * Adds a tag to the given definition
-	 * @param Definition definition the definiton
+	 * Adds a tag to the given revision
+	 * @param Revision revision the revision
 	 * @param Relationship the relationship
 	 * @param int order the order
 	 * @param int weight the weighting
 	 * @param Tag tag the tag
 	 * @return bool TRUE if operation was successful, else FALSE
 	 */
-	public function addTag($definition, $relationship, $order, $weight, $tag) {
+	public function addTag($revision, $relationship, $order, $weight, $tag) {
 		// Query tags to see if an exact match already exists
 		$sql = "SELECT `tag_id` FROM `".KUMVA_DB_PREFIX."tag`
 				WHERE `lang` = '".$tag->getLang()."' AND `text` = ".aka_prepsqlval($tag->getText()).' COLLATE utf8_bin';
@@ -156,10 +156,10 @@ class TagService extends Service {
 			$tagId = $tag->getId();
 		}
 		
-		$active = $definition->isAcceptedRevision();
+		$active = $revision->isAccepted();
 			
-		$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'definition_tag` VALUES('
-			.aka_prepsqlval($definition->getId()).','
+		$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'revision_tag` VALUES('
+			.aka_prepsqlval($revision->getId()).','
 			.aka_prepsqlval($relationship->getId()).','
 			.aka_prepsqlval($order).','
 			.aka_prepsqlval($tagId).','
@@ -194,7 +194,7 @@ class TagService extends Service {
 	
 		$sql = 'SELECT lang, '.implode(', ', $relCriteria).
 		'FROM (
-			SELECT DISTINCT t.tag_id, t.lang, dt.relationship_id FROM `'.KUMVA_DB_PREFIX.'definition_tag` dt 
+			SELECT DISTINCT t.tag_id, t.lang, dt.relationship_id FROM `'.KUMVA_DB_PREFIX.'revision_tag` dt 
 			INNER JOIN `'.KUMVA_DB_PREFIX.'tag` t ON t.tag_id = dt.tag_id
 			WHERE dt.active = 1
 		) tt GROUP BY lang ORDER BY `form` DESC, `variant` DESC, `meaning` DESC, `root` DESC';

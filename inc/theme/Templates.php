@@ -27,25 +27,25 @@ define('KUMVA_DATETIMEFORMAT', 'Y-m-d H:i');
  */
 class Templates {	
 	/**
-	 * Displays a definition as prefix+lemma
-	 * @param Definition definition the definition
+	 * Displays a revision as prefix+lemma
+	 * @param Revision revision the revision
 	 */
-	public static function definition($definition) {
-		if ($definition->getPrefix()) 
-			echo '<span class="prefix">'.$definition->getPrefix().'</span>';
+	public static function word($revision) {
+		if ($revision->getPrefix()) 
+			echo '<span class="prefix">'.$revision->getPrefix().'</span>';
 			
-		echo '<span class="lemma">'.$definition->getLemma().'</span>';
+		echo '<span class="lemma">'.$revision->getLemma().'</span>';
 	}
 	
 	/**
-	 * Displays a definition as prefix+lemma with link to entry page
-	 * @param Definition definition the definition
+	 * Displays a revision as prefix+lemma with link to entry page
+	 * @param Revision revision the revision
 	 */
-	public static function definitionLink($definition, $edit = FALSE) {
-		$url = '?id='.$definition->getEntry()->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
+	public static function wordLink($revision, $edit = FALSE) {
+		$url = '?id='.$revision->getEntry()->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
 		
 		echo '<a href="entry.php'.$url.'">';
-		self::definition($definition);
+		self::word($revision);
 		echo '</a>';
 		if ($edit) {
 			echo '&nbsp;';
@@ -59,21 +59,21 @@ class Templates {
 	 */
 	public static function entry($entry) {
 		// Authenticated users get to see proposals, everyone else only accepted revisions
-		$revision = Session::getCurrent()->isAuthenticated() ? Revision::HEAD : Revision::ACCEPTED;
+		$revnumber = Session::getCurrent()->isAuthenticated() ? RevisionPreset::HEAD : RevisionPreset::ACCEPTED;
 
-		$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, $revision);
+		$revision = Dictionary::getEntryService()->getEntryRevision($entry, $revnumber);
 	
 		// Display prefix+lemma
-		self::definition($definition);
+		self::word($revision);
 		echo ' ';
 	
 		// Display modifier
-		if ($definition->getModifier())
-			echo ' (<span class="modifier">'.$definition->getModifier().'</span>) ';
+		if ($revision->getModifier())
+			echo ' (<span class="modifier">'.$revision->getModifier().'</span>) ';
 			
 		// Display pronunciation
-		if ($definition->getPronunciation())
-			echo ' /<span class="pronunciation">'.$definition->getPronunciation().'</span>/ ';
+		if ($revision->getPronunciation())
+			echo ' /<span class="pronunciation">'.$revision->getPronunciation().'</span>/ ';
 			
 		// Display sound widget
 		if ($entry->hasMedia(Media::AUDIO)) {
@@ -82,7 +82,7 @@ class Templates {
 		}
 			
 		// Display word class
-		$wordClass = $definition->getWordClass();
+		$wordClass = $revision->getWordClass();
 		if ($wordClass) {
 			$wordClassName = WordClass::getNameFromCode($wordClass);
 			$refPage = Theme::getPageForWordClass($wordClass);
@@ -93,7 +93,7 @@ class Templates {
 		}
 	
 		// Display noun classes
-		$nounClasses = $definition->getNounClasses();
+		$nounClasses = $revision->getNounClasses();
 		$nounPage = Theme::getPageForWordClass('n');
 		foreach ($nounClasses as $cls) {
 			$clsName = Theme::getNounClassName($cls);
@@ -101,7 +101,7 @@ class Templates {
 		}
 	
 		// Display variant tags
-		$tags = $definition->getTags(Relationship::VARIANT);
+		$tags = $revision->getTags(Relationship::VARIANT);
 		if (count($tags) > 0) {
 			$tagsHtml = array();
 			foreach ($tags as $tag) 
@@ -111,7 +111,7 @@ class Templates {
 		}
 
 		// Display meanings with parsed references
-		$meanings = $definition->getMeanings();
+		$meanings = $revision->getMeanings();
 		$numbered = count($meanings) > 1;
 		$number = 1;
 		foreach ($meanings as $meaning) {
@@ -130,13 +130,13 @@ class Templates {
 		}
 	
 		// Display comment with parsed references
-		if ($definition->getComment()) {
-			$comment = self::parseReferences(htmlspecialchars($definition->getComment()), 'index.php');
+		if ($revision->getComment()) {
+			$comment = self::parseReferences(htmlspecialchars($revision->getComment()), 'index.php');
 			echo '&nbsp;<span class="comment">('.$comment.')</span>';
 		}
 
 		// Display root tags
-		$rootTags = $definition->getTags(Relationship::ROOT);
+		$rootTags = $revision->getTags(Relationship::ROOT);
 		if (count($rootTags) > 0) {
 			$rootsHtml = array();
 			foreach ($rootTags as $rootTag) 
@@ -148,15 +148,15 @@ class Templates {
 		// Display edit link
 		if (Session::getCurrent()->hasRole(Role::CONTRIBUTOR)) {
 			echo '&nbsp;';
-			Templates::iconLink('edit', KUMVA_URL_ROOT.'/admin/entry.php?id='.$definition->getEntry()->getId(), KU_STR_EDITENTRY);
+			Templates::iconLink('edit', KUMVA_URL_ROOT.'/admin/entry.php?id='.$revision->getEntry()->getId(), KU_STR_EDITENTRY);
 		}
 			
 		// Display proposal warning
-		if ($definition->getRevisionStatus() == RevisionStatus::PROPOSED)
+		if ($revision->getStatus() == RevisionStatus::PROPOSED)
 			echo '&nbsp;<span class="proposalwarning">'.KU_STR_PROPOSAL.'</span>'; 
 
 		// Display usage examples
-		self::exampleList($definition->getExamples());	
+		self::exampleList($revision->getExamples());	
 	}
 	
 	/**
@@ -366,10 +366,10 @@ class Templates {
 	 * Creates a table of changes from an array of changes
 	 * @param array changes the changes
 	 * @param bool showHeader TRUE to display table header
-	 * @param bool showDefinition TRUE to display definition link
+	 * @param bool showRevision TRUE to display revision link
 	 * @param bool showSubmitter TRUE to display change submitter
 	 */
-	public static function changesTable(&$changes, $showHeader = TRUE, $showDefinition = TRUE, $showSubmitter = TRUE, $byResolved = FALSE) {
+	public static function changesTable(&$changes, $showHeader = TRUE, $showRevision = TRUE, $showSubmitter = TRUE, $byResolved = FALSE) {
 		$actionIcons = array('change_create', 'change_modify', 'change_delete');
 		?>
 		<table class="list" cellspacing="0" border="0">
@@ -379,7 +379,7 @@ class Templates {
 				<th style="width: 20px">&nbsp;</th>
 				<th>ID</th>
 				<th><?php echo $byResolved ? KU_STR_RESOLVED : KU_STR_SUBMITTED; ?></th>
-				<?php if ($showDefinition) { ?>
+				<?php if ($showRevision) { ?>
 					<th><?php echo KU_STR_ENTRY; ?></th>
 				<?php } ?>
 				<th><?php echo KU_STR_ACTION; ?></th>
@@ -394,10 +394,10 @@ class Templates {
 			foreach($changes as $change) { 
 				if ($change->getAction() == Action::DELETE) {
 					$entry = $change->getEntry();
-					$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::LAST);
+					$revision = Dictionary::getEntryService()->getEntryRevision($entry, RevisionPreset::LAST);
 				}
 				else
-					$definition = Dictionary::getChangeService()->getChangeDefinition($change);
+					$revision = Dictionary::getChangeService()->getChangeRevision($change);
 
 				$icon = $actionIcons[$change->getAction()];
 				$itemUrl = 'change.php?id='.$change->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
@@ -408,8 +408,8 @@ class Templates {
 					<td><?php Templates::icon($icon); ?></td>
 					<td><?php echo $change->getId(); ?></td>
 					<td class="primarycol"><?php Templates::dateTime($byResolved ? $change->getResolved() : $change->getSubmitted()); ?></td>
-					<?php if ($showDefinition) { ?>
-						<td><?php Templates::definition($definition); ?></td>
+					<?php if ($showRevision) { ?>
+						<td><?php Templates::word($revision); ?></td>
 					<?php } ?>
 					<td><?php echo Action::toLocalizedString($change->getAction()); ?></td>
 					<?php if ($showSubmitter) { ?>

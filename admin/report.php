@@ -85,8 +85,8 @@ include_once 'tpl/header.php';
                         	echo '<a href="entries.php?q='.urlencode($query).'">'.$row[$field].'</a>';
                         }
 						elseif ($char1 == '#') {
-							$definition = Dictionary::getDefinitionService()->getDefinition((int)$row[$field]);
-                            Templates::definitionLink($definition);
+							$revision = Dictionary::getEntryService()->getRevision((int)$row[$field]);
+                            Templates::wordLink($revision);
 						} else
                             echo $row[$field];
                         echo '</td>';

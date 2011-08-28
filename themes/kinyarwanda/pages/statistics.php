@@ -20,8 +20,8 @@
  * Purpose: Statistics page
  */
 
-$contentStats = Dictionary::getDefinitionService()->getContentStatistics();
-$mediaStats = Dictionary::getDefinitionService()->getMediaCounts();
+$contentStats = Dictionary::getEntryService()->getContentStatistics();
+$mediaStats = Dictionary::getEntryService()->getMediaCounts();
 ?>
 <table border="0" width="100%">
 	<tr>

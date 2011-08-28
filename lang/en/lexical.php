@@ -64,16 +64,16 @@ function kumva_en_sound($text) {
 }
 
 /**
- * Returns meaning tag strings for the given definition
- * @param Definition the definition
+ * Returns meaning tag strings for the given revision
+ * @param Revision the revision
  * @return array the array of tag strings
  */
-function kumva_en_autotag_meaning($definition) {
+function kumva_en_autotag_meaning($revision) {
 	$tags = array();
-	foreach ($definition->getMeanings() as $meaning)
+	foreach ($revision->getMeanings() as $meaning)
 		$tags = array_merge($tags, aka_parsecsv($meaning->getMeaning()));
 	
-	if ($definition->getWordClass() == 'v') {
+	if ($revision->getWordClass() == 'v') {
 		// Strip infinitive prepositions
 		for ($t = 0; $t < count($tags); $t++) {
 			if (aka_startswith($tags[$t], 'to '))
@@ -82,7 +82,7 @@ function kumva_en_autotag_meaning($definition) {
 				$tags[$t] = substr($tags[$t], 3);
 		}
 	}
-	else if ($definition->getWordClass() == 'n') {
+	else if ($revision->getWordClass() == 'n') {
 		// Strip articles
 		for ($t = 0; $t < count($tags); $t++) {
 			if (aka_startswith($tags[$t], 'a '))

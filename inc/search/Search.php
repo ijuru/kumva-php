@@ -50,7 +50,7 @@ class Search {
 	/**
 	 * Creates a search object
 	 * @param string string the search string
-	 * @param bool incProposals TRUE if proposal definitions should be included, else FALSE
+	 * @param bool incProposals TRUE if proposal revisions should be included, else FALSE
 	 * @param Paging paging the paging object
 	 */
 	public function __construct($string, $paging) {
@@ -65,7 +65,7 @@ class Search {
 	/**
 	 * Runs the search
 	 * @param string source the source of this query, e.g. 'os' for opensearch plugin
-	 * @return array the array of definitions found
+	 * @return array the array of revisions found
 	 */
 	public function run($source = NULL) {
 		$start = microtime(TRUE);
@@ -122,7 +122,7 @@ class Search {
 	}
 	
 	/**
-	 * Gets the results as array of definitions
+	 * Gets the results as array of revisions
 	 */
 	public function getResults() {
 		return $this->results;

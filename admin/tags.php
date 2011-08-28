@@ -29,7 +29,7 @@ $function = Request::getPostParam('function', NULL);
 if ($function == 'cleanup')
 	Dictionary::getTagService()->deleteOrphanTags();
 elseif ($function == 'regenerate') {
-	//Dictionary::getDefinitionService()->generateTagWeights();
+	//Dictionary::getEntryService()->generateTagWeights();
 	Dictionary::getTagService()->generateLexical();
 }
 	

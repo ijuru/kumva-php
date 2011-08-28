@@ -17,13 +17,13 @@
  *
  * Copyright Rowan Seymour 2010
  *
- * Purpose: Definition form class
+ * Purpose: Revision form class
  */
 
 /**
- * Form controller for add/edit definition
+ * Form controller for add/edit entry
  */
-class DefinitionForm extends Form {
+class RevisionForm extends Form {
 	var $entry;
 	var $change;
 
@@ -33,26 +33,27 @@ class DefinitionForm extends Form {
 	protected function createEntity() {
 		$entryId = (int)Request::getGetParam('id', 0);
 		if ($entryId) {
-			$this->entry = Dictionary::getDefinitionService()->getEntry($entryId);
-			$definition = $this->entry->getHead();
-			$this->change = $definition->getChange();
-			return $definition;
+			$this->entry = Dictionary::getEntryService()->getEntry($entryId);
+			$revision = $this->entry->getHead();
+			$this->change = $revision->getChange();
+			return $revision;
 		}
 		
+		// Create new revision
 		$initialLemma = Request::getGetParam('new', '');
-		$def = new Definition();
-		$def->setMeanings(array(new Meaning()));
-		$def->setLemma($initialLemma);
-		return $def;
+		$revision = new Revision();
+		$revision->setMeanings(array(new Meaning()));
+		$revision->setLemma($initialLemma);
+		return $revision;
 	}
 	
 	/**
 	 * @see Form::onBind()
 	 */
-	protected function onBind($definition) {
+	protected function onBind($revision) {
 		// Bind noun classes
 		$nounClasses = aka_parsecsv(Request::getPostParam('nounclasses'), TRUE);
-		$definition->setNounClasses($nounClasses);
+		$revision->setNounClasses($nounClasses);
 		
 		// Bind meanings
 		$meanTextParams = Request::getPostParams('meaningtext_');
@@ -66,14 +67,14 @@ class DefinitionForm extends Form {
 				
 			$meanings[] = $meaning;
 		}	
-		$definition->setMeanings($meanings);
+		$revision->setMeanings($meanings);
 		
 		// Bind tags
 		$tagParams = Request::getPostParams('tags_');
 		foreach ($tagParams as $relationshipId => $tagSet) {
 			$relationship = Dictionary::getTagService()->getRelationship($relationshipId);
 			$tagStrings = aka_parsecsv($tagSet);
-			$definition->setTagsFromStrings($relationship, $tagStrings);
+			$revision->setTagsFromStrings($relationship, $tagStrings);
 		}
 		
 		// Bind examples
@@ -83,43 +84,43 @@ class DefinitionForm extends Form {
 			$meaning = Request::getPostParam('examplemeaning_'.$param);
 			$examples[] = new Example(0, $form, $meaning);
 		}	
-		$definition->setExamples($examples);
+		$revision->setExamples($examples);
 		
 		// Handle any autotag requests
 		$autotagRelId = Request::getPostParam('autotag', 0);
 		if ($autotagRelId > 0) {
 			$relationship = Dictionary::getTagService()->getRelationship($autotagRelId);
-			$tagStrings = Lexical::autoTag($definition, $relationship);
-			$definition->setTagsFromStrings($relationship, $tagStrings);
+			$tagStrings = Lexical::autoTag($revision, $relationship);
+			$revision->setTagsFromStrings($relationship, $tagStrings);
 		}
 	}
 	
 	/**
 	 * @see Form::saveEntity()
 	 */
-	protected function saveEntity($definition) {	
+	protected function saveEntity($revision) {	
 		$saveType = Request::getPostParam('saveType');
 		
-		// New definition will need a container entry
-		if ($definition->isNew()) {
+		// New revision will need a container entry
+		if ($revision->isNew()) {
 			$entry = new Entry();
-			if (!Dictionary::getDefinitionService()->saveEntry($entry))
+			if (!Dictionary::getEntryService()->saveEntry($entry))
 				return FALSE;
 				
-			$definition->setEntry($entry);
+			$revision->setEntry($entry);
 		}
 		else
-			$entry = $definition->getEntry();
+			$entry = $revision->getEntry();
 	
 		if ($saveType == 'propose' && $this->canPropose()) {
 			// Create the new change and revision number
-			if ($definition->isNew()) {
-				$revision = 1;
+			if ($revision->isNew()) {
+				$number = 1;
 				$change = Change::create($entry, Action::CREATE);
 			}
 			else {
-				$last = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::LAST);
-				$revision = $last->getRevision() + 1;
+				$last = Dictionary::getEntryService()->getEntryRevision($entry, RevisionPreset::LAST);
+				$number = $last->getNumber() + 1;
 				$change = Change::create($entry, Action::MODIFY);
 			}
 				
@@ -127,12 +128,12 @@ class DefinitionForm extends Form {
 			if (!Dictionary::getChangeService()->saveChange($change))
 				return FALSE;
 				
-			// Save as new proposal definition
-			$definition->setId(0);
-			$definition->setRevision($revision);
-			$definition->setRevisionStatus(RevisionStatus::PROPOSED);
-			$definition->setChange($change);
-			if (!Dictionary::getDefinitionService()->saveDefinition($definition))
+			// Save as new proposal revision
+			$revision->setId(0);
+			$revision->setNumber($number);
+			$revision->setStatus(RevisionStatus::PROPOSED);
+			$revision->setChange($change);
+			if (!Dictionary::getEntryService()->saveRevision($revision))
 				return FALSE;
 				
 			// Notify subscribed users
@@ -148,19 +149,19 @@ class DefinitionForm extends Form {
 		}
 		elseif ($saveType == 'update') {
 			// If its new, then maked it the accepted revision
-			if ($definition->isNew()) {
-				$definition->setRevision(1);
-				$definition->setRevisionStatus(RevisionStatus::ACCEPTED);
+			if ($revision->isNew()) {
+				$revision->setNumber(1);
+				$revision->setStatus(RevisionStatus::ACCEPTED);
 			}
 			
-			return Dictionary::getDefinitionService()->saveDefinition($definition);
+			return Dictionary::getEntryService()->saveRevision($revision);
 		}
 		
 		return FALSE;	
 	}
 	
 	/**
-	 * Gets whether the current user can update the definition
+	 * Gets whether the current user can update the entry
 	 * @return bool TRUE if user can update
 	 */
 	public function canUpdate() {
@@ -169,7 +170,7 @@ class DefinitionForm extends Form {
 			
 		$curUser = Session::getCurrent()->getUser();
 		
-		if ($this->getEntity()->isProposedRevision()) {
+		if ($this->getEntity()->isProposed()) {
 			if ($curUser->hasRole(Role::EDITOR))
 				return TRUE;
 			elseif ($this->change->getSubmitter()->equals($curUser))
@@ -180,11 +181,11 @@ class DefinitionForm extends Form {
 	}
 	
 	/**
-	 * Gets whether the current user can propose a change to the definition
+	 * Gets whether the current user can propose a change to the entry
 	 * @return bool TRUE if user can propose a change
 	 */
 	public function canPropose() {
-		if ($this->entry && $this->entry->isDeleted() || $this->getEntity()->isProposedRevision())
+		if ($this->entry && $this->entry->isDeleted() || $this->getEntity()->isProposed())
 			return FALSE;
 			
 		return Session::getCurrent()->hasRole(Role::CONTRIBUTOR);

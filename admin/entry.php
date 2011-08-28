@@ -17,7 +17,7 @@
  *
  * Copyright Rowan Seymour 2010
  *
- * Purpose: Definition edit page
+ * Purpose: Entry edit page
  */
 
 include_once '../inc/kumva.php';
@@ -26,7 +26,7 @@ Session::requireUser();
 
 // Get entry
 $entryId = (int)Request::getGetParam('id', 0);
-$entry = ($entryId > 0) ? Dictionary::getDefinitionService()->getEntry($entryId) : new Entry();
+$entry = ($entryId > 0) ? Dictionary::getEntryService()->getEntry($entryId) : new Entry();
 
 // Get pending change if there is one
 $pendingChanges = Dictionary::getChangeService()->getChangesByEntry($entry, Status::PENDING);
@@ -45,15 +45,15 @@ if ($action == 'delete' && !$pendingChange) {
 }
 
 // Get revision to view
-$viewRev = (int)Request::getGetParam('rev', Revision::HEAD);
-$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, $viewRev);
-if (!$definition)
-	$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::LAST);
+$viewRev = (int)Request::getGetParam('rev', RevisionPreset::HEAD);
+$revision = Dictionary::getEntryService()->getEntryRevision($entry, $viewRev);
+if (!$revision)
+	$revision = Dictionary::getEntryService()->getEntryRevision($entry, RevisionPreset::LAST);
 
 $canEdit = !$entry->isDeleted() && !$pendingChange && Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
 $canDelete = !$entry->isDeleted() && !$pendingChange && Session::getCurrent()->hasRole(Role::CONTRIBUTOR);
 
-$definitions = Dictionary::getDefinitionService()->getEntryRevisions($entry);
+$revisions = Dictionary::getEntryService()->getEntryRevisions($entry);
 
 include_once 'tpl/header.php';
 
@@ -63,7 +63,7 @@ include_once 'tpl/header.php';
 function deleteEntry(id) {
 	if (confirm('<?php echo KU_MSG_CONFIRMDELETEENTRY; ?>')) {
 		$('#action').val('delete');
-		$('#definitionForm').submit();
+		$('#revisionForm').submit();
 	}
 }
 /* ]]> */
@@ -75,7 +75,7 @@ function deleteEntry(id) {
 		<?php Templates::buttonLink('back', Request::getGetParam('ref', 'entries.php'), KU_STR_BACK); ?>
 	</div>
 	<div style="float: right">
-		<form id="definitionForm" method="post">
+		<form id="revisionForm" method="post">
 			<input type="hidden" id="action" name="action" />
 			<?php 
 			if ($canEdit)
@@ -94,7 +94,7 @@ elseif ($pendingChange)
 	$message = sprintf(KU_MSG_ENTRYCHANGEPENDING, $pendingChangeUrl);
 elseif ($entry->isDeleted())
 	$message = KU_MSG_ENTRYDELETED;
-elseif ($definition->isUnverified())
+elseif ($revision->isUnverified())
 	$message = KU_MSG_ENTRYNOTVERIFIED;
 	
 if (isset($message))
@@ -103,25 +103,25 @@ if (isset($message))
 <table class="form">
 	<tr>
 		<th><?php echo KU_STR_WORDCLASS.'/'.KU_STR_NOUNCLASSES; ?></th>
-		<td><?php echo $definition->getWordClass(); ?> <?php echo aka_makecsv($definition->getNounClasses()); ?></td>
+		<td><?php echo $revision->getWordClass(); ?> <?php echo aka_makecsv($revision->getNounClasses()); ?></td>
 	</tr>
 	<tr>
 		<th><?php echo KU_STR_PREFIX.'/'.KU_STR_LEMMA; ?></th>
-		<td><?php Templates::definition($definition, FALSE); ?></td>
+		<td><?php Templates::word($revision, FALSE); ?></td>
 	</tr>
 	<tr>
 		<th><?php echo KU_STR_MODIFIER; ?></th>
-		<td><?php echo $definition->getModifier(); ?></td>
+		<td><?php echo $revision->getModifier(); ?></td>
 	</tr>
 	<tr>
 		<th><?php echo KU_STR_PRONUNCIATION; ?></th>
-		<td>/<?php echo $definition->getPronunciation(); ?>/</td>
+		<td>/<?php echo $revision->getPronunciation(); ?>/</td>
 	</tr>
 	<tr>
 		<th><?php echo KU_STR_MEANINGS; ?></th>
 		<td>
 		<?php 
-		foreach ($definition->getMeanings() as $meaning) {
+		foreach ($revision->getMeanings() as $meaning) {
 			echo aka_prephtml($meaning->getMeaning());
 			
 			if ($meaning->getFlags() > 0) {
@@ -140,13 +140,13 @@ if (isset($message))
 	</tr>
 	<tr>
 		<th><?php echo KU_STR_COMMENT; ?></th>
-		<td><?php echo $definition->getComment(); ?></td>
+		<td><?php echo $revision->getComment(); ?></td>
 	</tr>
 	<tr>
 		<td colspan="2" class="sectionheader"><?php echo KU_STR_TAGS; ?></td>
 	</tr>
 	<?php foreach (Dictionary::getTagService()->getRelationships() as $relationship) { 
-		$tags = $definition->getTags($relationship->getId());
+		$tags = $revision->getTags($relationship->getId());
 		$tagStrings = $relationship->makeTagStrings($tags);
 	?>
 		<tr>
@@ -162,7 +162,7 @@ if (isset($message))
 	</tr>
 	<tr>
 		<td colspan="2">
-			<?php Templates::exampleList($definition->getExamples()); ?>
+			<?php Templates::exampleList($revision->getExamples()); ?>
 		</td>
 	</tr>
 </table>
@@ -181,14 +181,14 @@ if (isset($message))
 		<th style="width: 30px">&nbsp;</th>
 	</tr>
 	<?php 
-	foreach ($definitions as $def) { 
-		$change = $def->getChange();
-		$itemUrl = 'entry.php?id='.$entry->getId().'&amp;rev='.$def->getRevision().'&amp;ref='.urlencode(Request::getGetParam('ref'));
+	foreach ($revisions as $rev) { 
+		$change = $rev->getChange();
+		$itemUrl = 'entry.php?id='.$entry->getId().'&amp;rev='.$rev->getNumber().'&amp;ref='.urlencode(Request::getGetParam('ref'));
 		?>
 		<tr class="rowlink" onclick="aka_goto('<?php echo $itemUrl; ?>')">
 			<td>&nbsp;</td>
 			<td><?php Templates::icon('change'); ?></td>
-			<td class="primarycol" style="text-align:center"><?php echo $def->getRevision(); ?></td>
+			<td class="primarycol" style="text-align:center"><?php echo $rev->getNumber(); ?></td>
 			<?php if ($change) { ?>
 				<td style="text-align:center"><a href="change.php?id=<?php echo $change->getId(); ?>"><?php echo $change->getId(); ?></a></td>
 				<td style="text-align:center"><?php echo Templates::dateTime($change->getSubmitted()); ?></td>

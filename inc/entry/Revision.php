@@ -17,13 +17,13 @@
  *
  * Copyright Rowan Seymour 2010
  * 
- * Purpose: Definition class
+ * Purpose: Revision class
  */
  
 /**
  * Revision number presets
  */
-class Revision {
+class RevisionPreset {
 	const FIRST = 	  1;
 	const ACCEPTED = -1001;
 	const PROPOSED = -1002;
@@ -43,12 +43,12 @@ class RevisionStatus extends Enum {
 }
 
 /**
- * Word definition class
+ * Entry revision class
  */
-class Definition extends Entity {
+class Revision extends Entity {
 	private $entryId;
-	private $revision;
-	private $revisionStatus;
+	private $number;
+	private $status;
 	private $changeId;
 	private $wordClass;
 	private $prefix;
@@ -67,11 +67,11 @@ class Definition extends Entity {
 	private $examples;
 	
 	/**
-	 * Constructs a definition
-	 * @param int id the definition id
+	 * Constructs a revision
+	 * @param int id the revision id
 	 * @param int entryId the entry id
-	 * @param int revision the revision number
-	 * @param int revisionStatus the revision status (archived, accepted etc)
+	 * @param int number the revision number
+	 * @param int status the revision status (archived, accepted etc)
 	 * @param int changeId the change id
 	 * @param string wordClass the word class, e,g, 'n'
 	 * @param string prefix the prefix, e.g 'umu'
@@ -79,16 +79,16 @@ class Definition extends Entity {
 	 * @param string modifier the modifier, e.g. 'aba-'
 	 * @param string pronunciation the pronunciation, e.g. 'umugabo'
 	 * @param string comment the comment
-	 * @param bool unverified TRUE if definition is unverified
+	 * @param bool unverified TRUE if revision is unverified
 	 */
 	public function __construct(
-			$id = 0, $entryId = 0, $revision = 0, $revisionStatus = 0, $changeId = 0,
+			$id = 0, $entryId = 0, $number = 0, $status = 0, $changeId = 0,
 			$wordClass = '', $prefix = '', $lemma = '', $modifier = '', $pronunciation = '', $comment = '', $unverified = FALSE) 
 	{
 		$this->id = (int)$id;
 		$this->entryId = (int)$entryId;
-		$this->revision = (int)$revision;
-		$this->revisionStatus = (int)$revisionStatus;
+		$this->number = (int)$number;
+		$this->status = (int)$status;
 		$this->changeId = $changeId;
 		$this->wordClass = $wordClass;
 		$this->prefix = $prefix;
@@ -100,12 +100,12 @@ class Definition extends Entity {
 	}
 	
 	/**
-	 * Creates a definition from the given row of database columns
+	 * Creates a revision from the given row of database columns
 	 * @param array the associative array
-	 * @return Definition the definition
+	 * @return Revision the revision
 	 */
 	public static function fromRow(&$row) {
-		return new Definition($row['definition_id'], $row['entry_id'], $row['revision'], $row['revisionstatus'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['pronunciation'], $row['comment'], $row['unverified']);
+		return new Revision($row['definition_id'], $row['entry_id'], $row['number'], $row['status'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['pronunciation'], $row['comment'], $row['unverified']);
 	}
 	
 	/**
@@ -114,7 +114,7 @@ class Definition extends Entity {
 	 */
 	public function getEntry() {
 		if (!$this->entry && $this->entryId)
-			$this->entry = Dictionary::getDefinitionService()->getEntry($this->entryId);
+			$this->entry = Dictionary::getEntryService()->getEntry($this->entryId);
 			
 		return $this->entry;
 	}
@@ -132,32 +132,32 @@ class Definition extends Entity {
 	 * Gets the revision number
 	 * @return int the revision number
 	 */
-	public function getRevision() {
-		return $this->revision;
+	public function getNumber() {
+		return $this->number;
 	}
 	
 	/**
 	 * Sets the revision number
-	 * @param int revision the revision number
+	 * @param int number the revision number
 	 */
-	public function setRevision($revision) {
-		$this->revision = $revision;
+	public function setNumber($number) {
+		$this->number = $number;
 	}
 	
 	/**
-	 * Gets the revision number
-	 * @return int the revision number
+	 * Gets the revision status
+	 * @return int the revision status
 	 */
-	public function getRevisionStatus() {
-		return $this->revisionStatus;
+	public function getStatus() {
+		return $this->status;
 	}
 	
 	/**
 	 * Sets the revision status
-	 * @param int revision the revision status
+	 * @param int status the revision status
 	 */
-	public function setRevisionStatus($revisionStatus) {
-		$this->revisionStatus = $revisionStatus;
+	public function setStatus($status) {
+		$this->status = $status;
 	}
 	
 	/**
@@ -202,7 +202,7 @@ class Definition extends Entity {
 	 */
 	public function getNounClasses() {
 		if ($this->nounClasses === NULL)
-			$this->nounClasses = Dictionary::getDefinitionService()->getDefinitionNounClasses($this);
+			$this->nounClasses = Dictionary::getEntryService()->getRevisionNounClasses($this);
 		
 		return $this->nounClasses;
 	}
@@ -317,7 +317,7 @@ class Definition extends Entity {
 	 */
 	public function getMeanings() {
 		if ($this->meanings === NULL)
-			$this->meanings = Dictionary::getDefinitionService()->getDefinitionMeanings($this);
+			$this->meanings = Dictionary::getEntryService()->getRevisionMeanings($this);
 		
 		return $this->meanings;
 	}
@@ -337,7 +337,7 @@ class Definition extends Entity {
 	 */
 	public function getTags($relationshipId) {
 		if (!isset($this->tags[$relationshipId]))
-			$this->tags[$relationshipId] = Dictionary::getDefinitionService()->getDefinitionTags($this, $relationshipId);
+			$this->tags[$relationshipId] = Dictionary::getEntryService()->getRevisionTags($this, $relationshipId);
 	
 		return $this->tags[$relationshipId];
 	}
@@ -370,7 +370,7 @@ class Definition extends Entity {
 	 */
 	public function getExamples() {
 		if ($this->examples === NULL)
-			$this->examples = Dictionary::getDefinitionService()->getDefinitionExamples($this);
+			$this->examples = Dictionary::getEntryService()->getRevisionExamples($this);
 		
 		return $this->examples;
 	}
@@ -384,19 +384,19 @@ class Definition extends Entity {
 	}
 	
 	/**
-	 * Gets if definition is the accepted revision
-	 * @return bool TRUE if definition is accepted
+	 * Gets if revision is the accepted revision
+	 * @return bool TRUE if revision is accepted
 	 */
-	public function isAcceptedRevision() {
-		return $this->revisionStatus == RevisionStatus::ACCEPTED;
+	public function isAccepted() {
+		return $this->status == RevisionStatus::ACCEPTED;
 	}
 	
 	/**
-	 * Gets if definition is the proposed revision
-	 * @return bool TRUE if definition is proposed
+	 * Gets if revision is the proposed revision
+	 * @return bool TRUE if revision is proposed
 	 */
-	public function isProposedRevision() {
-		return $this->revisionStatus == RevisionStatus::PROPOSED;
+	public function isProposed() {
+		return $this->status == RevisionStatus::PROPOSED;
 	}
 	
 	/**

@@ -17,34 +17,34 @@
  *
  * Copyright Rowan Seymour 2010
  *
- * Purpose: Definition validator class
+ * Purpose: Revision validator class
  */
 
 /**
- * Validator for definition objects
+ * Validator for revision objects
  */
-class DefinitionValidator extends Validator {
-	public function validate($definition, $errors) {
-		if (strlen($definition->getLemma()) == 0)
+class RevisionValidator extends Validator {
+	public function validate($revision, $errors) {
+		if (strlen($revision->getLemma()) == 0)
 			$errors->addForProperty('lemma', KU_MSG_ERROREMPTY);
-		if (count($definition->getMeanings()) == 0)
+		if (count($revision->getMeanings()) == 0)
 			$errors->addForProperty('meanings', KU_MSG_ERROREMPTY);
 		
-		foreach ($definition->getNounClasses() as $nounClass) {
+		foreach ($revision->getNounClasses() as $nounClass) {
 			if ($nounClass < 1) {
 				$errors->addForProperty('nounClasses', KU_MSG_ERRORNOUNCLASS);
 				break;
 			}
 		}
 		
-		foreach ($definition->getMeanings() as $meaning) {
+		foreach ($revision->getMeanings() as $meaning) {
 			if (strlen($meaning->getMeaning()) == 0) {
 				$errors->addForProperty('meanings', KU_MSG_ERROREMPTY);
 				break;
 			}
 		}
 		
-		foreach ($definition->getExamples() as $example) {
+		foreach ($revision->getExamples() as $example) {
 			if (strlen($example->getForm()) == 0 || strlen($example->getMeaning()) == 0) {
 				$errors->addForProperty('examples', KU_MSG_ERROREMPTY);
 				break;

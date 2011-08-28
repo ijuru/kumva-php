@@ -91,7 +91,7 @@ class Entry extends Entity {
 	 */
 	public function getHead() {
 		if (!$this->head)
-			$this->head = Dictionary::getDefinitionService()->getEntryRevision($this, Revision::HEAD);
+			$this->head = Dictionary::getEntryService()->getEntryRevision($this, RevisionPreset::HEAD);
 		
 		return $this->head;
 	}
@@ -102,7 +102,7 @@ class Entry extends Entity {
 	 */
 	public function getRevisions() {
 		if ($this->revisions === NULL)
-			$this->revisions = Dictionary::getDefinitionService()->getEntryRevisions($this);
+			$this->revisions = Dictionary::getEntryService()->getEntryRevisions($this);
 		
 		return $this->revisions;
 	}

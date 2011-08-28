@@ -29,7 +29,7 @@ class SearchService extends Service {
 	 * @param Query the query
 	 * @param int type the search type
 	 * @param Paging paging the paging object
-	 * @return array the matching definitions
+	 * @return array the matching revisions
 	 */
 	public function search($query, $type, $orderBy = OrderBy::ENTRY, $paging = null) {
 		$proposals = Session::getCurrent()->isAuthenticated();
@@ -41,21 +41,21 @@ class SearchService extends Service {
 		// Search specific tag language or all configured tag languages?
 		$langs = $query->getLang() ? array($query->getLang()) : Dictionary::getLanguageService()->getLexicalLanguages(true);
 		
-		$sql = "SELECT SQL_CALC_FOUND_ROWS e.*, CONCAT(COALESCE(d.prefix, ''), d.lemma) as `entry`
+		$sql = "SELECT SQL_CALC_FOUND_ROWS e.*, CONCAT(COALESCE(r.prefix, ''), r.lemma) as `entry`
 				FROM `".KUMVA_DB_PREFIX."entry` e 
-				INNER JOIN `".KUMVA_DB_PREFIX."definition` d ON d.entry_id = e.entry_id AND ";
+				INNER JOIN `".KUMVA_DB_PREFIX."revision` r ON r.entry_id = e.entry_id AND ";
 		
 		// Check revision status		
 		if ($proposals)
-			$sql .= '(d.revisionstatus = 1 OR d.revisionstatus = 2) ';
+			$sql .= '(r.status = 1 OR r.status = 2) ';
 		else
-			$sql .= 'd.revisionstatus = 1 ';
+			$sql .= 'r.status = 1 ';
 		
 		/////////// Tag based criteria /////////////
 		
 		$sql .= "INNER JOIN (
-				 SELECT dt.definition_id, MAX(dt.weight) as `maxtagweight` FROM `".KUMVA_DB_PREFIX."definition_tag` dt
-				 INNER JOIN `".KUMVA_DB_PREFIX."tag` t ON dt.tag_id = t.tag_id ";
+				 SELECT rt.definition_id, MAX(rt.weight) as `maxtagweight` FROM `".KUMVA_DB_PREFIX."revision_tag` rt
+				 INNER JOIN `".KUMVA_DB_PREFIX."tag` t ON rt.tag_id = t.tag_id ";
 			
 		$tagCriteria = array();
 		foreach ($langs as $lang) {
@@ -89,29 +89,29 @@ class SearchService extends Service {
 	
 		$tagDefCriteria = array();
 		foreach ($relationships as $relationship)
-			$tagDefCriteria[] = 'dt.relationship_id = '.$relationship->getId();
+			$tagDefCriteria[] = 'rt.relationship_id = '.$relationship->getId();
 	
 		$sql .= "  WHERE (".implode(' OR ', $tagCriteria).") AND (".implode(' OR ', $tagDefCriteria).") ";
 		
 		// If not including proposals, then only use active taggings
 		if (!$proposals)
-			$sql .= 'AND dt.active = 1 ';
+			$sql .= 'AND rt.active = 1 ';
 		
-		$sql .= "  GROUP BY dt.definition_id ";			
-		$sql .= ") m ON m.definition_id = d.definition_id ";
+		$sql .= "  GROUP BY rt.definition_id ";			
+		$sql .= ") m ON m.definition_id = r.definition_id ";
 		
-		/////////////////// Definition/entry criteria //////////////////
+		/////////////////// Revision/entry criteria //////////////////
 		
 		$defCriteria = array();
 			
 		// Filter by wordclass
 		if ($query->getWordClass())
-			$defCriteria[] = 'd.wordclass = '.aka_prepsqlval($query->getWordClass());
+			$defCriteria[] = 'r.wordclass = '.aka_prepsqlval($query->getWordClass());
 			
 		// Filter by verified state
 		$verified = $query->getVerified();
 		if ($verified !== null)
-			$defCriteria[] = 'd.unverified = '.(int)(!$verified);
+			$defCriteria[] = 'r.unverified = '.(int)(!$verified);
 			
 		// Filter by media
 		$hasMedia = $query->getHasMedia();
@@ -132,7 +132,7 @@ class SearchService extends Service {
 			$sql .= "ORDER BY `entry` ASC ";
 			break;
 		case OrderBy::STEM:
-			$sql .= "ORDER BY d.lemma ASC, d.prefix ASC ";
+			$sql .= "ORDER BY r.lemma ASC, r.prefix ASC ";
 			break;
 		case OrderBy::RELEVANCE:
 			$sql .= "ORDER BY `maxtagweight` DESC, `entry` ASC ";

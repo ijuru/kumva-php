@@ -21,19 +21,19 @@
  */
  
 /**
- * Class for displaying a diff of two definitions
+ * Class for displaying a diff of two revisions
  */
 class Diff {
 	/**
-	 * Creates a side-by-side comparison of two definitions
-	 * @param Definition definition1 the first definition
-	 * @param string label1 the label for first definition
-	 * @param Definition definition2 the second definition
-	 * @param string label1 the label for second definition
+	 * Creates a side-by-side comparison of two revisions
+	 * @param Revision revision1 the first revision
+	 * @param string label1 the label for first revision
+	 * @param Revision revision2 the second revision
+	 * @param string label1 the label for second revision
 	 */
-	public static function definitions($definition1, $label1, $definition2, $label2) {
-		$fields1 = $definition1 ? self::getDiffFields($definition1) : NULL;
-		$fields2 = $definition2 ? self::getDiffFields($definition2) : NULL;
+	public static function revisions($revision1, $label1, $revision2, $label2) {
+		$fields1 = $revision1 ? self::getDiffFields($revision1) : NULL;
+		$fields2 = $revision2 ? self::getDiffFields($revision2) : NULL;
 		
 		$fieldLabels = array();
 		$fieldLabels[] = KU_STR_WORDCLASS;
@@ -57,27 +57,27 @@ class Diff {
 				<span id="diffhide" style="display:none"><?php Templates::button('bullet_collapse', "$('tr.diffrow').hide(); $('#diffhide').hide(); $('#diffshow').show()", KU_STR_HIDE); ?></span>
 				<span id="diffshow"><?php Templates::button('bullet_expand', "$('tr.diffrow').show(); $('#diffshow').hide(); $('#diffhide').show()", KU_STR_SHOW); ?></span>
 				</td>
-				<?php if ($definition1) { ?>
+				<?php if ($revision1) { ?>
 					<td style="vertical-align: middle">
-						<b><?php echo KU_STR_REVISION.': '.$definition1->getRevision().' ('.$label1.')'; ?></b>
+						<b><?php echo KU_STR_REVISION.': '.$revision1->getNumber().' ('.$label1.')'; ?></b>
 					</td>
-				<?php } if ($definition2) { ?>
+				<?php } if ($revision2) { ?>
 					<td style="vertical-align: middle">
-						<b><?php echo KU_STR_REVISION.': '.$definition2->getRevision().' ('.$label2.')'; ?></b>
+						<b><?php echo KU_STR_REVISION.': '.$revision2->getNumber().' ('.$label2.')'; ?></b>
 					</td>
 				<?php } ?>
 			</tr>
 		
 			<?php 
 			for ($f = 0; $f < count($fieldLabels); $f++) { 
-				$difference = $definition1 && $definition2 && ($fields1[$f] != $fields2[$f]);	
+				$difference = $revision1 && $revision2 && ($fields1[$f] != $fields2[$f]);	
 			?>
 				<tr class="diffrow<?php echo $difference ? ' difference' : ''; ?>" style="display:none">
 					<td><b><?php echo $fieldLabels[$f]; ?></b></td>
 					
-					<?php if ($definition1) { ?>
+					<?php if ($revision1) { ?>
 						<td><?php echo $fields1[$f]; ?></td>
-					<?php } if ($definition2) { ?>
+					<?php } if ($revision2) { ?>
 						<td><?php echo $fields2[$f]; ?></td>
 					<?php } ?>
 				</tr>
@@ -88,19 +88,19 @@ class Diff {
 	
 	/**
 	 * Utility method to get fields for diffing
-	 * @param Definition the definition
+	 * @param Revision the revision
 	 * @return array the field values
 	 */
-	private static function getDiffFields($definition) {
+	private static function getDiffFields($revision) {
 		$fields = array();
-		$fields[] = $definition->getWordClass();
-		$fields[] = aka_makecsv($definition->getNounClasses());
-		$fields[] = $definition->getPrefix().'|'.$definition->getLemma();
-		$fields[] = $definition->getModifier();
-		$fields[] = $definition->getPronunciation();
+		$fields[] = $revision->getWordClass();
+		$fields[] = aka_makecsv($revision->getNounClasses());
+		$fields[] = $revision->getPrefix().'|'.$revision->getLemma();
+		$fields[] = $revision->getModifier();
+		$fields[] = $revision->getPronunciation();
 		
 		$meaningStrs = array();
-		foreach ($definition->getMeanings() as $meaning) {
+		foreach ($revision->getMeanings() as $meaning) {
 			$meaningStr = aka_prephtml($meaning->getMeaning());
 			
 			if ($meaning->getFlags() > 0) {
@@ -116,16 +116,16 @@ class Diff {
 		}
 		
 		$fields[] = implode('<br/>', $meaningStrs);
-		$fields[] = $definition->getComment();
+		$fields[] = $revision->getComment();
 		
 		foreach (Dictionary::getTagService()->getRelationships() as $relationship)
-			$fields[] = aka_makecsv($relationship->makeTagStrings($definition->getTags($relationship->getId())));
+			$fields[] = aka_makecsv($relationship->makeTagStrings($revision->getTags($relationship->getId())));
 		
-		$examples = $definition->getExamples();
+		$examples = $revision->getExamples();
 		for ($e = 0; $e < KUMVA_MAX_EXAMPLES; $e++)
 			$fields[] = isset($examples[$e]) ? ($examples[$e]->getForm().' - '.$examples[$e]->getMeaning()) : '';
 			
-		$fields[] = $definition->isUnverified() ? 'Yes' : 'No';
+		$fields[] = $revision->isUnverified() ? 'Yes' : 'No';
 			
 		return $fields;
 	}

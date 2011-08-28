@@ -45,8 +45,8 @@ kumva_registerreport('tags-categories', 'Used category tags', 'kumva_report_tags
  */
 function kumva_report_nowordclass($paging) {
 	$sql = "SELECT SQL_CALC_FOUND_ROWS d.definition_id as `#Definition`
-			FROM `".KUMVA_DB_PREFIX."definition` d 
-			WHERE d.revisionstatus = 1 AND (d.wordclass IS NULL OR d.wordclass = '')";
+			FROM `".KUMVA_DB_PREFIX."revision` r 
+			WHERE r.status = 1 AND (r.wordclass IS NULL OR r.wordclass = '')";
 	
 	return Dictionary::getReportService()->getResultFromSQL($sql, $paging);
 }
@@ -57,8 +57,8 @@ function kumva_report_nowordclass($paging) {
  */
 function kumva_report_nopronunciation($paging) {
 	$sql = "SELECT SQL_CALC_FOUND_ROWS d.definition_id as `#Definition`
-			FROM `".KUMVA_DB_PREFIX."definition` d 
-			WHERE d.revisionstatus = 1 AND (d.pronunciation IS NULL OR d.pronunciation = '')";
+			FROM `".KUMVA_DB_PREFIX."revision` r 
+			WHERE r.status = 1 AND (r.pronunciation IS NULL OR r.pronunciation = '')";
 	
 	return Dictionary::getReportService()->getResultFromSQL($sql, $paging);
 }
@@ -69,8 +69,8 @@ function kumva_report_nopronunciation($paging) {
  */
 function kumva_report_noexamples($paging) {
 	$sql = "SELECT SQL_CALC_FOUND_ROWS d.definition_id as `#Definition`
-			FROM `".KUMVA_DB_PREFIX."definition` d
-			WHERE d.revisionstatus = 1 AND d.definition_id NOT IN (
+			FROM `".KUMVA_DB_PREFIX."revision` r
+			WHERE r.status = 1 AND d.definition_id NOT IN (
 				SELECT DISTINCT definition_id FROM `".KUMVA_DB_PREFIX."example`
 			)";
 	
@@ -83,9 +83,9 @@ function kumva_report_noexamples($paging) {
  */
 function kumva_report_notags($paging) {
 	$sql = "SELECT SQL_CALC_FOUND_ROWS d.definition_id as `#Definition`
-			FROM `".KUMVA_DB_PREFIX."definition` d
-			WHERE d.revisionstatus = 1 AND d.definition_id NOT IN (
-				SELECT DISTINCT definition_id FROM `".KUMVA_DB_PREFIX."definition_tag`
+			FROM `".KUMVA_DB_PREFIX."revision` r
+			WHERE r.status = 1 AND d.definition_id NOT IN (
+				SELECT DISTINCT definition_id FROM `".KUMVA_DB_PREFIX."revision_tag`
 			)";
 	
 	return Dictionary::getReportService()->getResultFromSQL($sql, $paging);
@@ -97,11 +97,11 @@ function kumva_report_notags($paging) {
  */
 function kumva_report_duplicateentries($paging) {
 	$sql = "SELECT SQL_CALC_FOUND_ROWS
-				CONCAT(COALESCE(d.prefix, ''), d.lemma) as `?Query`, 
+				CONCAT(COALESCE(r.prefix, ''), r.lemma) as `?Query`, 
 				COUNT(*) as `Count`,
-				CONCAT(COALESCE(d.prefix, ''), d.lemma, '|', COALESCE(d.wordclass, ''), '|', COALESCE(d.pronunciation, '')) as `_entry` 
-			FROM `".KUMVA_DB_PREFIX."definition` d
-			WHERE d.revisionstatus = 1 
+				CONCAT(COALESCE(r.prefix, ''), r.lemma, '|', COALESCE(r.wordclass, ''), '|', COALESCE(r.pronunciation, '')) as `_entry` 
+			FROM `".KUMVA_DB_PREFIX."revision` r
+			WHERE r.status = 1 
 			GROUP BY `_entry` COLLATE utf8_bin
 			HAVING `Count` > 1";
 	
@@ -150,9 +150,9 @@ function kumva_report_tagscategories($paging) {
 				CONCAT(\'match:category \', t.text) as `_Tag`,
 				COUNT(*) as `Entries`
 			FROM `'.KUMVA_DB_PREFIX.'tag` t 
-			INNER JOIN `'.KUMVA_DB_PREFIX.'definition_tag` dt ON dt.tag_id = t.tag_id
-			INNER JOIN `'.KUMVA_DB_PREFIX.'definition` d ON d.definition_id = dt.definition_id
-			WHERE dt.relationship_id = '.Relationship::CATEGORY.' AND d.revisionstatus = 1
+			INNER JOIN `'.KUMVA_DB_PREFIX.'revision_tag` rt ON rt.tag_id = t.tag_id
+			INNER JOIN `'.KUMVA_DB_PREFIX.'revision` r ON r.definition_id = rt.definition_id
+			WHERE rt.relationship_id = '.Relationship::CATEGORY.' AND r.status = 1
 			GROUP BY t.tag_id';
 	
 	return Dictionary::getReportService()->getResultFromSQL($sql, $paging);

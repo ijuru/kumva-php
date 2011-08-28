@@ -46,50 +46,50 @@ class Xml {
 	 * @param Entry entry the entry
 	 */
 	public static function entry($entry) {
-		echo '<entry>';
+		echo '<entry id="'.$entry->getId().'">';
 		
-		$definitions = Dictionary::getDefinitionService()->getEntryRevisions($entry);
+		$revisions = Dictionary::getEntryService()->getEntryRevisions($entry);
 	
-		foreach ($definitions as $definition)
-			Xml::definition($definition, TRUE);
+		foreach ($revisions as $revision)
+			Xml::revision($revision, TRUE);
 		
 		echo '</entry>';
 	}
 
 	/**
- 	 * Outputs the given definition
- 	 * @param Definition definition the definition
- 	 * @param bool incChange TRUE to include this definition's change information
+ 	 * Outputs the given revision
+ 	 * @param Revision revision the revision
+ 	 * @param bool incChange TRUE to include this revision's change information
 	 */
-	public static function definition($definition, $incChange = FALSE) {
+	public static function revision($revision, $incChange = FALSE) {
 		
-		echo '<definition ';
-		echo 'revision="'.aka_prepxmlval($definition->getRevision()).'" ';
-		echo 'revisionstatus="'.strtolower(RevisionStatus::toString($definition->getRevision())).'" ';
-		echo 'wordclass="'.$definition->getWordClass().'" ';
-		echo 'nounclasses="'.implode(',', $definition->getNounClasses()).'" ';
-		echo 'unverified="'.aka_prepxmlval($definition->isUnverified()).'">';
+		echo '<revision ';
+		echo 'number="'.aka_prepxmlval($revision->getNumber()).'" ';
+		echo 'status="'.strtolower(RevisionStatus::toString($revision->getStatus())).'" ';
+		echo 'wordclass="'.$revision->getWordClass().'" ';
+		echo 'nounclasses="'.implode(',', $revision->getNounClasses()).'" ';
+		echo 'unverified="'.aka_prepxmlval($revision->isUnverified()).'">';
 
-		echo '<prefix>'.aka_prepxmlval($definition->getPrefix()).'</prefix>';
-		echo '<lemma>'.aka_prepxmlval($definition->getLemma()).'</lemma>';
-		echo '<modifier>'.aka_prepxmlval($definition->getModifier()).'</modifier>';
-		echo '<pronunciation>'.aka_prepxmlval($definition->getPronunciation()).'</pronunciation>';
+		echo '<prefix>'.aka_prepxmlval($revision->getPrefix()).'</prefix>';
+		echo '<lemma>'.aka_prepxmlval($revision->getLemma()).'</lemma>';
+		echo '<modifier>'.aka_prepxmlval($revision->getModifier()).'</modifier>';
+		echo '<pronunciation>'.aka_prepxmlval($revision->getPronunciation()).'</pronunciation>';
 		
 		echo '<meanings>';
-		foreach ($definition->getMeanings() as $meaning) {
+		foreach ($revision->getMeanings() as $meaning) {
 			$flags = Flags::makeCSVString(Flags::fromBits($meaning->getFlags()));
 			
 			echo '<meaning flags="'.$flags.'">'.aka_prepxmlval($meaning->getMeaning()).'</meaning>';
 		}
 		echo '</meanings>';
 		
-		echo '<comment>'.aka_prepxmlval($definition->getComment()).'</comment>';	
+		echo '<comment>'.aka_prepxmlval($revision->getComment()).'</comment>';	
 		
 		// Tags
 		echo '<tags>';
 		foreach (Dictionary::getTagService()->getRelationships() as $relationship) {
 			echo '<relationship name="'.$relationship->getName().'">';
-			foreach ($definition->getTags($relationship->getId()) as $tag)
+			foreach ($revision->getTags($relationship->getId()) as $tag)
 				echo '<tag lang="'.$tag->getLang().'" text="'.aka_prepxmlval($tag->getText()).'" />';
 			echo '</relationship>';
 		}
@@ -97,14 +97,14 @@ class Xml {
 	
 		// Examples
 		echo '<examples>';
-		foreach ($definition->getExamples() as $ex)
+		foreach ($revision->getExamples() as $ex)
 			echo '<example><usage>'.aka_prepxmlval($ex->getForm()).'</usage><meaning>'.aka_prepxmlval($ex->getMeaning()).'</meaning></example>';
 		echo '</examples>';
 		
-		if ($incChange && $definition->getChange()) 
-			self::change($definition->getChange());
+		if ($incChange && $revision->getChange()) 
+			self::change($revision->getChange());
 		
-		echo '</definition>';
+		echo '</revision>';
 	}
 	
 	/**

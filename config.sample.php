@@ -31,7 +31,7 @@ define('KUMVA_DB_PREFIX', 'tableprefix_');
 define('KUMVA_TITLE_SHORT', 'Kumva');
 define('KUMVA_TITLE_LONG', 'Kumva: Bantu-English Dictionary');
 define('KUMVA_THEME_NAME', 'mytheme');
-define('KUMVA_LANG_DEFS', 'rw');		// Language of definitions
+define('KUMVA_LANG_DEFS', 'rw');		// Language of entries
 define('KUMVA_LANG_MEANING', 'en');		// Language of meanings
 define('KUMVA_PAGE_SIZE', 10);
 define('KUMVA_PRONUNCIATION_CHARS', 'âêîôû');

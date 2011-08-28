@@ -149,19 +149,19 @@ function kumva_rw_suggestions($text) {
 }
 
 /**
- * Returns form tag strings for the given definition
- * @param Definition the definition
+ * Returns form tag strings for the given revision
+ * @param Revision the revision
  * @return array the array of tag strings, e.g. ['gukora', '-kora', '-koze']
  */
-function kumva_rw_autotag_form($definition) {
+function kumva_rw_autotag_form($revision) {
 	$forms = array();
-	$forms[] = $definition->getPrefix().$definition->getLemma();		// Always prefix+lemma for all word classes
+	$forms[] = $revision->getPrefix().$revision->getLemma();		// Always prefix+lemma for all word classes
 	
-	if ($definition->getWordClass() == 'v') {
-		$forms[] = '-'.$definition->getLemma();								// Verb present tense / imperative
-		$forms[] = rw_verbpasttense($definition);						// Verb past tense
-	} elseif ($definition->getWordClass() == 'n') {
-		$forms[] = rw_plural($definition);								// Noun plural
+	if ($revision->getWordClass() == 'v') {
+		$forms[] = '-'.$revision->getLemma();						// Verb present tense / imperative
+		$forms[] = rw_verbpasttense($revision);						// Verb past tense
+	} elseif ($revision->getWordClass() == 'n') {
+		$forms[] = rw_plural($revision);							// Noun plural
 	} 
 	return $forms;
 }
@@ -169,21 +169,21 @@ function kumva_rw_autotag_form($definition) {
 /**
  * Creates the plural form of a noun from the stem and the plural prefix
  */
-function rw_plural($definition) {
-    $modifier = $definition->getModifier();
+function rw_plural($revision) {
+    $modifier = $revision->getModifier();
     if (!aka_endswith($modifier, '-'))
 		return $modifier;
     
-    return str_replace('-', $definition->getLemma(), $modifier);
+    return str_replace('-', $revision->getLemma(), $modifier);
 }
 
-function rw_verbpasttense($definition) {
-	$modifier = $definition->getModifier();
+function rw_verbpasttense($revision) {
+	$modifier = $revision->getModifier();
 	if (!aka_startswith($modifier, '-'))
 		return $modifier;
 
 	// Verb may have auxillary words
-	$words = explode(' ', $definition->getLemma());
+	$words = explode(' ', $revision->getLemma());
 	$verb = $words[0];
 	array_shift($words);
 	$extra = implode(' ', $words);
@@ -194,7 +194,7 @@ function rw_verbpasttense($definition) {
 		return '-'.$past.($extra ? ' '.$extra : '');
 	}
 
-	return $definition->getModifier();
+	return $revision->getModifier();
 }
 
 function rw_verbstem($verb) {

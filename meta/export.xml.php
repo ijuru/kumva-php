@@ -36,7 +36,7 @@ header('Content-Disposition: attachment; filename='.($incChanges ? 'entries' : '
 Xml::header();
 
 if ($incChanges) {
-	$entries = Dictionary::getDefinitionService()->getEntries();
+	$entries = Dictionary::getEntryService()->getEntries();
 	
 	echo '<entries>';
 	foreach ($entries as $entry)
@@ -44,11 +44,11 @@ if ($incChanges) {
 	echo '</entries>';	
 }
 else {	
-	$definitions = Dictionary::getDefinitionService()->getAcceptedDefinitions();
+	$definitions = Dictionary::getEntryService()->getAcceptedRevisions();
 	
 	echo '<definitions>';
-	foreach ($definitions as $definition)
-		Xml::definition($definition, FALSE);
+	foreach ($revisions as $revision)
+		Xml::revision($revision, FALSE);
 	echo '</definitions>';
 }
 

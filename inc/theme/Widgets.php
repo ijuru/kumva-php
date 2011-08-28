@@ -156,7 +156,7 @@ class Widgets {
 	 * Creates a table of function statistics
 	 */
 	public static function wordClassStatistics() {
-		$stats = Dictionary::getDefinitionService()->getWordClassCounts();
+		$stats = Dictionary::getEntryService()->getWordClassCounts();
 		
 		echo '<table class="widget-tagstats">';
 		echo '<tr>';

@@ -74,30 +74,30 @@ $(function() {
 		<?php 
 		if ($search->hasResults()) {
 			foreach($search->getResults() as $entry) {
-				$definition = $entry->getHead();
+				$revision = $entry->getHead();
 				
 				$itemUrl = 'entry.php?id='.$entry->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
 				$editUrl = 'entryedit.php?id='.$entry->getId().'&amp;ref='.urlencode(KUMVA_URL_CURRENT);
-				$meanings = BeanUtils::getPropertyOfAll($definition->getMeanings(), 'meaning');
+				$meanings = BeanUtils::getPropertyOfAll($revision->getMeanings(), 'meaning');
 				?>
 				<tr class="rowlink" onclick="aka_goto('<?php echo $itemUrl; ?>')">
 					<td>&nbsp;</td>
 					<td>
 					<?php 
-						if ($definition->isProposedRevision())
+						if ($revision->isProposed())
 							Templates::icon('proposal', KU_STR_PROPOSAL);
 						else
 						 	Templates::icon('entry', KU_STR_ENTRY);
 					?>
 					</td>
-					<td class="prefix" style="padding-right: 0; text-align: right"><?php echo $definition->getPrefix(); ?></td>
-					<td class="lemma primarycol" style="padding-left: 0; text-align: left"><?php echo $definition->getLemma(); ?></td>
-					<td><?php echo $definition->getModifier(); ?></td>
-					<td style="text-align: center"><?php echo $definition->getPronunciation(); ?></td>
-					<td style="text-align: center"><?php echo $definition->getWordClass(); ?></td>
-					<td style="text-align: center"><?php echo aka_makecsv($definition->getNounClasses()); ?></td>
+					<td class="prefix" style="padding-right: 0; text-align: right"><?php echo $revision->getPrefix(); ?></td>
+					<td class="lemma primarycol" style="padding-left: 0; text-align: left"><?php echo $revision->getLemma(); ?></td>
+					<td><?php echo $revision->getModifier(); ?></td>
+					<td style="text-align: center"><?php echo $revision->getPronunciation(); ?></td>
+					<td style="text-align: center"><?php echo $revision->getWordClass(); ?></td>
+					<td style="text-align: center"><?php echo aka_makecsv($revision->getNounClasses()); ?></td>
 					<td><?php echo implode('<br/>', $meanings); ?></td>
-					<td style="text-align: center"><?php if (!$definition->isUnverified()) Templates::icon('tick'); ?></td>
+					<td style="text-align: center"><?php if (!$revision->isUnverified()) Templates::icon('tick'); ?></td>
 					<td>
 					<?php 
 					if (Session::getCurrent()->hasRole(Role::CONTRIBUTOR))

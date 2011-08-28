@@ -91,13 +91,13 @@ class ChangeService extends Service {
 	}
 	
 	/**
-	 * Gets the definition which the given change is assigned to
+	 * Gets the revision which the given change is assigned to
 	 * @param Change change the change
-	 * @return Definition the definition
+	 * @return Revision the revision
 	 */
-	public function getChangeDefinition($change) {
-		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'definition` WHERE change_id = '.$change->getId());
-		return ($row != NULL) ? Definition::fromRow($row) : NULL;
+	public function getChangeRevision($change) {
+		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'revision` WHERE change_id = '.$change->getId());
+		return ($row != NULL) ? Revision::fromRow($row) : NULL;
 	}
 	
 	/**
@@ -153,18 +153,18 @@ class ChangeService extends Service {
 		$entry = $change->getEntry();
 		
 		// Archive the currently accepted revision
-		$accepted = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::ACCEPTED);
+		$accepted = Dictionary::getEntryService()->getEntryRevision($entry, RevisionPreset::ACCEPTED);
 		if ($accepted) {
-			$accepted->setRevisionStatus(RevisionStatus::ARCHIVED);
-			if (!Dictionary::getDefinitionService()->saveDefinition($accepted))
+			$accepted->setStatus(RevisionStatus::ARCHIVED);
+			if (!Dictionary::getEntryService()->saveRevision($accepted))
 				return FALSE;
 		}
 		
 		if ($change->getAction() == Action::CREATE || $change->getAction() == Action::MODIFY) {
 			// Mark proposal revision as accepted
-			$proposal = $this->getChangeDefinition($change);
-			$proposal->setRevisionStatus(RevisionStatus::ACCEPTED);
-			if (!Dictionary::getDefinitionService()->saveDefinition($proposal))
+			$proposal = $this->getChangeRevision($change);
+			$proposal->setStatus(RevisionStatus::ACCEPTED);
+			if (!Dictionary::getEntryService()->saveRevision($proposal))
 				return FALSE;
 		}
 	
@@ -186,9 +186,9 @@ class ChangeService extends Service {
 			
 		if ($change->getAction() == Action::CREATE || $change->getAction() == Action::MODIFY) {
 			// Archive the proposal revision
-			$proposal = $this->getChangeDefinition($change);
-			$proposal->setRevisionStatus(RevisionStatus::ARCHIVED);
-			if (!Dictionary::getDefinitionService()->saveDefinition($proposal))
+			$proposal = $this->getChangeRevision($change);
+			$proposal->setStatus(RevisionStatus::ARCHIVED);
+			if (!Dictionary::getEntryService()->saveRevision($proposal))
 				return FALSE;
 		}
 	

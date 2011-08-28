@@ -97,16 +97,16 @@ class Lexical {
 	}
 	
 	/**
-	 * Returns tag strings for the given definition. Defaults to none (empty array)
-	 * @param Definition the definition
+	 * Returns tag strings for the given revision. Defaults to none (empty array)
+	 * @param Revision the revision
 	 * @param Relationship the relationship
 	 * @return array the array of form tag strings, e.g. ['gukora', '-kora', '-koze']
 	 */
-	function autoTag($definition, $relationship) {
+	function autoTag($revision, $relationship) {
 		$lang = $relationship->getDefaultLang(TRUE);
 		$func = 'autotag_'.$relationship->getName();
 		if (self::hasLangFunction($lang, $func))
-			return self::callLangFunction($lang, $func, array($definition));
+			return self::callLangFunction($lang, $func, array($revision));
 		
 		return array();
 	}

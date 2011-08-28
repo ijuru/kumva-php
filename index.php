@@ -54,7 +54,7 @@ if (isset($search) && $search->hasResults()) { ?>
 	<ul id="results">
 		<?php
 		foreach ($search->getResults() as $entry) {
-			echo '<li class="definition">';
+			echo '<li class="entry">';
 			Templates::entry($entry);
 			echo '</li>';
 		}

@@ -122,12 +122,12 @@ require_once KUMVA_DIR_INC.'/tag/Relationship.php';
 require_once KUMVA_DIR_INC.'/tag/Tag.php';
 require_once KUMVA_DIR_INC.'/tag/TagService.php';
 
-require_once KUMVA_DIR_INC.'/definition/WordClass.php';
-require_once KUMVA_DIR_INC.'/definition/Example.php';
-require_once KUMVA_DIR_INC.'/definition/Meaning.php';
-require_once KUMVA_DIR_INC.'/definition/Definition.php';
-require_once KUMVA_DIR_INC.'/definition/Entry.php';
-require_once KUMVA_DIR_INC.'/definition/DefinitionService.php';
+require_once KUMVA_DIR_INC.'/entry/WordClass.php';
+require_once KUMVA_DIR_INC.'/entry/Example.php';
+require_once KUMVA_DIR_INC.'/entry/Meaning.php';
+require_once KUMVA_DIR_INC.'/entry/Revision.php';
+require_once KUMVA_DIR_INC.'/entry/Entry.php';
+require_once KUMVA_DIR_INC.'/entry/EntryService.php';
 
 require_once KUMVA_DIR_INC.'/change/Comment.php';
 require_once KUMVA_DIR_INC.'/change/Change.php';

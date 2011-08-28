@@ -111,7 +111,7 @@ class Change extends Entity {
 	 */
 	public function getEntry() {
 		if (!$this->entry && $this->entryId)
-			$this->entry = Dictionary::getDefinitionService()->getEntry($this->entryId);
+			$this->entry = Dictionary::getEntryService()->getEntry($this->entryId);
 			
 		return $this->entry;
 	}
@@ -283,12 +283,12 @@ class Change extends Entity {
 	public function toString() {
 		if ($this->getAction() == Action::DELETE) {
 			$entry = $this->getEntry();
-			$definition = Dictionary::getDefinitionService()->getEntryRevision($entry, Revision::LAST);
+			$revision = Dictionary::getEntryService()->getEntryRevision($entry, Revision::LAST);
 		}
 		else
-			$definition = Dictionary::getChangeService()->getChangeDefinition($this);
+			$revision = Dictionary::getChangeService()->getChangeRevision($this);
 
-		return '#'.$this->id.' '.strtolower(Action::toString($this->action)).'('.$definition->getPrefix().$definition->getLemma().')';
+		return '#'.$this->id.' '.strtolower(Action::toString($this->action)).'('.$revision->getPrefix().$revision->getLemma().')';
 	}	
 }
 

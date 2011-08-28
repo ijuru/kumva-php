@@ -39,7 +39,7 @@ if ($q != '') {
 	$search->run($source);
 	
 	foreach ($search->getResults() as $entry)
-		Xml::definition($entry->getHead());
+		Xml::revision($entry->getHead());
 		
 	echo '</definitions>';
 }

@@ -49,7 +49,7 @@ function installSearchEngine() {
 	</li>
 	<li>
 		<p><a name="howaccurate" /><b>How accurate is this dictionary?</b><br/>
-		All dictionaries have mistakes and this dictionary is no exception. This dictionary is also very much still a work in progress. Some definitions have been copied from older dictionaries and have not yet been verified. If you find something that you think is incorrect, please <a href="feedback.php">tell us</a>.</p>
+		All dictionaries have mistakes and this dictionary is no exception. This dictionary is also very much still a work in progress. Some entries have been copied from older dictionaries and have not yet been verified. If you find something that you think is incorrect, please <a href="feedback.php">tell us</a>.</p>
 	</li>
     <li>
     	<p><a name="download" /><b>Can I download the dictionary?</b><br/>
