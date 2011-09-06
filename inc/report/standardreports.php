@@ -44,7 +44,7 @@ kumva_registerreport('tags-categories', 'Used category tags', 'kumva_report_tags
  * @param Paging paging the paging object
  */
 function kumva_report_nowordclass($paging) {
-	$sql = "SELECT SQL_CALC_FOUND_ROWS d.definition_id as `#Definition`
+	$sql = "SELECT SQL_CALC_FOUND_ROWS r.definition_id as `#Definition`
 			FROM `".KUMVA_DB_PREFIX."revision` r 
 			WHERE r.status = 1 AND (r.wordclass IS NULL OR r.wordclass = '')";
 	
@@ -56,7 +56,7 @@ function kumva_report_nowordclass($paging) {
  * @param Paging paging the paging object
  */
 function kumva_report_nopronunciation($paging) {
-	$sql = "SELECT SQL_CALC_FOUND_ROWS d.definition_id as `#Definition`
+	$sql = "SELECT SQL_CALC_FOUND_ROWS r.definition_id as `#Definition`
 			FROM `".KUMVA_DB_PREFIX."revision` r 
 			WHERE r.status = 1 AND (r.pronunciation IS NULL OR r.pronunciation = '')";
 	
@@ -68,9 +68,9 @@ function kumva_report_nopronunciation($paging) {
  * @param Paging paging the paging object
  */
 function kumva_report_noexamples($paging) {
-	$sql = "SELECT SQL_CALC_FOUND_ROWS d.definition_id as `#Definition`
+	$sql = "SELECT SQL_CALC_FOUND_ROWS r.definition_id as `#Definition`
 			FROM `".KUMVA_DB_PREFIX."revision` r
-			WHERE r.status = 1 AND d.definition_id NOT IN (
+			WHERE r.status = 1 AND r.definition_id NOT IN (
 				SELECT DISTINCT definition_id FROM `".KUMVA_DB_PREFIX."example`
 			)";
 	
@@ -82,9 +82,9 @@ function kumva_report_noexamples($paging) {
  * @param Paging paging the paging object
  */
 function kumva_report_notags($paging) {
-	$sql = "SELECT SQL_CALC_FOUND_ROWS d.definition_id as `#Definition`
+	$sql = "SELECT SQL_CALC_FOUND_ROWS r.definition_id as `#Definition`
 			FROM `".KUMVA_DB_PREFIX."revision` r
-			WHERE r.status = 1 AND d.definition_id NOT IN (
+			WHERE r.status = 1 AND r.definition_id NOT IN (
 				SELECT DISTINCT definition_id FROM `".KUMVA_DB_PREFIX."revision_tag`
 			)";
 	
