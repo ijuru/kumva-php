@@ -29,28 +29,18 @@ $incChanges = (bool)Request::getGetParam('changes', FALSE);
 
 if ($incChanges)
 	Session::requireRole(Role::ADMINISTRATOR);
+	
+$entries = Dictionary::getEntryService()->getEntries($incChanges);
 
 header('Content-type: text/xml');
 header('Content-Disposition: attachment; filename='.($incChanges ? 'entries' : 'definitions').'-'.date('Y-m-d').'.xml');
 
 Xml::header();
 
-if ($incChanges) {
-	$entries = Dictionary::getEntryService()->getEntries();
-	
-	echo '<entries>';
-	foreach ($entries as $entry)
-		Xml::entry($entry);
-	echo '</entries>';	
-}
-else {	
-	$definitions = Dictionary::getEntryService()->getAcceptedRevisions();
-	
-	echo '<definitions>';
-	foreach ($revisions as $revision)
-		Xml::revision($revision, FALSE);
-	echo '</definitions>';
-}
+echo '<entries>';
+foreach ($entries as $entry)
+	Xml::entry($entry, $incChanges);
+echo '</entries>';	
 
 Xml::footer();
 

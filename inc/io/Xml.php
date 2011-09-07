@@ -44,14 +44,20 @@ class Xml {
 	/**
 	 * Outputs the given entry
 	 * @param Entry entry the entry
+	 * @param bool incChanges whether proposed and historical revisions should be included, and change records
 	 */
-	public static function entry($entry) {
+	public static function entry($entry, $incChanges = true) {
 		echo '<entry id="'.$entry->getId().'">';
 		
-		$revisions = Dictionary::getEntryService()->getEntryRevisions($entry);
-	
-		foreach ($revisions as $revision)
-			Xml::revision($revision, TRUE);
+		if ($incChanges) {
+			$revisions = Dictionary::getEntryService()->getEntryRevisions($entry);
+			foreach ($revisions as $revision)
+				Xml::revision($revision, true);
+		} else {
+			$revision = Dictionary::getEntryService()->getEntryRevision($entry, RevisionPreset::ACCEPTED);
+			if ($revision)
+				Xml::revision($revision, false);
+		}
 		
 		echo '</entry>';
 	}
@@ -60,12 +66,19 @@ class Xml {
  	 * Outputs the given revision
  	 * @param Revision revision the revision
  	 * @param bool incChange TRUE to include this revision's change information
+ 	 * @param bool asDefinition outputs the revision as an unrevisioned definition
 	 */
-	public static function revision($revision, $incChange = FALSE) {
+	public static function revision($revision, $incChange = false, $asDefinition = false) {
 		
-		echo '<revision ';
-		echo 'number="'.aka_prepxmlval($revision->getNumber()).'" ';
-		echo 'status="'.strtolower(RevisionStatus::toString($revision->getStatus())).'" ';
+		if ($asDefinition) {
+			echo '<definition ';
+			echo 'entryid="'.aka_prepxmlval($revision->getEntry()->getId()).'" ';
+		} else {
+			echo '<revision ';
+			echo 'number="'.aka_prepxmlval($revision->getNumber()).'" ';
+			echo 'status="'.strtolower(RevisionStatus::toString($revision->getStatus())).'" ';
+		}
+		
 		echo 'wordclass="'.$revision->getWordClass().'" ';
 		echo 'nounclasses="'.implode(',', $revision->getNounClasses()).'" ';
 		echo 'unverified="'.aka_prepxmlval($revision->isUnverified()).'">';
@@ -104,7 +117,10 @@ class Xml {
 		if ($incChange && $revision->getChange()) 
 			self::change($revision->getChange());
 		
-		echo '</revision>';
+		if ($asDefinition)
+			echo '</definition>';
+		else
+			echo '</revision>';
 	}
 	
 	/**

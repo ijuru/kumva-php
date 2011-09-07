@@ -36,10 +36,15 @@ class EntryService extends Service {
 	
 	/**
 	 * Gets all the entries
+	 * @param string onlyAccepted only entries with an accepted revision (default FALSE)
 	 * @return array the entries
 	 */
-	public function getEntries() {
-		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'entry`';
+	public function getEntries($onlyAccepted = FALSE) {
+		$sql = 'SELECT e.* FROM `'.KUMVA_DB_PREFIX.'entry` e ';
+		
+		if ($onlyAccepted)
+			$sql .= 'INNER JOIN `'.KUMVA_DB_PREFIX.'revision` r ON r.entry_id = e.entry_id AND r.status = 1';
+		
 		return Entry::fromQuery($this->database->query($sql));
 	}
 	
