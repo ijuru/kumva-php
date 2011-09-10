@@ -26,7 +26,7 @@ $login = Request::getPostParam('login');
 $password = Request::getPostParam('password');
 
 if ($login != '' && $password != '') {
-	if (Session::getCurrent()->login($login, $password)) {
+	if (Session::getCurrent()->login($login, $password, null)) {
 		$ref = Request::getGetParam('ref');
 		Request::redirect(($ref != '') ? $ref : KUMVA_URL_ROOT.'/admin/index.php');
 	}

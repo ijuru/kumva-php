@@ -38,10 +38,10 @@ class Session {
 	
 	public function __construct() {
 		// Attempt authentication by cookies
-		$login = Request::getCookie('login', '');
-		$password = Request::getCookie('password', '');	
-		if ($login && $password)
-			$this->login($login, $password);
+		$login = Request::getCookie('login', null);
+		$token = Request::getCookie('token', null);	
+		if ($login && $token)
+			$this->login($login, null, $token);
 		
 		// TODO make default language configurable
 		$this->lang = 'en';
@@ -64,10 +64,13 @@ class Session {
 	}
 
 	/**
-	 * Attempts to login the current user
+	 * Attempts to login the specified user
+	 * @param string login the login name
+	 * @param string password the (client) encrypted password
+	 * @param string token the "remember me" token
 	 * @return bool TRUE if login was successfull, else FALSE
 	 */
-	public function login($login, $password, $remember = TRUE) {
+	public function login($login, $password, $token, $remember = true) {
 		session_regenerate_id();
 		
 		$user = Dictionary::getUserService()->getUserByLogin($login);
@@ -85,18 +88,24 @@ class Session {
 				return false;
 			}
 			
-			if ($user->checkPassword($password)) {
+			// Do check by password or token, whatever was provided
+			$result = $password ? $user->checkPassword($password) : ($token && $token == $user->getRememberToken());
+			
+			if ($result) {
 				// Update user login record
 				$now = time();
+				$token = sha1(uniqid());
+				
+				$user->setRememberToken($token);
 				$user->setLastLogin($now);
 				$user->setLastLoginAttempt($now);
 				$user->setFailedLoginAttempts(0);
 				Dictionary::getUserService()->saveUser($user, null, false);
 			
-				// Store credentials in cookies
+				// Store login and new "remember me" token in cookies
 				if ($remember) {
 					Request::setCookie('login', $login, 60*60*24*7);
-					Request::setCookie('password', $password, 60*60*24*7);
+					Request::setCookie('token', $token, 60*60*24*7);
 				}
 				
 				$this->user = $user;
@@ -125,7 +134,7 @@ class Session {
 		
 		// Clear the username/password cookies
 		Request::clearCookie('login');
-		Request::clearCookie('password');
+		Request::clearCookie('token');
 	}
 	
 	/**

@@ -32,6 +32,7 @@ class User extends Entity {
 	private $lastLogin;
 	private $lastLoginAttempt;
 	private $failedLoginAttempts;
+	private $rememberToken;
 	
 	// Lazy loaded properties
 	private $roles;
@@ -48,9 +49,10 @@ class User extends Entity {
 	 * @param int lastLogin the last login timestamp
 	 * @param int lastLoginAttempt the last login attempt timestamp
 	 * @param int failedLoginAttempts number of failed login attempts
+	 * @param string rememberToken the remember me token
 	 * @param bool voided TRUE if user is voided
 	 */
-	public function __construct($id = 0, $login = '', $name = '', $email = null, $website = null, $timezone = null, $lastLogin = null, $lastLoginAttempt = null, $failedLoginAttempts = 0, $voided = false) {
+	public function __construct($id = 0, $login = '', $name = '', $email = null, $website = null, $timezone = null, $lastLogin = null, $lastLoginAttempt = null, $failedLoginAttempts = 0, $rememberToken = null, $voided = false) {
 		$this->id = (int)$id;
 		$this->login = $login;
 		$this->name = $name;
@@ -60,6 +62,7 @@ class User extends Entity {
 		$this->lastLogin = (int)$lastLogin;
 		$this->lastLoginAttempt = (int)$lastLoginAttempt;
 		$this->failedLoginAttempts = (int)$failedLoginAttempts;
+		$this->rememberToken = $rememberToken;
 		$this->voided = (bool)$voided;
 	}
 	
@@ -69,7 +72,17 @@ class User extends Entity {
 	 * @return User the user
 	 */
 	public static function fromRow(&$row) {
-		return new User($row['user_id'], $row['login'], $row['name'], $row['email'], $row['website'], $row['timezone'], aka_timefromsql($row['lastlogin']), aka_timefromsql($row['lastloginattempt']), $row['failedloginattempts'], $row['voided']);
+		return new User($row['user_id'], 
+			$row['login'], 
+			$row['name'], 
+			$row['email'], 
+			$row['website'], 
+			$row['timezone'], 
+			aka_timefromsql($row['lastlogin']), 
+			aka_timefromsql($row['lastloginattempt']), 
+			$row['failedloginattempts'], 
+			$row['remembertoken'], 
+			$row['voided']);
 	}
 	
 	/**
@@ -198,6 +211,22 @@ class User extends Entity {
 	 */
 	public function setFailedLoginAttempts($failedLoginAttempts) {
 		$this->failedLoginAttempts = (int)$failedLoginAttempts;
+	}
+	
+	/**
+	 * Gets the "remember me" token
+	 * @return string the token
+	 */
+	public function getRememberToken() {
+		return $this->rememberToken;
+	}
+	
+	/**
+	 * Sets the "remember me" token
+	 * @param string rememberToken the token
+	 */
+	public function setRememberToken($rememberToken) {
+		$this->rememberToken = $rememberToken;
 	}
 	
 	/**

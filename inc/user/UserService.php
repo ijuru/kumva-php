@@ -221,6 +221,7 @@ class UserService extends Service {
 				.'NULL,'
 				.'NULL,'
 				.aka_prepsqlval($user->getFailedLoginAttempts()).','
+				.aka_prepsqlval($user->getRememberToken()).','
 				.aka_prepsqlval($user->isVoided()).')';
 			
 			$res = $this->database->insert($sql);
@@ -245,6 +246,7 @@ class UserService extends Service {
 				.'lastlogin = '.aka_timetosql($user->getLastLogin()).', '
 				.'lastloginattempt = '.aka_timetosql($user->getLastLoginAttempt()).', '
 				.'failedloginattempts = '.aka_prepsqlval($user->getFailedLoginAttempts()).', '
+				.'remembertoken = '.aka_timetosql($user->getRememberToken()).', '
 				.'voided = '.aka_prepsqlval($user->isVoided()).' '
 				.'WHERE user_id = '.$user->getId();
 
