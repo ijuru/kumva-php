@@ -109,6 +109,10 @@ class Templates {
 	
 			echo ' ('.KU_STR_ALSO.' '.implode(', ', $tagsHtml).') ';
 		}
+		
+		echo ' ';
+		Templates::icon('bullet_arrow_right');
+		echo ' ';
 
 		// Display meanings with parsed references
 		$meanings = $revision->getMeanings();
@@ -116,7 +120,6 @@ class Templates {
 		$number = 1;
 		foreach ($meanings as $meaning) {
 			$meaningText = self::parseReferences(aka_prephtml($meaning->getMeaning()), 'index.php');
-			echo '&nbsp;&nbsp;';
 			if ($numbered)
 				echo ($number++).'. ';
 				
@@ -127,6 +130,8 @@ class Templates {
 				if ($meaning->getFlag($flag))
 					echo '&nbsp;<span class="flag">'.Flags::toString($flag).'</span>';
 			}
+			
+			echo ' ';
 		}
 	
 		// Display comment with parsed references
