@@ -105,7 +105,7 @@ class Request {
 	 */
 	public static function clearCookie($name) {
 		unset($_COOKIE[$name]);
-		return setcookie($name, '', time());
+		return setcookie($name, '', 1);
 	}
 
 	/**
