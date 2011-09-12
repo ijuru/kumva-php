@@ -283,7 +283,7 @@ class Change extends Entity {
 	public function toString() {
 		if ($this->getAction() == Action::DELETE) {
 			$entry = $this->getEntry();
-			$revision = Dictionary::getEntryService()->getEntryRevision($entry, Revision::LAST);
+			$revision = Dictionary::getEntryService()->getEntryRevision($entry, RevisionPreset::LAST);
 		}
 		else
 			$revision = Dictionary::getChangeService()->getChangeRevision($this);

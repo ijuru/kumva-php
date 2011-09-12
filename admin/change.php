@@ -28,7 +28,7 @@ $changeId = (int)Request::getGetParam('id', 0);
 $change = Dictionary::getChangeService()->getChange($changeId);
 if ($change->getAction() == Action::DELETE) {
 	$entry = $change->getEntry();
-	$revision = Dictionary::getEntryService()->getEntryRevision($entry, Revision::LAST);
+	$revision = Dictionary::getEntryService()->getEntryRevision($entry, RevisionPreset::LAST);
 }
 else {
 	$revision = Dictionary::getChangeService()->getChangeRevision($change);
