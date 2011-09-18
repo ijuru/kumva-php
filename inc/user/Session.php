@@ -94,7 +94,7 @@ class Session {
 			if ($result) {
 				// Update user login record
 				$now = time();
-				$token = sha1(uniqid());
+				$token = $token ? $token : sha1(uniqid());
 				
 				$user->setRememberToken($token);
 				$user->setLastLogin($now);

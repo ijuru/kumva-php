@@ -246,7 +246,7 @@ class UserService extends Service {
 				.'lastlogin = '.aka_timetosql($user->getLastLogin()).', '
 				.'lastloginattempt = '.aka_timetosql($user->getLastLoginAttempt()).', '
 				.'failedloginattempts = '.aka_prepsqlval($user->getFailedLoginAttempts()).', '
-				.'remembertoken = '.aka_timetosql($user->getRememberToken()).', '
+				.'remembertoken = '.aka_prepsqlval($user->getRememberToken()).', '
 				.'voided = '.aka_prepsqlval($user->isVoided()).' '
 				.'WHERE user_id = '.$user->getId();
 
