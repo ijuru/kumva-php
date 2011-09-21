@@ -28,7 +28,7 @@ Xml::header();
 
 ?>
 	<site>
-		<name><?php echo KUMVA_TITLE_LONG; ?></name>
+		<name><?php echo KUMVA_TITLE_SHORT; ?></name>
 		<definitionlang><?php echo KUMVA_LANG_DEFS; ?></definitionlang>
 		<meaninglang><?php echo KUMVA_LANG_MEANING; ?></meaninglang>
 		<kumvaversion><?php echo KUMVA_VERSION; ?></kumvaversion>
