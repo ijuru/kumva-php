@@ -65,7 +65,7 @@ class EntryService extends Service {
 	 * @return Revision the revision
 	 */
 	public function getRevision($id) {
-		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'revision` WHERE definition_id = '.$id);
+		$row = $this->database->row('SELECT * FROM `'.KUMVA_DB_PREFIX.'revision` WHERE revision_id = '.$id);
 		return ($row != NULL) ? Revision::fromRow($row) : NULL;
 	}
 	
@@ -115,7 +115,7 @@ class EntryService extends Service {
 	 */
 	public function getRevisionNounClasses($revision) {
 		$sql = 'SELECT `nounclass` FROM `'.KUMVA_DB_PREFIX.'revision_nounclass` 
-		        WHERE `definition_id` = '.$revision->getId().'
+		        WHERE `revision_id` = '.$revision->getId().'
 		        ORDER BY `order` ASC';
 		$res = $this->database->query($sql);
 		$classes = array();
@@ -133,7 +133,7 @@ class EntryService extends Service {
 	 */
 	public function getRevisionMeanings($revision) {
 		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'meaning` 
-				WHERE definition_id = '.$revision->getId().' 
+				WHERE revision_id = '.$revision->getId().' 
 				ORDER BY `order` ASC';
 		return Meaning::fromQuery($this->database->query($sql));
 	}
@@ -147,7 +147,7 @@ class EntryService extends Service {
 	public function getRevisionTags($revision, $relationshipId) {
 		$sql = 'SELECT t.* FROM `'.KUMVA_DB_PREFIX.'tag` t 
 				INNER JOIN `'.KUMVA_DB_PREFIX.'revision_tag` dt ON dt.tag_id = t.tag_id
-				WHERE dt.definition_id = '.$revision->getId().' AND dt.relationship_id = '.$relationshipId.' 
+				WHERE dt.revision_id = '.$revision->getId().' AND dt.relationship_id = '.$relationshipId.' 
 				ORDER BY dt.order ASC';		
 		return Tag::fromQuery($this->database->query($sql));
 	}
@@ -158,7 +158,7 @@ class EntryService extends Service {
 	 * @return array the examples
 	 */
 	public function getRevisionExamples($revision) {
-		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'example` WHERE definition_id = '.$revision->getId();
+		$sql = 'SELECT * FROM `'.KUMVA_DB_PREFIX.'example` WHERE revision_id = '.$revision->getId();
 		return Example::fromQuery($this->database->query($sql));
 	}
 	
@@ -228,7 +228,7 @@ class EntryService extends Service {
 				.'pronunciation = '.aka_prepsqlval($revision->getPronunciation()).','
 				.'comment = '.aka_prepsqlval($revision->getComment()).','
 				.'unverified = '.aka_prepsqlval($revision->isUnverified()).' '
-				.'WHERE definition_id = '.$revision->getId();
+				.'WHERE revision_id = '.$revision->getId();
 			
 			if ($this->database->query($sql) === FALSE)
 				return FALSE;
@@ -253,7 +253,7 @@ class EntryService extends Service {
 		$nounClasses = $revision->getNounClasses();
 	
 		// Delete any existing class assocations for this revision
-		$this->database->query('DELETE FROM `'.KUMVA_DB_PREFIX.'revision_nounclass` WHERE `definition_id` = '.$revision->getId());
+		$this->database->query('DELETE FROM `'.KUMVA_DB_PREFIX.'revision_nounclass` WHERE `revision_id` = '.$revision->getId());
 		
 		$order = 0;
 		foreach ($nounClasses as $cls) {
@@ -273,7 +273,7 @@ class EntryService extends Service {
 		$meanings = $revision->getMeanings();
 	
 		// Delete any existing class assocations for this revision
-		$this->database->query('DELETE FROM `'.KUMVA_DB_PREFIX.'meaning` WHERE `definition_id` = '.$revision->getId());
+		$this->database->query('DELETE FROM `'.KUMVA_DB_PREFIX.'meaning` WHERE `revision_id` = '.$revision->getId());
 		
 		$order = 0;
 		foreach ($meanings as $meaning) {
@@ -304,7 +304,7 @@ class EntryService extends Service {
 			$revision->getTags($relationship->getId());
 	
 		// Remove any existing tags for this revision
-		if ($this->database->query('DELETE FROM `'.KUMVA_DB_PREFIX.'revision_tag` WHERE `definition_id` = '.$revision->getId()) === FALSE)
+		if ($this->database->query('DELETE FROM `'.KUMVA_DB_PREFIX.'revision_tag` WHERE `revision_id` = '.$revision->getId()) === FALSE)
 			return FALSE;
 		
 		foreach ($relationships as $relationship) {
@@ -337,7 +337,7 @@ class EntryService extends Service {
 		$examples = $revision->getExamples();
 	
 		// Delete any existing examples for this revision
-		$this->database->query('DELETE FROM `'.KUMVA_DB_PREFIX.'example` WHERE `definition_id` = '.$revision->getId());
+		$this->database->query('DELETE FROM `'.KUMVA_DB_PREFIX.'example` WHERE `revision_id` = '.$revision->getId());
 		
 		foreach ($examples as $example) {
 			$sql = 'INSERT INTO `'.KUMVA_DB_PREFIX.'example` VALUES('

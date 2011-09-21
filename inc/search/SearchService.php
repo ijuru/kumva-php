@@ -54,7 +54,7 @@ class SearchService extends Service {
 		/////////// Tag based criteria /////////////
 		
 		$sql .= "INNER JOIN (
-				 SELECT rt.definition_id, MAX(rt.weight) as `maxtagweight` FROM `".KUMVA_DB_PREFIX."revision_tag` rt
+				 SELECT rt.revision_id, MAX(rt.weight) as `maxtagweight` FROM `".KUMVA_DB_PREFIX."revision_tag` rt
 				 INNER JOIN `".KUMVA_DB_PREFIX."tag` t ON rt.tag_id = t.tag_id ";
 			
 		$tagCriteria = array();
@@ -97,8 +97,8 @@ class SearchService extends Service {
 		if (!$proposals)
 			$sql .= 'AND rt.active = 1 ';
 		
-		$sql .= "  GROUP BY rt.definition_id ";			
-		$sql .= ") m ON m.definition_id = r.definition_id ";
+		$sql .= "  GROUP BY rt.revision_id ";			
+		$sql .= ") m ON m.revision_id = r.revision_id ";
 		
 		/////////////////// Revision/entry criteria //////////////////
 		

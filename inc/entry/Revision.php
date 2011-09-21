@@ -105,7 +105,7 @@ class Revision extends Entity {
 	 * @return Revision the revision
 	 */
 	public static function fromRow(&$row) {
-		return new Revision($row['definition_id'], $row['entry_id'], $row['number'], $row['status'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['pronunciation'], $row['comment'], $row['unverified']);
+		return new Revision($row['revision_id'], $row['entry_id'], $row['number'], $row['status'], $row['change_id'], $row['wordclass'], $row['prefix'], $row['lemma'], $row['modifier'], $row['pronunciation'], $row['comment'], $row['unverified']);
 	}
 	
 	/**
