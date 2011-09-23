@@ -25,18 +25,19 @@ include_once '../inc/kumva.php';
 $q = Request::getGetParam('q');
 $source = Request::getGetParam('ref', 'xml');
 $start = max((int)Request::getGetParam('start', 0), 0);
-$limit = (int)Request::getGetParam('limit', 0);
+$limit = max((int)Request::getGetParam('limit', 0), 0);
 
 header("Content-type: text/xml");
 
 Xml::header();
 
-if ($q != '') {
-	echo '<definitions query="'.htmlspecialchars($q).'">';
-	
-	$paging = ($limit > 0) ? new Paging($start, $limit) : NULL;			
-	$search = new Search($q, FALSE, $paging);
+if ($q != '') {	
+	$paging = ($limit > 0) ? new Paging($start, $limit) : null;			
+	$search = new Search($q, $paging);
 	$search->run($source);
+	
+	echo '<definitions query="'.htmlspecialchars($q).'" ';
+	echo '>';
 	
 	foreach ($search->getResults() as $entry)
 		Xml::revision($entry->getHead(), false, true);
