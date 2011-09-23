@@ -37,6 +37,10 @@ if ($q != '') {
 	$search->run($source);
 	
 	echo '<definitions query="'.htmlspecialchars($q).'" ';
+	
+	if ($search->getSuggestionPattern())
+		echo 'suggestion="'.$search->getSuggestionPattern().'" ';
+	
 	echo '>';
 	
 	foreach ($search->getResults() as $entry)
