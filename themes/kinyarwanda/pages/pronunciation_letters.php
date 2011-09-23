@@ -157,5 +157,5 @@
 <h3>Regional variation</h3>
 <ul>
 	<li><span lang="rw">ge</span> and <span lang="rw">gi</span> are pronounced hard by people living near to the DRC and Burundi, but soft by people from central Rwanda, e.g. <span lang="rw"><?php ku_query('tugende'); ?></span> sounds like <i>too-jen-day</i> <?php Widgets::sound(4224); ?> in Kigali
-	<li><span lang="rw">ke</span> and <span lang="rw">ki</span> can be hard or soft. People from <span lang="rw"><?php ku_query('Kigali'); ?></span> usually pronounce it as <i>chee-ga-ree</i> <?php Widgets::sound(4050); ?></li>
+	<li><span lang="rw">ke</span> and <span lang="rw">ki</span> can be hard or soft. People from <span lang="rw"><?php ku_query('Kigali'); ?></span> usually pronounce it as <i>chee-ga-ree</i> <?php Widgets::sound(4050); ?>. The exception to this rule is when a <span lang="rw">ke</span> is a result of a contraction of <span lang="rw">ka+i</span>. For example <span lang="rw"><?php ku_query('kenshi'); ?></span> is always pronounced with a hard k.</li>
 </ul>
