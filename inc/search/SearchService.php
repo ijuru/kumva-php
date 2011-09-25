@@ -193,7 +193,7 @@ class SearchService extends Service {
 	 */
 	public function getSearchSourcesByCount($since, $max = 10) {
 		$sql = 'SELECT `source`, COUNT(`search_id`) as `count` FROM `'.KUMVA_DB_PREFIX.'searchrecord` 
-				WHERE `timestamp` > '.$since.'
+				WHERE `timestamp` > FROM_UNIXTIME('.$since.')
 				GROUP BY `source` ORDER BY `count` DESC LIMIT 0, '.$max;
 			
 		return $this->database->rows($sql);
