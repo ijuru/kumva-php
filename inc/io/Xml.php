@@ -59,6 +59,11 @@ class Xml {
 				Xml::revision($revision, false);
 		}
 		
+		if ($entry->hasMedia(Media::AUDIO))
+			echo '<media type="audio" url="'.KUMVA_URL_MEDIA.'/audio/'.$entry->getId().'.mp3" />';
+		if ($entry->hasMedia(Media::IMAGE))
+			echo '<media type="audio" url="'.KUMVA_URL_MEDIA.'/image/'.$entry->getId().'.jpg" />';
+		
 		echo '</entry>';
 	}
 
@@ -72,7 +77,6 @@ class Xml {
 		
 		if ($asDefinition) {
 			echo '<definition ';
-			echo 'entryid="'.aka_prepxmlval($revision->getEntry()->getId()).'" ';
 		} else {
 			echo '<revision ';
 			echo 'number="'.aka_prepxmlval($revision->getNumber()).'" ';

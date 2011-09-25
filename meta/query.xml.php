@@ -26,6 +26,7 @@ $q = Request::getGetParam('q');
 $source = Request::getGetParam('ref', 'xml');
 $start = max((int)Request::getGetParam('start', 0), 0);
 $limit = max((int)Request::getGetParam('limit', 0), 0);
+$asEntries = (bool)Request::getGetParam('entries', false);
 
 header("Content-type: text/xml");
 
@@ -36,17 +37,26 @@ if ($q != '') {
 	$search = new Search($q, $paging);
 	$search->run($source);
 	
-	echo '<definitions query="'.htmlspecialchars($q).'" ';
-	
-	if ($search->getSuggestionPattern())
-		echo 'suggestion="'.$search->getSuggestionPattern().'" ';
-	
-	echo '>';
-	
-	foreach ($search->getResults() as $entry)
-		Xml::revision($entry->getHead(), false, true);
-		
-	echo '</definitions>';
+	if ($asEntries) {
+		// New entry/revision format for Kumva Andriod 1.4+
+		echo '<entries query="'.htmlspecialchars($q).'" ';	
+		if ($search->getSuggestionPattern())
+			echo 'suggestion="'.$search->getSuggestionPattern().'" ';	
+		echo '>';	
+		foreach ($search->getResults() as $entry)
+			Xml::entry($entry, false);			
+		echo '</entries>';	
+	}
+	else {
+		// Old format used by Kumva Android <= 1.3 and Nyaruka SMS
+		echo '<definitions query="'.htmlspecialchars($q).'" ';	
+		if ($search->getSuggestionPattern())
+			echo 'suggestion="'.$search->getSuggestionPattern().'" ';	
+		echo '>';	
+		foreach ($search->getResults() as $entry)
+			Xml::revision($entry->getHead(), false, true);			
+		echo '</definitions>';	
+	}
 }
 
 echo Xml::footer();
