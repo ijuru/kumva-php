@@ -97,6 +97,9 @@ require_once KUMVA_DIR_INC.'/user/UserService.php';
 
 //////////////////////////// Configure localization ////////////////////////////////
 
+// Load default English messages
+ku_loadlang('en');
+
 // Default to UTC
 date_default_timezone_set('UTC');
 
@@ -106,8 +109,12 @@ if ($lang = Request::getGetParam('lang', '')) {
 		Session::getCurrent()->setLang($language->getCode());
 }	
 
-// Load site translation
-include_once(KUMVA_DIR_ROOT.'/lang/'.Session::getCurrent()->getLang().'/site.php');
+// Load user localized site translation
+if (Session::getCurrent()->getLang() != 'en')
+	ku_loadlang(Session::getCurrent()->getLang());
+
+// Generate language constants (deprecated)
+ku_oldsiteconstants();
 
 // Configure timezone
 if (Session::getCurrent()->isAuthenticated() && Session::getCurrent()->getUser()->getTimezone())

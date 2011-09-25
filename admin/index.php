@@ -46,7 +46,7 @@ include_once 'tpl/header.php';
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 	<tr>
 		<td width="33%" valign="top">	
-			<h3><?php echo KU_STR_CONTENT; ?></h3>
+			<h3><?php echo ku_message('str_content'); ?></h3>
 	
 			<div class="description">
 				Dictionary contains:
@@ -62,7 +62,7 @@ include_once 'tpl/header.php';
 			</div>
 		</td>
 		<td width="33%" valign="top">
-			<h3><?php echo KU_STR_SEARCHES; ?></h3>
+			<h3><?php echo ku_message('str_searches'); ?></h3>
 			
 			<div class="description">
 				Search activity in last month:
@@ -85,7 +85,7 @@ include_once 'tpl/header.php';
 			</div>
 		</td>
 		<td width="34%" valign="top">
-			<h3><?php echo KU_STR_USERS; ?></h3>
+			<h3><?php echo ku_message('str_users'); ?></h3>
 			<div class="description">
 				User activity in the last month:
 				<ul>
@@ -117,24 +117,24 @@ include_once 'tpl/header.php';
 	</tr>
 	<tr>
 		<td valign="top">
-			<h3><?php echo KU_STR_CHANGES; ?></h3>
+			<h3><?php echo ku_message('str_changes'); ?></h3>
 	
 			<div class="description">
 				<ul>
-					<li><?php echo KU_STR_PENDING; ?>: <strong><a href="changes.php?status=0"><?php echo $changePending; ?></a></strong></li>
-					<li><?php echo KU_STR_ACCEPTED; ?>: <strong><a href="changes.php?status=1"><?php echo $changeAccepted; ?></a></strong></li>
-					<li><?php echo KU_STR_REJECTED; ?>: <strong><a href="changes.php?status=2"><?php echo $changeRejected; ?></a></strong></li>
+					<li><?php echo ku_message('str_pending'); ?>: <strong><a href="changes.php?status=0"><?php echo $changePending; ?></a></strong></li>
+					<li><?php echo ku_message('str_accepted'); ?>: <strong><a href="changes.php?status=1"><?php echo $changeAccepted; ?></a></strong></li>
+					<li><?php echo ku_message('str_rejected'); ?>: <strong><a href="changes.php?status=2"><?php echo $changeRejected; ?></a></strong></li>
 				</ul>
 			</div>
 		</td>
 		<td valign="top">
-			<h3><?php echo KU_STR_SERVERINFORMATION; ?></h3>
+			<h3><?php echo ku_message('str_serverinformation'); ?></h3>
 	
 			<div class="description">
 				<ul>
-					<li><?php echo KU_STR_KUMVAVERSION.': '.KUMVA_VERSION; ?></li>
-					<li><?php echo KU_STR_PHPVERSION.': '.phpversion(); ?></li>
-					<li><?php echo KU_STR_MYSQLVERSION.': '.Database::getCurrent()->getVersion(); ?></li>
+					<li><?php echo ku_message('str_kumvaversion').': '.KUMVA_VERSION; ?></li>
+					<li><?php echo ku_message('str_phpversion').': '.phpversion(); ?></li>
+					<li><?php echo ku_message('str_mysqlversion').': '.Database::getCurrent()->getVersion(); ?></li>
 				</ul>
 			</div>
 		</td>

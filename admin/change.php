@@ -111,7 +111,7 @@ include_once 'tpl/header.php';
 <script type="text/javascript">
 /* <![CDATA[ */
 function deleteComment(commentId) {
-	if (confirm('<?php echo KU_MSG_CONFIRMDELETECOMMENT; ?>')) {
+	if (confirm('<?php echo ku_message('msg_confirmdeletecomment'); ?>')) {
 		var row = $('#comment-' + commentId);
 		row.animate({ backgroundColor: '#FB6C6C' }, 300);
 		$.post('_ajax.php', { action:'delete-comment', targetId:commentId }, function(data) { row.slideUp(300, function() { row.remove(); }); }, 'json');
@@ -121,11 +121,11 @@ function onActionSubmit() {
 	var action = $('#action').val();
 	var comment = $('#comment').val();
 	if ((action == 'post' || action == 'reject') && comment == '') {
-		alert('<?php echo KU_MSG_ERRORCOMMENT; ?>');
+		alert('<?php echo ku_message('msg_errorcomment'); ?>');
 		return false;
 	}
 	if (action == 'reject')
-		return confirm('<?php echo KU_MSG_CONFIRMREJECTCHANGE; ?>');
+		return confirm('<?php echo ku_message('msg_confirmrejectchange'); ?>');
 	return true;
 }
 /* ]]> */
@@ -135,16 +135,16 @@ function onActionSubmit() {
 
 <div class="listcontrols">
 	<div style="float: left">
-		<?php Templates::buttonLink('back', Request::getGetParam('ref', 'changes.php'), KU_STR_BACK); ?>
+		<?php Templates::buttonLink('back', Request::getGetParam('ref', 'changes.php'), ku_message('str_back')); ?>
 	</div>
 	<div style="float: right">
 		<form action="" method="post">
 			<input type="hidden" name="watch" id="watch" />
 			<?php 
 			if ($curUserWatches)
-				Templates::button('unwatch', "$('#watch').val('unwatch'); aka_submit(this);", KU_STR_UNWATCH); 
+				Templates::button('unwatch', "$('#watch').val('unwatch'); aka_submit(this);", ku_message('str_unwatch')); 
 			else
-				Templates::button('watch', "$('#watch').val('watch'); aka_submit(this);", KU_STR_WATCH); 
+				Templates::button('watch', "$('#watch').val('watch'); aka_submit(this);", ku_message('str_watch')); 
 			?>
 		</form>
 	</div>
@@ -153,25 +153,25 @@ function onActionSubmit() {
 <input type="hidden" name="verdict" id="verdict" />
 <table class="form">
 	<tr>
-		<th><?php Templates::icon('entry'); ?> <?php echo KU_STR_ENTRY; ?></th>
+		<th><?php Templates::icon('entry'); ?> <?php echo ku_message('str_entry'); ?></th>
 		<td><?php Templates::wordLink($revision, $canEditDef); ?></td>
 	</tr>
 	<tr>
-		<th><?php Templates::icon('user'); ?> <?php echo KU_STR_SUBMITTED; ?></th>
+		<th><?php Templates::icon('user'); ?> <?php echo ku_message('str_submitted'); ?></th>
 		<td><?php Templates::dateTime($change->getSubmitted()); ?> by <?php Templates::userLink($change->getSubmitter()); ?></td>
 	</tr>
 	<tr>
-		<th><?php Templates::icon('status'); ?> <?php echo KU_STR_STATUS; ?></th>
+		<th><?php Templates::icon('status'); ?> <?php echo ku_message('str_status'); ?></th>
 		<td><span class="status status-<?php echo $change->getStatus(); ?>"><?php echo Status::toLocalizedString($change->getStatus()); ?></span></td>
 	</tr>
 	<?php if ($change->getResolver()) { ?>
 	<tr>
-		<th><?php Templates::icon('user_editor'); ?> <?php echo KU_STR_RESOLVED; ?></th>
+		<th><?php Templates::icon('user_editor'); ?> <?php echo ku_message('str_resolved'); ?></th>
 		<td><?php Templates::dateTime($change->getResolved()); ?> by <?php Templates::userLink($change->getResolver()); ?></td>
 	</tr>
 	<?php } ?>
 	<tr>
-		<th><?php Templates::icon('watchers'); ?> <?php echo KU_STR_WATCHERS; ?></th>
+		<th><?php Templates::icon('watchers'); ?> <?php echo ku_message('str_watchers'); ?></th>
 		<td>
 		<?php  
 		for ($w = 0; $w < count($watchers); $w++) {
@@ -183,7 +183,7 @@ function onActionSubmit() {
 		</td>
 	</tr>
 	<tr>
-		<th><?php Templates::icon('auto'); ?> <?php echo KU_STR_ACTION; ?></th>
+		<th><?php Templates::icon('auto'); ?> <?php echo ku_message('str_action'); ?></th>
 		<td><?php echo Action::toLocalizedString($change->getAction()); ?></td>
 	</tr>
 	<tr>
@@ -194,19 +194,19 @@ function onActionSubmit() {
 				
 				if ($change->getStatus() == Status::PENDING) {
 					if ($change->getAction() == Action::CREATE)
-						Diff::revisions($revision, KU_STR_PROPOSED, NULL, NULL);
+						Diff::revisions($revision, ku_message('str_proposed'), NULL, NULL);
 					elseif ($change->getAction() == Action::MODIFY)
-						Diff::revisions($accepted, KU_STR_CURRENT, $revision, KU_STR_PROPOSED);
+						Diff::revisions($accepted, ku_message('str_current'), $revision, ku_message('str_proposed'));
 					elseif ($change->getAction() == Action::DELETE)
-						Diff::revisions($accepted, KU_STR_CURRENT, NULL, NULL);
+						Diff::revisions($accepted, ku_message('str_current'), NULL, NULL);
 				}
 				else {
 					if ($change->getAction() == Action::CREATE)
-						Diff::revisions($revision, KU_STR_PROPOSED, NULL, NULL);
+						Diff::revisions($revision, ku_message('str_proposed'), NULL, NULL);
 					elseif ($change->getAction() == Action::MODIFY)
-						Diff::revisions($revision, KU_STR_PROPOSED, $accepted, KU_STR_CURRENT);
+						Diff::revisions($revision, ku_message('str_proposed'), $accepted, ku_message('str_current'));
 					elseif ($change->getAction() == Action::DELETE)
-						Diff::revisions($revision, KU_STR_LAST, NULL, NULL);
+						Diff::revisions($revision, ku_message('str_last'), NULL, NULL);
 				}
 				?>
 			</div>
@@ -216,7 +216,7 @@ function onActionSubmit() {
 	
 <table class="form" cellspacing="0" border="0">
 	<tr>
-		<td colspan="3" class="sectionheader"><?php echo KU_STR_COMMENTS; ?></td>
+		<td colspan="3" class="sectionheader"><?php echo ku_message('str_comments'); ?></td>
 	</tr>
 	<?php 
 	foreach($comments as $comment) {
@@ -248,20 +248,20 @@ function onActionSubmit() {
 				<textarea id="comment" name="comment" style="width: 400px; height: 60px; vertical-align: top"><?php echo $commentText; ?></textarea>
 				<?php
 				if ($canComment)
-					Templates::button('post', "$('#action').val('post'); aka_submit(this)", KU_STR_POST); 
+					Templates::button('post', "$('#action').val('post'); aka_submit(this)", ku_message('str_post')); 
 				if ($canApprove && $change->isPending())
-					Templates::button('approve', "$('#action').val('approve'); aka_submit(this)", KU_STR_APPROVE);
+					Templates::button('approve', "$('#action').val('approve'); aka_submit(this)", ku_message('str_approve'));
 				if ($canResolve && $change->isPending()) {
-					Templates::button('accept', "$('#action').val('accept'); aka_submit(this);", KU_STR_ACCEPT);
-					Templates::button('reject', "$('#action').val('reject'); aka_submit(this);", KU_STR_REJECT);
+					Templates::button('accept', "$('#action').val('accept'); aka_submit(this);", ku_message('str_accept'));
+					Templates::button('reject', "$('#action').val('reject'); aka_submit(this);", ku_message('str_reject'));
 				}
 				
 				if (!$curUserWatches) {
 					?>
-					<input type="checkbox" name="watch" value="watch" checked="checked" /> <?php echo KU_STR_WATCHTHISCHANGE; ?>
+					<input type="checkbox" name="watch" value="watch" checked="checked" /> <?php echo ku_message('str_watchthischange'); ?>
 				<?php } ?>
 				<br />
-				<span style="font-size: 9px"><?php echo KU_MSG_COMMENTINSTRUCTIONS; ?></span>
+				<span style="font-size: 9px"><?php echo ku_message('msg_commentinstructions'); ?></span>
 			</form>
 		</td>
 	</tr>

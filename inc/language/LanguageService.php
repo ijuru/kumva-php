@@ -20,8 +20,27 @@
  * Purpose: Language service class
  */
  
-function ku_sitetrans($msgCode, $text) {
-	define($msgCode, $text);
+$kumva_messages = array();
+ 
+function ku_message($code) {
+	global $kumva_messages;
+	return isset($kumva_messages[$code]) ? $kumva_messages[$code] : $code;
+}
+ 
+function ku_setmessage($code, $text) {
+	global $kumva_messages;
+	$kumva_messages[strtolower($code)] = $text;
+}
+
+function ku_loadlang($lang) {
+	include_once(KUMVA_DIR_ROOT.'/lang/'.$lang.'/site.php');
+}
+
+function ku_oldsiteconstants() {
+	global $kumva_messages;
+	
+	foreach ($kumva_messages as $code => $text)
+		define('KU_'.strtoupper($code), $text);
 }
 
 /**

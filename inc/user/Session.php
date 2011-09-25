@@ -81,7 +81,7 @@ class Session {
 			// Check if user should be considered locked out
 			if ($user->getFailedLoginAttempts() >= KUMVA_MAXFAILEDLOGINS && $timeSinceAttempt < KUMVA_ACCOUNTLOCKOUTSECONDS) {
 					
-				$this->setAttribute('login_message', KU_MSG_ACCOUNTLOCKED);
+				$this->setAttribute('login_message', ku_message('msg_accountlocked'));
 				
 				// Clear cookies to prevent further auto-logins with these credentials
 				$this->logout();
@@ -122,7 +122,7 @@ class Session {
 			}
 		}
 
-		$this->setAttribute('login_message', KU_MSG_INVALIDLOGIN);
+		$this->setAttribute('login_message', ku_message('msg_invalidlogin'));
 		return false;
 	}
 	
