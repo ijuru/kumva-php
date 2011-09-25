@@ -123,7 +123,7 @@ function kumva_install_insertdata($db) {
 	// Create admin user
 	$password = md5($adminpass);
 	$salt = sha1(uniqid());
-	$userId = $db->insert("INSERT INTO `".KUMVA_DB_PREFIX."user` VALUES(NULL, '$adminuser', SHA1(CONCAT('$salt', '$password')), '$salt', '$adminname', '$adminemail', NULL, NULL, NULL, 0)");	
+	$userId = $db->insert("INSERT INTO `".KUMVA_DB_PREFIX."user` VALUES(NULL, '$adminuser', SHA1(CONCAT('$salt', '$password')), '$salt', '$adminname', '$adminemail', NULL, NULL, NULL, NULL, 0, NULL, 0)");	
 	if ($userId !== FALSE
 	 && $db->query("INSERT INTO `".KUMVA_DB_PREFIX."user_role` VALUES($userId, 1)")				// Give administrator role
 	 && $db->query("INSERT INTO `".KUMVA_DB_PREFIX."user_subscription` VALUES($userId, 1)"))		// Subscribe to new change notifications
