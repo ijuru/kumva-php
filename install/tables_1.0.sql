@@ -1,4 +1,5 @@
 USE `{DBNAME}`;
+SET FOREIGN_KEY_CHECKS = 0;
 
 -- phpMyAdmin SQL Dump
 -- version 3.3.2deb1
@@ -430,3 +431,5 @@ ALTER TABLE `{DBPREFIX}user_subscription`
   ADD CONSTRAINT `FK_{DBPREFIX}user_subscription_user` FOREIGN KEY (`user_id`) REFERENCES `{DBPREFIX}user` (`user_id`),
   ADD CONSTRAINT `{DBPREFIX}user_subscription_ibfk_1` FOREIGN KEY (`subscription_id`) REFERENCES `{DBPREFIX}subscription` (`subscription_id`),
   ADD CONSTRAINT `{DBPREFIX}user_subscription_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `{DBPREFIX}user` (`user_id`);
+
+SET FOREIGN_KEY_CHECKS = 1;
