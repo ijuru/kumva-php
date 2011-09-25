@@ -187,6 +187,42 @@ class UserService extends Service {
 	}
 	
 	/**
+	 * Gets the users with the most comments since the specified time
+	 * @param int since the timestamp to start at
+	 * @param int max the max number of terms to return
+	 * @return array the user ids and comment counts
+	 */
+	public function getUsersWithMostComments($since, $max = 5) {
+		$sql = 'SELECT u.user_id, COUNT(c.comment_id) as `comments` 
+				FROM `'.KUMVA_DB_PREFIX.'user` u
+				INNER JOIN `'.KUMVA_DB_PREFIX.'comment` c ON c.user_id = u.user_id
+				WHERE c.`created` > FROM_UNIXTIME('.$since.') AND c.voided = 0
+				GROUP BY u.user_id
+				ORDER by `comments` DESC
+				LIMIT '.$max;
+				
+		return $this->database->rows($sql);
+	}
+	
+	/**
+	 * Gets the users with the most proposals since the specified time
+	 * @param int since the timestamp to start at
+	 * @param int max the max number of terms to return
+	 * @return array the user ids and proposal counts
+	 */
+	public function getUsersWithMostProposals($since, $max = 5) {
+		$sql = 'SELECT u.user_id, COUNT(c.change_id) as `proposals` 
+				FROM `'.KUMVA_DB_PREFIX.'user` u
+				INNER JOIN `'.KUMVA_DB_PREFIX.'change` c ON c.submitter_id = u.user_id
+				WHERE c.`submitted` > FROM_UNIXTIME('.$since.')
+				GROUP BY u.user_id
+				ORDER by `proposals` DESC
+				LIMIT '.$max;
+				
+		return $this->database->rows($sql);
+	}
+	
+	/**
 	 * Gets the rank for the given score
 	 * @param int score the score
 	 * @return int the rank

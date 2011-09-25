@@ -181,7 +181,7 @@ class SearchService extends Service {
 		$stats['total'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'searchrecord` WHERE `timestamp` > FROM_UNIXTIME('.$since.')');
 		$stats['misses'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'searchrecord` WHERE `results` = 0 AND `timestamp` > FROM_UNIXTIME('.$since.')');
 		$stats['suggestions'] = $this->database->scalar('SELECT COUNT(*) FROM `'.KUMVA_DB_PREFIX.'searchrecord` WHERE `results` > 0 AND `suggest` IS NOT NULL AND `timestamp` > FROM_UNIXTIME('.$since.')');
-		$stats['sources'] = $this->getSearchSourcesByCount($since, 10);
+		$stats['sources'] = $this->getSearchSourcesByCount($since);
 		return $stats;
 	}
 	
@@ -191,7 +191,7 @@ class SearchService extends Service {
 	 * @param int max the max number of terms to return
 	 * @return array the terms and their counts
 	 */
-	public function getSearchSourcesByCount($since, $max = 10) {
+	public function getSearchSourcesByCount($since, $max = 5) {
 		$sql = 'SELECT `source`, COUNT(`search_id`) as `count` FROM `'.KUMVA_DB_PREFIX.'searchrecord` 
 				WHERE `timestamp` > FROM_UNIXTIME('.$since.')
 				GROUP BY `source` ORDER BY `count` DESC LIMIT 0, '.$max;

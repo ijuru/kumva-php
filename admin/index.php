@@ -33,6 +33,9 @@ $searchSuggestions = $searchStats['suggestions'];
 $contentStats = Dictionary::getEntryService()->getContentStatistics();
 $mediaStats = Dictionary::getEntryService()->getMediaCounts();
 
+$userProposalStats = Dictionary::getUserService()->getUsersWithMostProposals($since);
+$userCommentStats = Dictionary::getUserService()->getUsersWithMostComments($since);
+
 $changeStats = Dictionary::getChangeService()->getChangeStatistics();
 $changePending = isset($changeStats[Status::PENDING]) ? $changeStats[Status::PENDING]['count'] : 0;
 $changeAccepted = isset($changeStats[Status::ACCEPTED]) ? $changeStats[Status::ACCEPTED]['count'] : 0;
@@ -42,7 +45,7 @@ include_once 'tpl/header.php';
 ?>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 	<tr>
-		<td width="50%" valign="top">	
+		<td width="33%" valign="top">	
 			<h3><?php echo KU_STR_CONTENT; ?></h3>
 	
 			<div class="description">
@@ -58,23 +61,57 @@ include_once 'tpl/header.php';
 				</ul>
 			</div>
 		</td>
-		<td width="50%" valign="top">
+		<td width="33%" valign="top">
 			<h3><?php echo KU_STR_SEARCHES; ?></h3>
 			
 			<div class="description">
-				In the last month there have been <strong><a href="searches.php"><?php echo $searchTotal; ?></a></strong> searches:
+				Search activity in last month:
 				<ul>
+					<li><strong><a href="searches.php"><?php echo $searchTotal; ?></a></strong> total searches</li>
 					<li><strong><a href="searches.php?misses=1"><?php echo $searchMisses; ?></a></strong> failed to match anything 
 					(<?php echo $searchTotal ? round(100 * $searchMisses / $searchTotal) : 0; ?>%)</li> 
 					<li><strong><a href="searches.php"><?php echo $searchSuggestions; ?></a></strong> returned a suggestion instead
 					(<?php echo $searchTotal ? round(100 * $searchSuggestions / $searchTotal) : 0; ?>%)</li>
-				</ul>			
-				The most popular sources were: <?php 
-				$results = array();
-				foreach ($searchStats['sources'] as $result)
-					$results[] = '<a href="searches.php?source='.urlencode($result['source']).'">'.htmlentities($result['source']).'</a> ('.$result['count'].')';
-				echo implode(', ', $results);
-				?>
+						
+					<li>Top sources: 
+					<?php 
+					$results = array();
+					foreach ($searchStats['sources'] as $result)
+						$results[] = '<a href="searches.php?source='.urlencode($result['source']).'">'.htmlentities($result['source']).'</a> ('.$result['count'].')';
+					echo implode(', ', $results);
+					?>
+					</li>
+				</ul>
+			</div>
+		</td>
+		<td width="34%" valign="top">
+			<h3><?php echo KU_STR_USERS; ?></h3>
+			<div class="description">
+				User activity in the last month:
+				<ul>
+					<li>Top proposers: 
+					<?php
+					for ($u = 0; $u < count($userProposalStats); ++$u) {
+						if ($u > 0)
+							echo ', ';
+						$user = Dictionary::getUserService()->getUser($userProposalStats[$u]['user_id']);
+						Templates::userLink($user);	
+						echo ' ('.$userProposalStats[$u]['proposals'].')';
+					}	
+					?>
+					</li>
+					<li>Top commenters: 
+					<?php
+					for ($u = 0; $u < count($userCommentStats); ++$u) {
+						if ($u > 0)
+							echo ', ';
+						$user = Dictionary::getUserService()->getUser($userCommentStats[$u]['user_id']);
+						Templates::userLink($user);	
+						echo ' ('.$userCommentStats[$u]['comments'].')';
+					}	
+					?>
+					</li>
+				</ul>
 			</div>
 		</td>
 	</tr>
@@ -100,6 +137,9 @@ include_once 'tpl/header.php';
 					<li><?php echo KU_STR_MYSQLVERSION.': '.Database::getCurrent()->getVersion(); ?></li>
 				</ul>
 			</div>
+		</td>
+		<td valign="top">
+			<h3>&nbsp;</h3>
 		</td>
 	</tr>
 </table>	
