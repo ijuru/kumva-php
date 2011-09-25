@@ -73,7 +73,7 @@ if (file_exists(KUMVA_DIR_INC.'/../config.php')) {
 else
 	die('No config file found');
 
-///////////////// Runtime mode (maintenance, debug or live) ////////////////////////
+///////////////// Runtime mode (install, debug or live) ////////////////////////
 
 if (!defined('KUMVA_MODE'))
 	define('KUMVA_MODE', 'live');
@@ -121,7 +121,8 @@ if (Session::getCurrent()->isAuthenticated() && Session::getCurrent()->getUser()
 	date_default_timezone_set(Session::getCurrent()->getUser()->getTimezone());
 
 // Initialize lexical processing engine
-Lexical::initializeLanguages();
+if (KUMVA_MODE != 'install')
+	Lexical::initializeLanguages();
 
 //////////////////////////// Load remaining services ////////////////////////////////
 

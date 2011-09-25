@@ -19,6 +19,8 @@
  *
  * Purpose: Install script
  */
+ 
+define('KUMVA_MODE', 'install');
 
 include_once '../inc/kumva.php';
 include_once 'Install.php';
