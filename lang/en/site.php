@@ -213,7 +213,7 @@ ku_setmessage('str_variant', 'Variant');
 ku_setmessage('str_verb', 'Verb');
 ku_setmessage('str_verified', 'Verified');
 ku_setmessage('str_verbmodifier', 'Verb modifier');
-ku_setmessage('str_vewentry', 'View entry');
+ku_setmessage('str_viewentry', 'View entry');
 ku_setmessage('str_viewprofile', 'View profile');
 ku_setmessage('str_viewreport', 'View report');
 ku_setmessage('str_viewsite', 'View site');
