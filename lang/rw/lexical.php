@@ -25,6 +25,7 @@ global $kumva_rw_soundmaps, $kumva_rw_suffixes;
 $kumva_rw_soundmaps = array('SHY' => 'SH', 'JY' => 'J', 'CY' => 'C',							// Subtle y's
 							'N[KT]' => 'NH', 'MH' => 'MP',
 							'[KG]I' => 'JI', '[KG]E' => 'JE',									// Soft k's and g's
+							'GA' => 'KA',
 							'CH' => 'J', 'C' => 'J',											// Soft c's
 							'GU' => 'KU', 'DU' => 'TU',											// Change down rule
 							'NB' => 'MB', 'NF' => 'MF', 'NV' => 'MV',							// n > m before labial rule
