@@ -97,8 +97,14 @@ class SearchService extends Service {
 		if (!$proposals)
 			$sql .= 'AND rt.active = 1 ';
 		
-		$sql .= "  GROUP BY rt.revision_id ";			
-		$sql .= ") m ON m.revision_id = r.revision_id ";
+		$sql .= '  GROUP BY rt.revision_id ';			
+		$sql .= ') m ON m.revision_id = r.revision_id ';
+		
+		/////////////////// Noun class criteria //////////////////////
+		
+		if ($query->getNounClass()) {
+			$sql .= 'INNER JOIN `'.KUMVA_DB_PREFIX.'revision_nounclass` rnc ON rnc.revision_id = r.revision_id AND rnc.nounclass = '.(int)$query->getNounClass().' ';
+		}
 		
 		/////////////////// Revision/entry criteria //////////////////
 		

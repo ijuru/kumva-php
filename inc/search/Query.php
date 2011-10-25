@@ -40,6 +40,7 @@ class Query {
 	private $relationship;
 	private $partialMatch;
 	private $wordClass;
+	private $nounClass;
 	private $verified;
 	private $hasMedia;
 	private $orderBy;
@@ -51,12 +52,13 @@ class Query {
 	 * Creates a query based on match criteria and search pattern
 	 * @param int orderBy how to order the results
 	 */
-	private function __construct($pattern, $lang, $relationship, $partialMatch, $wordClass, $verified, $hasMedia, $orderBy, $rawQuery) {
+	private function __construct($pattern, $lang, $relationship, $partialMatch, $wordClass, $nounClass, $verified, $hasMedia, $orderBy, $rawQuery) {
 		$this->pattern = $pattern;
 		$this->lang = $lang;
 		$this->relationship = $relationship;
 		$this->partialMatch = $partialMatch;
 		$this->wordClass = $wordClass;
+		$this->nounClass = $nounClass;
 		$this->verified = $verified;
 		$this->hasMedia = $hasMedia;
 		$this->orderBy = $orderBy;
@@ -79,22 +81,27 @@ class Query {
 		$lang = self::readParameter('lang');
 		
 		$wordClass = self::readParameter('wclass');
+		
+		$nounClass = (int)self::readParameter('nclass');
+		if ($nounClass === 0)
+			$nounClass = null;
+		
 		$verified = aka_parsebool(self::readParameter('verified'));
 		
 		$has = self::readParameter('has');
-		$hasMedia = $has ? Media::parseString($has) : NULL;
-		if ($hasMedia === FALSE)
-			$hasMedia = NULL;
+		$hasMedia = $has ? Media::parseString($has) : null;
+		if ($hasMedia === false)
+			$hasMedia = null;
 		
 		$order = self::readParameter('order');
-		$orderBy = $order ? OrderBy::parseString($order) : NULL;
-		if ($orderBy === FALSE)
-			$orderBy = NULL;
+		$orderBy = $order ? OrderBy::parseString($order) : null;
+		if ($orderBy === false)
+			$orderBy = null;
 		
 		$match = self::readParameter('match');
-		$relationship = $match ? Dictionary::getTagService()->getRelationshipByName($match) : NULL;
+		$relationship = $match ? Dictionary::getTagService()->getRelationshipByName($match) : null;
 		
-		return new Query($pattern, $lang, $relationship, $partialMatch, $wordClass, $verified, $hasMedia, $orderBy, $string);		
+		return new Query($pattern, $lang, $relationship, $partialMatch, $wordClass, $nounClass, $verified, $hasMedia, $orderBy, $string);		
 	}
 	
 	/**
@@ -111,7 +118,7 @@ class Query {
 	 * @param string default the default value
 	 * @return string the parameter value
 	 */
-	private static function readParameter($name, $default = NULL) {
+	private static function readParameter($name, $default = null) {
 		return isset(self::$parsedParams[$name]) ? self::$parsedParams[$name] : $default; 
 	}
 	
@@ -159,6 +166,14 @@ class Query {
 	 */
 	public function getWordClass() {
 		return $this->wordClass;
+	}
+	
+	/**
+	 * Gets the noun class to match
+	 * @return int the noun class
+	 */
+	public function getNounClass() {
+		return $this->nounClass;
 	}
 	
 	/**
