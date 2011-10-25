@@ -4,6 +4,11 @@
 		<div id="footer">
 			<div style="float: left">
 				<?php Templates::icon('email'); echo '&nbsp;&nbsp;'.kumva_pagelink('feedback'); ?>
+				&nbsp;&nbsp;
+				|
+				&nbsp;&nbsp;
+				<?php Templates::icon('android'); ?>&nbsp;
+				<a href="https://market.android.com/details?id=com.ijuru.kumva">Android app</a>
 			</div>
 			
 			<div style="float: right">
