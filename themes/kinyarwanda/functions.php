@@ -35,6 +35,7 @@ Theme::createPage('adjectives', 'Adjectives', 'adjectives.php', 'reference');
 Theme::createPage('possessives', 'Possessives', 'possessives.php', 'reference');
 
 Theme::createPage('verbs', 'Verbs', 'verbs.php', 'reference');
+Theme::createPage('verbs-dynamicstative', 'Dynamic vs stative verbs', 'verbs_dynamicstative.php', 'verbs');
 Theme::createPage('verbs-pasttensestems', 'Past tense stems', 'verbs_pasttensestems.php', 'verbs');
 
 Theme::createPage('adverbs', 'Adverbs', 'adverbs.php', 'reference');
