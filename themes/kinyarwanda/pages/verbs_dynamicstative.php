@@ -31,7 +31,7 @@
 </ul>
 But stative verbs use the <?php ku_page('verbs-pasttensestems', 'past tense stem'); ?>, e.g.
 <ul>	
-	<li><span lang="rw">ara<b>konje</b></span> - he is cold (from <span lang="rw"><?php ku_query('gukonza'); ?></span>)</li>
+	<li><span lang="rw">ara<b>konje</b></span> - he is cold (from <span lang="rw"><?php ku_query('gukonja'); ?></span>)</li>
 	<li><span lang="rw">ara<b>naniwe</b></span> - he is tired (from <span lang="rw"><?php ku_query('kunanirwa'); ?></span>)</li>
 	<li><span lang="rw">ara<b>rwaye</b></span> - he is sick (from <span lang="rw"><?php ku_query('kurwara'); ?></span>)</li>
 </ul>
@@ -57,18 +57,17 @@ Most stative verbs can't take an object (i.e. they're instransitive) but if they
 
 
 <h3>Exceptions</h3>
-<p>The following dynamic verbs are conjugated like stative verbs:
 <ul>
-	<li><span lang="rw"><?php ku_query('kujya'); ?></span> - to go, e.g. 
+	<li><span lang="rw"><?php ku_query('guteka'); ?></span> - to cook, is conjugated like stative verb, e.g.
 		<ul>
-			<li><span lang="rw">aragiye</span> - he is going</li>
-			<li><span lang="rw">agiye mu mujyi</span> - he is going to town</li>
+			<li><span lang="rw">aratetse</span> - he is cooking (present tense)</li>
+			<li><span lang="rw">atetse inyama</span> - he is cooking meat (present tense)</li>
 		</ul>
 	</li>
-	<li><span lang="rw"><?php ku_query('guteka'); ?></span> - to cook, e.g. 
+	<li><span lang="rw"><?php ku_query('kujya'); ?></span> - to go, has an immediate past when used without an object (like a dynamic verb), but not when used with an object (like a stative verb), e.g. 
 		<ul>
-			<li><span lang="rw">aratetse</span> - he is cooking</li>
-			<li><span lang="rw">atetse inyama</span> - he is cooking meat</li>
+			<li><span lang="rw">aragiye</span> - he just went (immediate past tense)</li>
+			<li><span lang="rw">agiye mu mujyi</span> - he is going to town (present tense)</li>
 		</ul>
 	</li>
 </ul>
