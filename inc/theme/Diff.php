@@ -54,8 +54,8 @@ class Diff {
 		<table width="100%" class="diff">
 			<tr>
 				<td width="300">
-				<span id="diffhide" style="display:none"><?php Templates::button('bullet_collapse', "$('tr.diffrow').hide(); $('#diffhide').hide(); $('#diffshow').show()", KU_STR_HIDE); ?></span>
-				<span id="diffshow"><?php Templates::button('bullet_expand', "$('tr.diffrow').show(); $('#diffshow').hide(); $('#diffhide').show()", KU_STR_SHOW); ?></span>
+				<span id="diffhide"><?php Templates::button('bullet_collapse', "$('tr.diffrow').hide(); $('#diffhide').hide(); $('#diffshow').show()", KU_STR_HIDE); ?></span>
+				<span id="diffshow" style="display:none"><?php Templates::button('bullet_expand', "$('tr.diffrow').show(); $('#diffshow').hide(); $('#diffhide').show()", KU_STR_SHOW); ?></span>
 				</td>
 				<?php if ($revision1) { ?>
 					<td style="vertical-align: middle">
@@ -72,7 +72,7 @@ class Diff {
 			for ($f = 0; $f < count($fieldLabels); $f++) { 
 				$difference = $revision1 && $revision2 && ($fields1[$f] != $fields2[$f]);	
 			?>
-				<tr class="diffrow<?php echo $difference ? ' difference' : ''; ?>" style="display:none">
+				<tr class="diffrow<?php echo $difference ? ' difference' : ''; ?>">
 					<td><b><?php echo $fieldLabels[$f]; ?></b></td>
 					
 					<?php if ($revision1) { ?>
