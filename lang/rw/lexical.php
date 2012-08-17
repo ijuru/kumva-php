@@ -162,7 +162,11 @@ function kumva_rw_autotag_form($revision) {
 		$forms[] = '-'.$revision->getLemma();						// Verb present tense / imperative
 		$forms[] = rw_verbpasttense($revision);						// Verb past tense
 	} elseif ($revision->getWordClass() == 'n') {
-		$forms[] = rw_plural($revision);							// Noun plural
+		$plural = rw_plural($revision);								// Noun plural
+		
+		// Only add if plural form is different to singular
+		if ($forms[0] != $plural)
+			$forms[] = 	$plural;		
 	} 
 	return $forms;
 }
