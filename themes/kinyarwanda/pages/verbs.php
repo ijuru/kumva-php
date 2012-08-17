@@ -20,7 +20,7 @@
  * Purpose: Verbs reference page
  */
 ?>
-<p>A verb is an action or a state of being. Unlike English verbs, Kinyarwanda verbs can be conjugated to include the verb's subject, and optionally the verb's object and indirect object. This can make it hard for beginners to recognize different verbs, until they first learn to recognize the prefixes and infixes used to conjugate verbs with nouns. For example, consider the following three sentences:</p>
+<p>A verb (<span lang="rw"><?php ku_query('inshinga'); ?></span>) is an action or a state of being. Unlike English verbs, Kinyarwanda verbs can be conjugated to include the verb's subject, and optionally the verb's object and indirect object. This can make it hard for beginners to recognize different verbs, until they first learn to recognize the prefixes and infixes used to conjugate verbs with nouns. For example, consider the following three sentences:</p>
 
 <ul>
 	<li><span lang="rw">nkunda umupira</span> - I like football</li>

@@ -20,15 +20,15 @@
  * Purpose: Nouns reference page
  */
 ?>    
-<p>A noun is the name of a person, place or thing.</p>
+<p>A noun (<span lang="rw"><?php ku_query('izina'); ?></span>) is the name of a person, place or thing.</p>
 
 <a name="components"></a>
 <h3>Noun components</h3>
 <p>Every noun in Kinyarwanda has three parts:</p>
 <ol>
-	<li>The <i>augment</i> (<span lang="rw">u</span>, <span lang="rw">i</span> or <span lang="rw">a</span>)</li>
-	<li>The <i>prefix</i> (<span lang="rw">mu</span>, <span lang="rw">ba</span>, <span lang="rw">mi</span>, <span lang="rw">ri</span>, <span lang="rw">ma</span>, <span lang="rw">ki</span>, <span lang="rw">bi</span>, <span lang="rw">n</span>, <span lang="rw">ru</span>, <span lang="rw">ka</span>, <span lang="rw">tu</span>, <span lang="rw">bu</span>, <span lang="rw">ku</span>, <span lang="rw">ha</span>)</li>
-	<li>The <i>root</i> (often derived from a verb, but not always)</li>
+	<li>The <i>augment</i> (<span lang="rw"><?php ku_query('indomo'); ?></span>), i.e. <span lang="rw">u</span>, <span lang="rw">i</span> or <span lang="rw">a</span></li>
+	<li>The <i>class marker</i> (<span lang="rw"><?php ku_query('indanganteko'); ?></span>), i.e. <span lang="rw">mu</span>, <span lang="rw">ba</span>, <span lang="rw">mi</span>, <span lang="rw">ri</span>, <span lang="rw">ma</span>, <span lang="rw">ki</span>, <span lang="rw">bi</span>, <span lang="rw">n</span>, <span lang="rw">ru</span>, <span lang="rw">ka</span>, <span lang="rw">tu</span>, <span lang="rw">bu</span>, <span lang="rw">ku</span>, <span lang="rw">ha</span></li>
+	<li>The <i>root</i> (<span lang="rw"><?php ku_query('igicumbi'); ?></span>)</li>
 </ol>
 
 <p>Different words can share the same root, and will usually have related meanings. For example:</p>
@@ -253,8 +253,8 @@
 
 <a name="propernouns"></a>
 <h3>Proper nouns</h3>
-<p>When nouns become proper nouns (names of people or places) they usuallly lose their initial vowel (e.g. <span lang="rw"><?php ku_query('umugabo'); ?></span> 
-becomes <span lang="rw">Mugabo</span> when used a name). Similarly when using a noun to address someone, the initial vowel is dropped 
+<p>When nouns become proper nouns (names of people or places) they usually lose their augment (e.g. <span lang="rw"><?php ku_query('umugabo'); ?></span> 
+becomes <span lang="rw">Mugabo</span> when used a name). Similarly when using a noun to address someone, the augment is dropped 
 (e.g. <span lang="rw"><?php ku_query('umuzungu'); ?></span> becomes <span lang="rw">muzungu</span> when shouting it at the nearest white person).</p>
 
 <p>There are several different types of geographical place names:</p>
