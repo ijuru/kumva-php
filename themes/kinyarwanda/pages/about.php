@@ -32,7 +32,7 @@ dictionaries is that the software has been designed for a Bantu language. Words 
 </p>
 <p>Some of the content has been derived from the following sources:</p>
 <ul>
-	<li><a href="http://marston.freemethodistchurch.org/Dictionaries.htm">Kinyarwanda-English Dictionary</a> by <i>Betty Ellen Cox.</i></li>
+	<li><a href="http://fmcusa.org/historical/kirundi-english-english-kirundi-dictionaries">Kinyarwanda-English Dictionary</a> by <i>Betty Ellen Cox.</i></li>
 	<li>Kinyarwanda Dictionary by <i>Emmanuel Habumuremyi</i>.</li>
 	<li><a href="http://www.africanlocalization.net/">ANLoc ICT Terminology</a> by <i>Donatien Nsengiyumva</i>, <i>Philibert Ndandali</i>, <i>Stephen Holt</i> and the <a href="http://www.kamusi.org">Kamusi</a> project, for the African Network for Localisation</li>
 	<li><a href="http://uir.unisa.ac.za/handle/10500/3646">Loanword allocation in Kinyarwanda</a>, L.J. Kayigema, PhD Thesis, University of South Africa</li>
