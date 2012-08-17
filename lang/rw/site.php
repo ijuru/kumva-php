@@ -21,8 +21,8 @@
  */
  
 // Labels
-ku_setmessage('str_ABBREVIATION', 'Impine');
-ku_setmessage('str_ABOUT', 'Abo turibo');
+ku_setmessage('str_abbreviation', 'Impine');
+ku_setmessage('str_about', 'Abo turibo');
 ku_setmessage('str_ACCEPT', 'Emera');
 ku_setmessage('str_ACCEPTED', 'Byemezwe');
 ku_setmessage('str_ACCEPTEDREVISIONS', 'Accepted revisions');
@@ -38,6 +38,7 @@ ku_setmessage('str_ADMINSITE', 'Site y\'admin');
 ku_setmessage('str_ADVANCED', 'Advanced');
 ku_setmessage('str_ADVERB', 'Umugereka');
 ku_setmessage('str_ALSO', 'kandi');
+ku_setmessage('str_ANDROIDAPP', 'App y\'Android');
 ku_setmessage('str_ANSWERS', 'Ibisubizo');
 ku_setmessage('str_ANY', 'Zose');
 ku_setmessage('str_APPROVE', 'Approve');
@@ -184,6 +185,7 @@ ku_setmessage('str_SHOWVOIDED', 'Show voided');
 ku_setmessage('str_SITE', 'Site');
 ku_setmessage('str_SITETRANSLATION', 'Site translation');
 ku_setmessage('str_SLANG', 'Slang');
+ku_setmessage('str_smsservice', 'Serivisi ya SMS');
 ku_setmessage('str_SOURCE', 'Source');
 ku_setmessage('str_STATISTICS', 'Ibarura');
 ku_setmessage('str_STATUS', 'Status');

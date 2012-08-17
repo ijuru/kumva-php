@@ -8,7 +8,12 @@
 				|
 				&nbsp;&nbsp;
 				<?php Templates::icon('android'); ?>&nbsp;
-				<a href="https://market.android.com/details?id=com.ijuru.kumva">Android app</a>
+				<a href="https://market.android.com/details?id=com.ijuru.kumva"><?php echo KU_STR_ANDROIDAPP; ?></a>
+				&nbsp;&nbsp;
+				|
+				&nbsp;&nbsp;
+				<?php Templates::icon('sms'); ?>&nbsp;
+				<?php echo kumva_pagelink('sms-service'); ?>
 			</div>
 			
 			<div style="float: right">
