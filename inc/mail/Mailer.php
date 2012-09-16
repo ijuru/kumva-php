@@ -60,7 +60,7 @@ class Mailer {
 		foreach ($users as $user)
 			self::send($user->getEmail(), $subject, $message, $replyTo);
 		
-		return TRUE;
+		return true;
 	}
 
 	/**
@@ -74,15 +74,13 @@ class Mailer {
 		global $swift_mailer;
 		
 		$message = Swift_Message::newInstance();
-
-		if (is_null($replyTo))
-			$message->setFrom(array(KUMVA_MAILER_SYSTEM_NAME => KUMVA_MAILER_SYSTEM_ADDRESS));
-		else
-			$message->setFrom($replyTo);
-
+		$message->setFrom(array(KUMVA_MAILER_SYSTEM_ADDRESS => KUMVA_MAILER_SYSTEM_NAME));
 		$message->setTo(array($recipient));
 		$message->setSubject($subject);
 		$message->setBody($body);
+
+		if (!is_null($replyTo))
+			$message->setReplyTo($replyTo);
 
 		return $swift_mailer->send($message);
 	}
