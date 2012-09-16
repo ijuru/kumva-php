@@ -19,13 +19,21 @@
  * 
  * Purpose: Mailer class
  */
- 
+
+/**
+ * Initialize Swiftmailer to use Amazon SES if credentials are defined. Otherwise default to PHP mail()
+ */
+if (defined('KUMVA_AWS_ACCESS_KEY') && defined('KUMVA_AWS_SECRET_KEY'))
+	$swift_transport = Swift_AWSTransport::newInstance(KUMVA_AWS_ACCESS_KEY, KUMVA_AWS_SECRET_KEY);
+else
+	$swift_transport = Swift_MailTransport::newInstance();
+
+$swift_mailer = Swift_Mailer::newInstance($swift_transport);
+
 /**
  * Class for sending emails
  */
-class Mailer { 
-	const SYSTEM_NAME = 'Kumva';
-	const SYSTEM_ADDRESS = 'kumva-no-reply@ijuru.com';
+class Mailer {
 	
 	/**
 	 * Sends an email to all users with administrator role
@@ -34,7 +42,7 @@ class Mailer {
 	 * @param string from the from address
 	 * @return bool TRUE if successfull, else FALSE
 	 */
-	public static function sendToAdmins($subject, $message, $replyTo = self::SYSTEM_ADDRESS){
+	public static function sendToAdmins($subject, $message, $replyTo = null){
 		$adminRole = Dictionary::getUserService()->getRole(Role::ADMINISTRATOR);
 		$users = Dictionary::getUserService()->getUsersWithRole($adminRole);
 		return self::sendToUsers($users, $subject, $message, $replyTo);
@@ -48,7 +56,7 @@ class Mailer {
 	 * @param string from the from address
 	 * @return bool TRUE if successfull, else FALSE
 	 */
-	public static function sendToUsers($users, $subject, $message, $replyTo = self::SYSTEM_ADDRESS){
+	public static function sendToUsers($users, $subject, $message, $replyTo = null){
 		foreach ($users as $user)
 			self::send($user->getEmail(), $subject, $message, $replyTo);
 		
@@ -59,16 +67,24 @@ class Mailer {
 	 * Sends an email to the specified email address
 	 * @param string recipient the email recipient address
 	 * @param string subject the email subject
-	 * @param string message the email message
+	 * @param string body the email body
 	 * @return bool TRUE if successfull, else FALSE
 	 */
-	public static function send($recipient, $subject, $message, $replyTo = self::SYSTEM_ADDRESS){
-		$headers = "From: ".self::SYSTEM_NAME." <".self::SYSTEM_ADDRESS.">\r\n";
-		$headers .= "X-Mailer: PHP/".phpversion()."\r\n";
-		$headers .= "Reply-To: ".$replyTo;
-		$params = "-f".self::SYSTEM_ADDRESS;
+	public static function send($recipient, $subject, $body, $replyTo = null){
+		global $swift_mailer;
+		
+		$message = Swift_Message::newInstance();
 
-		return mail($recipient, $subject, $message, $headers, $params);
+		if (is_null($replyTo))
+			$message->setFrom(array(KUMVA_MAILER_SYSTEM_NAME => KUMVA_MAILER_SYSTEM_ADDRESS));
+		else
+			$message->setFrom($replyTo);
+
+		$message->setTo(array($recipient));
+		$message->setSubject($subject);
+		$message->setBody($body);
+
+		return $swift_mailer->send($message);
 	}
 }
  

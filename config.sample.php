@@ -36,6 +36,9 @@ define('KUMVA_LANG_MEANING', 'en');		// Language of meanings
 define('KUMVA_PAGE_SIZE', 10);
 define('KUMVA_PRONUNCIATION_CHARS', 'âêîôû');
 
+define('KUMVA_MAILER_SYSTEM_NAME', 'Kumva');
+define('KUMVA_MAILER_SYSTEM_ADDRESS', 'kumva-no-reply@example.com');
+
 // Optional extras
 define('KUMVA_GOOGLE_SITEVERIFICATION', 'xxxxxxxxxxxxxxxxxxxxx');
 

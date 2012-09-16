@@ -59,6 +59,7 @@ define('KUMVA_URL_REPORTBUG', KUMVA_URL_PROJECT.'/issues');
 
 require_once KUMVA_DIR_LIB.'/markdown/markdown.php';
 require_once KUMVA_DIR_LIB.'/akabanga/akabanga.php';
+require_once KUMVA_DIR_LIB.'/swiftmailer/swift_required.php';
 
 //////////////////////////////// Load config ///////////////////////////////////////
  
