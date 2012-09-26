@@ -28,7 +28,7 @@ header('Content-type: text/csv');
 header('Content-Disposition: attachment; filename=paldo-export-'.date('Y-m-d').'.csv');
 
 // Output header row
-echo "source_id, source_rev, word_class, noun_attrs, lemma, alt_form, meaning_en, meaning_flags\n";
+echo "source_id, word_class, noun_attrs, lemma, noun_plural, meaning_en, meaning_flags, modified\n";
 
 foreach ($entries as $entry) {
 	$revision = Dictionary::getEntryService()->getEntryRevision($entry, RevisionPreset::ACCEPTED);
@@ -40,6 +40,8 @@ foreach ($entries as $entry) {
 
 		$flags = get_meaning_flags_csv($meaning);
 		$splitMeanings = aka_parsecsv($meaning->getMeaning());
+		$change = $revision->getChange();
+		$modified = is_null($change) ? '' : date('c', $change->getResolved());
 
 		foreach ($splitMeanings as $splitMeaning) {
 
@@ -48,7 +50,6 @@ foreach ($entries as $entry) {
 				$splitMeaning = substr($splitMeaning, 3);
 
 			echo $entry->getId().',';
-			echo $revision->getNumber().',';
 			echo aka_prepcsvval($revision->getWordClass()).',';
 			echo aka_prepcsvval(implode(',', $revision->getNounClasses())).',';
 			echo aka_prepcsvval($revision->getPrefix().$revision->getLemma()).',';
@@ -56,13 +57,14 @@ foreach ($entries as $entry) {
 			if ($revision->getWordClass() == 'n') {
 				echo aka_prepcsvval(rw_plural($revision));
 			}
-			else if ($revision->getWordClass() == 'v') {
-				echo aka_prepcsvval(rw_verbpasttense($revision));
-			}
+			//else if ($revision->getWordClass() == 'v') {
+				//echo aka_prepcsvval(rw_verbpasttense($revision));
+			//}
 			echo ',';
 
 			echo aka_prepcsvval($splitMeaning).',';
-			echo aka_prepcsvval($flags);
+			echo aka_prepcsvval($flags).',';
+			echo aka_prepcsvval($modified);
 			echo "\n";
 		}
 	}
