@@ -27,8 +27,10 @@ dictionaries is that the software has been designed for a Bantu language. Words 
 <p>The dictionary content and reference materials are released under a <a href="http://creativecommons.org/licenses/by-nc-sa/2.0/uk/">Creative Commons licence</a> which permits you to share, modify, reproduce it in any form, provided that it is not used for commercial purposes, and that you give credit to this project. The site code is released under a <a href="http://www.gnu.org/licenses/gpl.html">GNU General Public License</a> and is available for download from <a href="<?php echo KUMVA_URL_PROJECT; ?>">Github</a>.</p>
 
 <h2><?php echo KU_STR_CREDITS; ?></h2>
-<p>This dictionary is continually improved and updated by the following online team:
-	<?php Widgets::userList(); ?>
+<p>This project is lead by <a href="http://twitter.com/rowanseymour">Rowan Seymour</a>, a software developer living in Kigali. 
+	Significant contributions have been made by <i>John Doldo IV</i> and <i>Kamonyo Mugabo</i>.
+	Other people who have contributed are:
+	<?php Widgets::userList(true, array(1, 3, 7)); ?>
 </p>
 <p>Some of the content has been derived from the following sources:</p>
 <ul>

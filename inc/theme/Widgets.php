@@ -271,9 +271,20 @@ class Widgets {
 	/**
 	 * Creates a list of active users
 	 */
-	public static function userList() {
+	public static function userList($activeOnly = true, $excludeUsers = null) {
 		echo '<ul>';
 		foreach (Dictionary::getUserService()->getUsers() as $user) {
+			if ($excludeUsers && in_array($user->getId(), $excludeUsers)) {
+				continue;
+			}
+
+			if ($activeOnly) {
+				$userStats = Dictionary::getUserService()->getUserActivity($user);
+				if ($userStats['proposals'] < 5) {
+					continue;
+				}
+			} 
+
 			echo '<li>';
 			echo $user->getWebsite() ? '<a href="'.$user->getWebsite().'">'.$user->getName().'</a>' : $user->getName();
 			echo '</li>';
