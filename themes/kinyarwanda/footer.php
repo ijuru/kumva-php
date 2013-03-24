@@ -14,6 +14,11 @@
 				&nbsp;&nbsp;
 				<?php Templates::icon('sms'); ?>&nbsp;
 				<?php echo kumva_pagelink('sms-service'); ?>
+				&nbsp;&nbsp;
+				|
+				&nbsp;&nbsp;
+				<?php Templates::icon('support'); ?>&nbsp;
+				<?php echo kumva_pagelink('support'); ?>
 			</div>
 			
 			<div style="float: right">

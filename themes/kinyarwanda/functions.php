@@ -46,6 +46,7 @@ Theme::createPage('faq', KU_STR_FAQ, 'faq.php', NULL);
 Theme::createPage('about', KU_STR_ABOUT, 'about.php', NULL);
 Theme::createPage('feedback', KU_STR_FEEDBACK, 'feedback.php', NULL);
 Theme::createPage('sms-service', KU_STR_SMSSERVICE, 'sms_service.php', NULL);
+Theme::createPage('support', 'Support', 'support.php', NULL);
 
 $nounClasses = array(
 	1 => '1 (umu-)',
