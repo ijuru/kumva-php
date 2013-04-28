@@ -20,7 +20,7 @@
  * Purpose: Example class
  */
  
-define('KUMVA_MAX_EXAMPLES', 3);
+define('KUMVA_MAX_EXAMPLES', 10);
 
 /**
  * Usage example class
