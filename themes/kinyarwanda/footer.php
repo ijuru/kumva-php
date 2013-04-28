@@ -24,7 +24,7 @@
 			<div style="float: right">
 				<i><?php echo KU_STR_POWEREDBY; ?></i>
 				&nbsp;&nbsp;		
-				<a href="https://github.com/ijuru/kumva" title="Powered by Kumva Dictionary Software">
+				<a href="https://github.com/ijuru/kumva-php" title="Powered by Kumva Dictionary Software">
 					<img alt="Kumva" style="border-width:0; vertical-align: middle" src="gfx/button.png" />
 				</a>
 				<a rel="license" title="Content released under Creative Commons License" href="http://creativecommons.org/licenses/by-nc-sa/2.0/uk/">
