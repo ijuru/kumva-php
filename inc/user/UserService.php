@@ -66,7 +66,7 @@ class UserService extends Service {
 	public function getUsersWithRole($role) {
 		$sql = 'SELECT u.* FROM `'.KUMVA_DB_PREFIX.'user` u
 				INNER JOIN `'.KUMVA_DB_PREFIX.'user_role` ur ON ur.user_id = u.user_id
-				WHERE ur.role_id = '.$role->getId();							   
+				WHERE u.voided = 0 AND ur.role_id = '.$role->getId();							   
 		return User::fromQuery($this->database->query($sql));
 	}
 	
@@ -78,7 +78,7 @@ class UserService extends Service {
 	public function getUsersWithSubscription($subscription) {
 		$sql = 'SELECT u.* FROM `'.KUMVA_DB_PREFIX.'user` u
 				INNER JOIN `'.KUMVA_DB_PREFIX.'user_subscription` us ON us.user_id = u.user_id
-				WHERE us.subscription_id = '.$subscription->getId();							   
+				WHERE u.voided = 0 AND us.subscription_id = '.$subscription->getId();							   
 		return User::fromQuery($this->database->query($sql));
 	}
 	
