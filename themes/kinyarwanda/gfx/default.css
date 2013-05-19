@@ -331,6 +331,29 @@ table.grammar th.group {
 	border-top: solid 1px #EEE;
 }
 
+.widget-catcloud { 
+	line-height: 32px;
+	padding: 10px; 
+	text-align: center; 
+}
+
+.widget-catcloud a { 
+	padding: 3px;
+	display: inline-block;
+	text-decoration: none; 
+}
+
+.widget-catcloud a.rank1 { font-size: 10px; font-weight: 100; }
+.widget-catcloud a.rank2 { font-size: 12px; font-weight: 200; }
+.widget-catcloud a.rank3 { font-size: 14px; font-weight: 300; }
+.widget-catcloud a.rank4 { font-size: 16px; font-weight: 400; }
+.widget-catcloud a.rank5 { font-size: 18px; font-weight: 500; }
+.widget-catcloud a.rank6 { font-size: 20px; font-weight: 600; }
+.widget-catcloud a.rank7 { font-size: 22px; font-weight: 700; }
+.widget-catcloud a.rank8 { font-size: 24px; font-weight: 800; }
+.widget-catcloud a.rank9 { font-size: 26px; font-weight: 900; }
+.widget-catcloud a.rank10 { font-size: 28px; font-weight: 900; }
+
 /**
  * Sound buttons
  */

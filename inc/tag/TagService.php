@@ -210,6 +210,19 @@ class TagService extends Service {
 		$langs = $this->database->rows('SELECT DISTINCT lang FROM `'.KUMVA_DB_PREFIX.'tag`', 'lang');
 		return array_keys($langs);
 	}
+
+	/**
+	 * Gets counts of all category tags
+	 */
+	public function getCategoryCounts() {
+		$sql = 'SELECT t.`text` as `category`, COUNT(*) as `count`
+			FROM `rw_tag` t
+			INNER JOIN `rw_revision_tag` rt ON rt.`tag_id` = t.`tag_id` AND rt.`active` = 1 AND rt.`relationship_id` = '.Relationship::CATEGORY.'
+			GROUP BY t.`text`
+			ORDER BY t.`text` ASC';
+
+		return $this->database->rows($sql);
+	}
 	
 	/**
 	 * Generates all tag stems and sounds

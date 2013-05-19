@@ -41,6 +41,7 @@ Theme::createPage('verbs-pasttensestems', 'Past tense stems', 'verbs_pasttensest
 Theme::createPage('adverbs', 'Adverbs', 'adverbs.php', 'reference');
 Theme::createPage('demonstratives', 'Demonstratives', 'demonstratives.php', 'reference');
 
+Theme::createPage('explore', 'Explore', 'explore.php', NULL);
 Theme::createPage('statistics', KU_STR_STATISTICS, 'statistics.php', NULL);
 Theme::createPage('faq', KU_STR_FAQ, 'faq.php', NULL);
 Theme::createPage('about', KU_STR_ABOUT, 'about.php', NULL);

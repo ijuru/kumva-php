@@ -151,6 +151,29 @@ class Widgets {
 		} 
 		echo '</table>';
 	}
+
+	/**
+	 * Creates a cloud of category tags
+	 */
+	public static function categoryCloud($showCounts) {
+		echo '<div class="widget-catcloud">';
+
+		$catCounts = Dictionary::getTagService()->getCategoryCounts();
+
+		foreach ($catCounts as $c) {
+			$category = $c['category'];
+			$count = $c['count'];
+			$rank = (int) min(sqrt(2 * $count), 10);
+			echo '<a href="index.php?q=match:category+'.$category.'" class="rank'.$rank.'">';
+			echo $category;
+			if ($showCounts) {
+				echo ' ('.$count.')';
+			}
+			echo '</a>';
+		}
+
+		echo '</div>';
+	}
 	
 	/**
 	 * Creates a table of function statistics

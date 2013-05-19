@@ -70,6 +70,7 @@ function kumva_pagelink($name) {
 			
 			<ul id="mainmenu">
 				<li><?php echo kumva_menulink('index.php', KU_STR_DICTIONARY); ?></li>
+				<li><?php echo kumva_pagelink('explore'); ?></li>
 				<li><?php echo kumva_pagelink('reference'); ?></li>
 				<li><?php echo kumva_pagelink('statistics'); ?></li>
 				<li><?php echo kumva_pagelink('faq'); ?></li>
