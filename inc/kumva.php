@@ -71,8 +71,18 @@ if (file_exists(KUMVA_DIR_INC.'/../config.php')) {
 	define('KUMVA_URL_THEME', KUMVA_URL_ROOT.'/themes/'.KUMVA_THEME_NAME);
 	define('KUMVA_THEME_FNFILE', KUMVA_DIR_THEME.'/functions.php');
 }
-else
+else {
 	die('No config file found');
+}
+
+//////////////////////////////// IP Blacklist ///////////////////////////////////////
+
+if (defined('KUMVA_IP_BLACKLIST')) {
+	$blacklist = unserialize(KUMVA_IP_BLACKLIST);
+	if (in_array($_SERVER['REMOTE_ADDR'], $blacklist)) {
+		die('IP address blacklisted');
+	}
+}
 
 ///////////////// Runtime mode (install, debug or live) ////////////////////////
 
