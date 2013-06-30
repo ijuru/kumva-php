@@ -91,6 +91,7 @@ ku_setmessage('str_help', 'Help');
 ku_setmessage('str_hide', 'Hide');
 ku_setmessage('str_history', 'History');
 ku_setmessage('str_home', 'Home');
+ku_setmessage('str_idiom', 'Idiom');
 ku_setmessage('str_image', 'Image');
 ku_setmessage('str_import', 'Import');
 ku_setmessage('str_insert', 'Insert');

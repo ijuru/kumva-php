@@ -27,6 +27,7 @@ $KUMVA_WORDCLASS = array(
 	'adv' => KU_STR_ADVERB,
 	'conj' => KU_STR_CONJUNCTION,
 	'dem' => KU_STR_DEMONSTRATIVE,
+	'idm' => KU_STR_IDIOM,
 	'int' => KU_STR_INTERJECTION,
 	'n' => KU_STR_NOUN,
 	'nm' => KU_STR_NOUNMODIFIER,

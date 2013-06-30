@@ -91,6 +91,7 @@ ku_setmessage('str_HELP', 'Help');
 ku_setmessage('str_HIDE', 'Hide');
 ku_setmessage('str_HISTORY', 'Amateka');
 ku_setmessage('str_HOME', 'Urugo');
+ku_setmessage('str_IDIOM', 'Inshoberamahanga');
 ku_setmessage('str_IMAGE', 'Image');
 ku_setmessage('str_IMPORT', 'Import');
 ku_setmessage('str_INSERT', 'Insert');
