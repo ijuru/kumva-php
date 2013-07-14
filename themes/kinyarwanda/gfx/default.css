@@ -314,6 +314,7 @@ table.grammar th {
 table.grammar td, table.grammar th {
 	border: 1px solid #ffe3b9;
 	padding: 2px;
+	vertical-align: top;
 }
 
 table.grammar th.group {
