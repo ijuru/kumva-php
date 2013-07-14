@@ -121,7 +121,7 @@ modification can be applied to any verb, but understanding these rules will make
 		<td><b>Associative</b><br />Subject acts with another</td>
 		<td>
 			<ul>
-				<li><span lang="rw">-an-</span> (usually intransitive verbs)</li>
+				<li><span lang="rw">-an-</span></li>
 			</ul>
 		</td>
 		<td>
@@ -132,10 +132,11 @@ modification can be applied to any verb, but understanding these rules will make
 		<td><b>Reciprocal</b><br />Subjects act upon each other</td>
 		<td>
 			<ul>
-				<li><span lang="rw">-any-</span> (only transitive verbs)</li>
+				<li><span lang="rw">-an-</span> or <span lang="rw">-any-</span> (only transitive verbs)</li>
 			</ul>
 		</td>
 		<td>
+			<span lang="rw"><?php ku_query('-bona'); ?></span> &rarr; <span lang="rw"><?php ku_query('-bonana'); ?></span> - see each other<br />
 			<span lang="rw"><?php ku_query('-fasha'); ?></span> &rarr; <span lang="rw"><?php ku_query('-fashanya'); ?></span> - help each other<br />
 		</td>
 	</tr>
@@ -154,7 +155,7 @@ modification can be applied to any verb, but understanding these rules will make
 		<td><b>Intensive</b><br />Subjects acts intensely or repeatedly</td>
 		<td>
 			<ul>
-				<li><span lang="rw">-gur-</span></li>
+				<li><span lang="rw">-gura</span></li>
 			</ul>
 		</td>
 		<td>
