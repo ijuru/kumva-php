@@ -141,10 +141,25 @@ class Lexical {
 	 */
 	public static function removeSuffixes($text, &$suffixes) {
 		foreach ($suffixes as $suffix) {
-			if (aka_endswith($text, $suffix))
-				return substr($text, 0, strlen($text) - strlen($suffix));
+			self::replaceSuffix($text, $suffix, '');
 		}
 		return $text;
+	}
+
+	/**
+	 * Replaces the a suffix if it occurs at the end of the given word
+	 * @param string text the text
+	 * @param string existing the existing suffix
+	 * @param string new the new suffix
+	 * @retutn string the new text
+	 */
+	public static function replaceSuffix($text, $existing, $new) {
+		if (aka_endswith($text, $existing)) {
+			return substr($text, 0, strlen($text) - strlen($existing)).$new;
+		}
+		else {
+			return $text;
+		}
 	}
 
 	/**

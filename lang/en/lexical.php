@@ -26,7 +26,7 @@ global $kumva_porter2, $kumva_en_soundmaps;
 
 $kumva_porter2 = new Porter2Stemmer();
  
-$kumva_en_soundmaps = array('ISE' => 'IZE', 'OUR' => 'OR', 'TRE\B' => 'TER', 			// UK > US word endings
+$kumva_en_soundmaps = array('ISE' => 'IZE', 'ISA' => 'IZA', 'OUR' => 'OR', 'TRE\B' => 'TER', 			// UK > US word endings
 							'PH' => 'F', 
 							'BB' => 'B', 'DD' => 'D', 'GG' => 'G', 'LL' => 'L', 'MM' => 'M', 'NN' => 'N', 'PP' => 'P', 'SS' => 'S', 'TT' => 'T',
 							'SCH' => 'SK', 
@@ -43,6 +43,13 @@ function kumva_en_stem($text) {
 	global $kumva_porter2;
 	
 	$text = strtolower($text);
+
+	// Porter stemmer works with US endings, so convert to these
+	$text = Lexical::replaceSuffix($text, 'isation', 'ization');
+	$text = Lexical::replaceSuffix($text, 'iser', 'izer');
+	$text = Lexical::replaceSuffix($text, 'ised', 'ized');
+	$text = Lexical::replaceSuffix($text, 'ise', 'ize');
+
     return $kumva_porter2->Stem($text);
 }
 
