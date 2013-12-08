@@ -34,7 +34,7 @@ class Media extends Enum {
 /**
  * Dictionary entry class
  */
-class Entry extends Entity {
+class Entry extends Entity implements JsonSerializable {
 	private $media;
 	
 	// Lazy loaded properties
@@ -113,6 +113,25 @@ class Entry extends Entity {
 	 */
 	public function isDeleted() {
 		return !$this->getHead();
+	}
+
+	/**
+	 * @see JsonSerializable::jsonSerialize()
+	 */
+	public function jsonSerialize() {
+		$media = array();
+		if ($this->hasMedia(Media::AUDIO)) {
+			$media['audio'] = KUMVA_URL_MEDIA.'/audio/'.($this->id).'.mp3';
+		}
+		if ($this->hasMedia(Media::IMAGE)) {
+			$media['audio'] = KUMVA_URL_MEDIA.'/image/'.($this->id).'.jpg';
+		}
+
+		return [
+			'id' => $this->id,
+			'head' => $this->getHead(),
+			'media' => $media
+		];
 	}
 }
 

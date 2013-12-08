@@ -36,7 +36,7 @@ class Flags extends Enum {
 /**
  * Class for a meaning of a word
  */
-class Meaning extends Entity {
+class Meaning extends Entity implements JsonSerializable {
 	private $meaning;
 	private $flags;
 	
@@ -104,6 +104,16 @@ class Meaning extends Entity {
 			$flags = Flags::toBits(Flags::parseCSVString($flags));
 		
 		$this->flags = $flags;
+	}
+
+	/**
+	 * @see JsonSerializable::jsonSerialize()
+	 */
+	public function jsonSerialize() {
+		return [ 
+			'meaning' => $this->meaning,
+			'flags' => array_map('Flags::toString', Flags::fromBits($this->flags))
+		];
 	}
 }
 

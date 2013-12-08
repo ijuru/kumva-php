@@ -45,7 +45,7 @@ class RevisionStatus extends Enum {
 /**
  * Entry revision class
  */
-class Revision extends Entity {
+class Revision extends Entity implements JsonSerializable {
 	private $entryId;
 	private $number;
 	private $status;
@@ -405,6 +405,32 @@ class Revision extends Entity {
 	 */
 	public function toString() {
 		return $this->prefix.$this->lemma.'['.$this->wordClass.']';
+	}
+
+	/**
+	 * @see JsonSerializable::jsonSerialize()
+	 */
+	public function jsonSerialize() {
+		$tags = array();
+		foreach (Dictionary::getTagService()->getRelationships() as $relationship) {
+			$tags[$relationship->getName()] = $this->getTags($relationship->getId());
+		}
+
+		return [
+			'number' => $this->number,
+			'status' => $this->status,
+			'wordClass' => $this->wordClass,
+			'prefix' => $this->prefix,
+			'lemma' => $this->lemma,
+			'modifier' => $this->modifier,
+			'pronunciation' => $this->pronunciation,
+			'comment' => $this->comment,
+			'unverified' => $this->unverified,
+			'nounClasses' => $this->getNounClasses(),
+			'meanings' => $this->getMeanings(),
+			'tags' => $tags,
+			'examples' => $this->getExamples()
+		];
 	}
 }
 

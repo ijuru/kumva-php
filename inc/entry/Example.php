@@ -25,7 +25,7 @@ define('KUMVA_MAX_EXAMPLES', 10);
 /**
  * Usage example class
  */
-class Example extends Entity {
+class Example extends Entity implements JsonSerializable {
 	private $form;
 	private $meaning;
 	
@@ -64,6 +64,16 @@ class Example extends Entity {
 	 */
 	public function getMeaning() {
 		return $this->meaning;
+	}
+
+	/**
+	 * @see JsonSerializable::jsonSerialize()
+	 */
+	public function jsonSerialize() {
+		return [ 
+			'form' => $this->form,
+			'meaning' => $this->meaning
+		];
 	}
 }
 

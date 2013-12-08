@@ -23,7 +23,7 @@
 /**
  * Tag class
  */
-class Tag extends Entity {
+class Tag extends Entity implements JsonSerializable {
 	private $lang;
 	private $text;
 	private $stem;
@@ -105,6 +105,16 @@ class Tag extends Entity {
 	 */
 	public function toString() {
 		return ($this->lang != NULL ? $this->lang.':' : '').$this->text;
+	}
+
+	/**
+	 * @see JsonSerializable::jsonSerialize()
+	 */
+	public function jsonSerialize() {
+		return [ 
+			'lang' => $this->lang,
+			'text' => $this->text
+		];
 	}
 }
 
