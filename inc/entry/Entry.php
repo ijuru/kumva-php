@@ -127,11 +127,7 @@ class Entry extends Entity implements JsonSerializable {
 			$media['audio'] = KUMVA_URL_MEDIA.'/image/'.($this->id).'.jpg';
 		}
 
-		return [
-			'id' => $this->id,
-			'head' => $this->getHead(),
-			'media' => $media
-		];
+		return array_merge([ 'id' => $this->id ], $this->getHead()->jsonSerialize(), [ 'media' => $media ]);
 	}
 }
 

@@ -417,8 +417,9 @@ class Revision extends Entity implements JsonSerializable {
 		}
 
 		return [
+			/*'id' => $this->id,
 			'number' => $this->number,
-			'status' => $this->status,
+			'status' => $this->status,*/
 			'wordClass' => $this->wordClass,
 			'prefix' => $this->prefix,
 			'lemma' => $this->lemma,
