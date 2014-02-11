@@ -27,22 +27,26 @@ going forward and improving.</p>
 	<p>We can accept donations through Bitcoin:</p>
 
 	<script type="text/javascript" src="https://blockchain.info//Resources/wallet/pay-now-button.js"></script>
-	<div style="font-size:16px;width:300px" class="blockchain-btn" data-address="1EHnyVq9cpgwwoEvYnont4zXZWQ2MJ7PrJ">
-	    <div class="blockchain stage-begin">
-	        <img src="https://blockchain.info//Resources/buttons/pay_now_64.png">
-	    </div>
-	    <div class="blockchain stage-loading" style="text-align:center">
-	        <img src="https://blockchain.info//Resources/loading-large.gif">
-	    </div>
-	    <div class="blockchain stage-ready">
-	        Please send payment to bitcoin address <b>[[address]]</b>
-	    </div>
-	    <div class="blockchain stage-paid">
-	        Payment Received <b>[[value]] BTC</b>. Thank You.
-	    </div>
-	    <div class="blockchain stage-error">
-	        <font color="red">[[error]]</font>
-	    </div>
+
+	<div style="font-size:16px;margin:0 auto;width:300px" class="blockchain-btn"
+	     data-address="1B9H7wC5mNHjtYEsLyEy5zwtk49GecD6XG"
+	     data-shared="false">
+		<div class="blockchain stage-begin">
+			<img src="https://blockchain.info//Resources/buttons/donate_64.png"/>
+		</div>
+		<div class="blockchain stage-loading" style="text-align:center">
+			<img src="https://blockchain.info//Resources/loading-large.gif"/>
+		</div>
+		<div class="blockchain stage-ready">
+			<p align="center">Please Donate To Bitcoin Address: <b>[[address]]</b></p>
+			<p align="center" class="qr-code"></p>
+		</div>
+		<div class="blockchain stage-paid">
+			Donation of <b>[[value]] BTC</b> Received. Thank You.
+		</div>
+		<div class="blockchain stage-error">
+			<font color="red">[[error]]</font>
+		</div>
 	</div>
 
 	<p>And PayPal:</p>
