@@ -133,7 +133,7 @@ class Request {
 	 * @return string the value of the parameter
 	 */
 	public static function getGetParam($name, $default = NULL) {
-		return self::hasGetParam($name) ? $_GET[$name] : $default;
+		return self::hasGetParam($name) ? htmlspecialchars($_GET[$name], ENT_QUOTES) : $default;
 	}
 	
 	/**
